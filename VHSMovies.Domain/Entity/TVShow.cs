@@ -8,15 +8,20 @@ namespace VHSMovies.Domain.Entity
 {
     public class TVShow : Title
     {
-        public TVShow(string externalId, string name, string description,
-            IReadOnlyCollection<Director> directors, IReadOnlyCollection<Writer> writers,
-            IReadOnlyCollection<Actor> actors, IReadOnlyCollection<Genre> genres,
-            IReadOnlyCollection<TVShowSeason> seasons, IReadOnlyCollection<Review> ratings) :
-            base(externalId, name, description, directors, writers, actors, genres, ratings)
+        public TVShow()
         {
-            this.Seasons = seasons;
         }
 
-        public IReadOnlyCollection<TVShowSeason> Seasons { get; set; }
+        public TVShow(string externalId, string name, string description,
+            ICollection<TitleDirectors> directors, ICollection<TitleWriters> writers,
+            ICollection<Cast> actors, ICollection<TitleGenres> genres,
+            ICollection<TVShowSeason> seasons, ICollection<Review> ratings) :
+            base(externalId, name, description, directors,
+                writers, actors, genres, ratings)
+        {
+            Seasons = seasons;
+        }
+
+        public ICollection<TVShowSeason> Seasons { get; set; }
     }
 }

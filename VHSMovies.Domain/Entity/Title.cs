@@ -13,23 +13,27 @@ namespace VHSMovies.Domain.Entity
         public string ExternalId { get; set; }
 
         public string Name { get; set; }
-        
+
         public string Description { get; set; }
 
-        public IReadOnlyCollection<Director> Directors { get; set; }
+        public ICollection<TitleDirectors> Directors { get; set; } = new List<TitleDirectors>();
 
-        public IReadOnlyCollection<Writer> Writers { get; set; }
+        public ICollection<TitleWriters> Writers { get; set; }
 
-        public IReadOnlyCollection<Actor> Actors { get; set; }
+        public ICollection<Cast> Actors { get; set; } = new List<Cast>();
 
-        public IReadOnlyCollection<Genre> Genres { get; set; }
+        public ICollection<TitleGenres> Genres { get; set; } = new List<TitleGenres>();
 
-        public IReadOnlyCollection<Review> Ratings { get; set; }
+        public ICollection<Review> Ratings { get; set; }
 
-        public Title(string externalId, string name, string description, 
-            IReadOnlyCollection<Director> directors, IReadOnlyCollection<Writer> writers, 
-            IReadOnlyCollection<Actor> actors, IReadOnlyCollection<Genre> genres,
-            IReadOnlyCollection<Review> ratings)
+        public Title()
+        {
+        }
+
+        public Title(string externalId, string name, string description,
+            ICollection<TitleDirectors> directors, ICollection<TitleWriters> writers,
+            ICollection<Cast> actors, ICollection<TitleGenres> genres,
+            ICollection<Review> ratings)
         {
             ExternalId = externalId;
             Name = name;

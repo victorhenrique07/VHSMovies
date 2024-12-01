@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Domain", "VHSMovies.Domain\VHSMovies.Domain.csproj", "{9D461EA6-5210-432B-BE59-6852EF18268A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Infraestructure", "VHSMovies.Infraestructure\VHSMovies.Infraestructure.csproj", "{B61896AD-D522-450E-AFF0-EE918EF231FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Domain", "VHSMovies.Domain\VHSMovies.Domain.csproj", "{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "VHSMovies.Api\VHSMovies.Api.csproj", "{D9C801F7-436A-463D-A3DF-A8A1752F5157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9D461EA6-5210-432B-BE59-6852EF18268A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D461EA6-5210-432B-BE59-6852EF18268A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D461EA6-5210-432B-BE59-6852EF18268A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D461EA6-5210-432B-BE59-6852EF18268A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B61896AD-D522-450E-AFF0-EE918EF231FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B61896AD-D522-450E-AFF0-EE918EF231FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B61896AD-D522-450E-AFF0-EE918EF231FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B61896AD-D522-450E-AFF0-EE918EF231FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C801F7-436A-463D-A3DF-A8A1752F5157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C801F7-436A-463D-A3DF-A8A1752F5157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C801F7-436A-463D-A3DF-A8A1752F5157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C801F7-436A-463D-A3DF-A8A1752F5157}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

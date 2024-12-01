@@ -8,9 +8,16 @@ namespace VHSMovies.Domain.Entity
 {
     public class Actor : Person
     {
-        public Actor(string name, string externalId, IReadOnlyCollection<Title> titles) :
-            base(externalId, name, titles)
+        public Actor()
         {
         }
+
+        public Actor(string name, string externalId, ICollection<Cast> titles) :
+            base(externalId, name)
+        {
+            Titles = titles;
+        }
+
+        public ICollection<Cast> Titles { get; set; } = new List<Cast>();
     }
 }

@@ -8,9 +8,14 @@ namespace VHSMovies.Domain.Entity
 {
     public class Writer : Person
     {
-        public Writer(string externalId, string name, IReadOnlyCollection<Title> titles) : 
-            base(externalId, name, titles)
+        public Writer() { }
+
+        public Writer(string externalId, string name, ICollection<TitleWriters> titles) :
+            base(externalId, name)
         {
+            Titles = titles;
         }
+
+        public ICollection<TitleWriters> Titles { get; set; }
     }
 }

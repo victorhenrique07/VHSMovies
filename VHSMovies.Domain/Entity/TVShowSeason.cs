@@ -13,6 +13,8 @@ namespace VHSMovies.Domain.Entity
             EpisodesQuantity = episodesQuantity;
         }
 
+        public int Id { get; set; }
+
         public int EpisodesQuantity { get; set; }
     }
 }

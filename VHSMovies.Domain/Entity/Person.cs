@@ -8,11 +8,12 @@ namespace VHSMovies.Domain.Entity
 {
     public class Person
     {
-        public Person(string externalId, string name, IReadOnlyCollection<Title> titles)
+        public Person() { }
+
+        public Person(string externalId, string name)
         {
             ExternalId = externalId;
             Name = name;
-            Titles = titles;
         }
 
         public int Id { get; set; }
@@ -20,7 +21,5 @@ namespace VHSMovies.Domain.Entity
         public string ExternalId { get; set; }
 
         public string Name { get; set; }
-
-        public IReadOnlyCollection<Title> Titles { get; set; }
     }
 }

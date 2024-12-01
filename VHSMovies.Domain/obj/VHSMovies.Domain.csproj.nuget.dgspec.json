@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {}
+    "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {
+    "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
         "projectName": "VHSMovies.Domain",
-        "projectPath": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
+        "projectPath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
         "packagesPath": "C:\\Users\\henri\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\obj\\",
+        "outputPath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

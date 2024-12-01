@@ -10,7 +10,7 @@ namespace VHSMovies.Domain.Entity
     {
         public Genre() { }
 
-        public Genre(string name, IReadOnlyCollection<Title> titles)
+        public Genre(string name, ICollection<TitleGenres> titles)
         {
             Name = name;
             Titles = titles;
@@ -22,6 +22,6 @@ namespace VHSMovies.Domain.Entity
 
         public string Name { get; set; }
 
-        public IReadOnlyCollection<Title> Titles { get; set; }
+        public ICollection<TitleGenres> Titles { get; set; } = new List<TitleGenres>();
     }
 }

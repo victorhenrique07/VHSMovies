@@ -1,0 +1,12 @@
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\VHSMovies.Domain.deps.json
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\VHSMovies.Domain.dll
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\VHSMovies.Domain.pdb
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.AssemblyInfoInputs.cache
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.AssemblyInfo.cs
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.csproj.CoreCompileInputs.cache
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.sourcelink.json
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.dll
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\refint\VHSMovies.Domain.dll
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.pdb
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\ref\VHSMovies.Domain.dll
