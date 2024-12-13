@@ -5,3 +5,7 @@
 /.vs/VHSMovies
 /VHSMovies.Api/obj
 /.vs
+/VHSMovies.DataReader/bin/Debug/net9.0
+/VHSMovies.DataReader/obj
+/VHSMovies.Data/obj
+/VHSMovies.Application/obj
