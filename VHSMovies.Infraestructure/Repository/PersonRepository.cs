@@ -5,35 +5,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VHSMovies.Domain.Entity;
-using VHSMovies.Domain.Repository;
+using VHSMovies.Domain.Domain.Entity;
+using VHSMovies.Domain.Domain.Repository;
 
 namespace VHSMovies.Infraestructure.Repository
 {
     public class PersonRepository : IPersonRepository
     {
-        private readonly DbContextClass _context;
+        private readonly DbContextClass dbContextClass;
 
-        public PersonRepository(DbContextClass context)
+        public PersonRepository(DbContextClass dbContextClass)
         {
-            _context = context;
+            this.dbContextClass = dbContextClass;
         }
 
-        public async Task<T> GetPersonById<T>(int id) where T : Person
+        public async Task<IEnumerable<Person>> GetAll(string reviewerName)
         {
-            return await _context.Set<T>().Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await dbContextClass.People.Where(p => p.Name != null).ToListAsync();
         }
 
-        public async Task<T> GetPersonByExternalId<T>(string externalId) where T : Person
+        public async Task<Person> GetByIdAsync(int id)
         {
-            return await _context.Set<T>().Where(x => x.ExternalId == externalId).FirstOrDefaultAsync();
+            return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task RegisterPerson<T>(T person) where T : Person
+        public async Task<Person> GetByExternalIdAsync(string externalId)
         {
-            var entry = await _context.Set<T>().AddAsync(person);
+            return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
+        }
 
-            await _context.SaveChangesAsync();
+        public async Task UpdateByExternalIdAsync(Person person)
+        {
+            dbContextClass.Set<Person>().Update(person);
+            await dbContextClass.SaveChangesAsync();
+        }
+
+        public async Task RegisterAsync(Person entity)
+        {
+            await dbContextClass.Set<Person>().AddAsync(entity);
+            await dbContextClass.SaveChangesAsync();
         }
     }
 }

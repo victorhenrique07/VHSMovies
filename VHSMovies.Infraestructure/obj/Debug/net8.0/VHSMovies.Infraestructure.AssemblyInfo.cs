@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VHSMovies.Infraestructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+25aef577994d273a3dd2cd46cae0cb4c7d68d26c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd6e9e48c37b9ea62d5cb8cb72268f058bf3494f")]
 [assembly: System.Reflection.AssemblyProductAttribute("VHSMovies.Infraestructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VHSMovies.Infraestructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

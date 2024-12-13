@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VHSMovies.Domain.Repository;
+using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
 
 namespace LiveChat.Infraestructure

@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "coULLlab0qM=",
+  "dgSpecHash": "8qxE6HyplcE=",
   "success": true,
   "projectFilePath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\henri\\.nuget\\packages\\htmlagilitypack\\1.11.71\\htmlagilitypack.1.11.71.nupkg.sha512",
+    "C:\\Users\\henri\\.nuget\\packages\\selenium.webdriver\\4.27.0\\selenium.webdriver.4.27.0.nupkg.sha512"
+  ],
   "logs": []
 }

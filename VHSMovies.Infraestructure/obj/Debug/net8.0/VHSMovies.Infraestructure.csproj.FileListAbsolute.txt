@@ -16,3 +16,6 @@ C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.pdb
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.genruntimeconfig.cache
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\ref\VHSMovies.Infraestructure.dll
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\linux\selenium-manager
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\macos\selenium-manager
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\windows\selenium-manager.exe

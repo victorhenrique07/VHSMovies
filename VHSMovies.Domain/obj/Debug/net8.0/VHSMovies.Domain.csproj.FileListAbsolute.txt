@@ -10,3 +10,7 @@ C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovie
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\refint\VHSMovies.Domain.dll
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.pdb
 C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\ref\VHSMovies.Domain.dll
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\obj\Debug\net8.0\VHSMovies.Domain.csproj.AssemblyReference.cache
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\selenium-manager\linux\selenium-manager
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\selenium-manager\macos\selenium-manager
+C:\Users\henri\source\repos\VHSMovies\VHSMovies.Domain\bin\Debug\net8.0\selenium-manager\windows\selenium-manager.exe

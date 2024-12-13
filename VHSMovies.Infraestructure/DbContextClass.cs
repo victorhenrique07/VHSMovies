@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using VHSMovies.Domain.Entity;
+using VHSMovies.Domain.Domain.Entity;
 
 namespace LiveChat.Infraestructure
 {
@@ -22,13 +22,11 @@ namespace LiveChat.Infraestructure
         public DbSet<Actor> Actors { get; set; }
         public DbSet<Cast> Casts { get; set; }
         public DbSet<Director> Directors { get; set; }
-        public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<Person> People { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Title> Titles { get; set; }
         public DbSet<TitleDirectors> TitleDirectors { get; set; }
-        public DbSet<TitleGenres> TitleGenres { get; set; }
         public DbSet<TitleWriters> TitleWriters { get; set; }
         public DbSet<TVShow> TVShows { get; set; }
         public DbSet<TVShowSeason> TVShowSeasons { get; set; }
@@ -51,19 +49,6 @@ namespace LiveChat.Infraestructure
                 .HasOne(td => td.Director)
                 .WithMany(d => d.Titles)
                 .HasForeignKey(td => td.DirectorId);
-
-            modelBuilder.Entity<TitleGenres>()
-                .HasKey(tg => new { tg.TitleId, tg.GenreId });
-
-            modelBuilder.Entity<TitleGenres>()
-                .HasOne(tg => tg.Title)
-                .WithMany(t => t.Genres)
-                .HasForeignKey(tg => tg.TitleId);
-
-            modelBuilder.Entity<TitleGenres>()
-                .HasOne(tg => tg.Genre)
-                .WithMany(g => g.Titles)
-                .HasForeignKey(tg => tg.GenreId);
 
             modelBuilder.Entity<TitleWriters>()
                 .HasKey(tw => new { tw.TitleId, tw.WriterId });
