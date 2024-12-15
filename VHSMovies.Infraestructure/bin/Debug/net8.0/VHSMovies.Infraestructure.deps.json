@@ -674,6 +674,7 @@
       "VHSMovies.Domain/1.0.0": {
         "dependencies": {
           "HtmlAgilityPack": "1.11.71",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
           "Selenium.WebDriver": "4.27.0"
         },
         "runtime": {

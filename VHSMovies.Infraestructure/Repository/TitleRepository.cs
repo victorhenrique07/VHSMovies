@@ -1,5 +1,6 @@
 ﻿using LiveChat.Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,18 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
         }
 
-        public async Task UpdateAsync(List<T> title)
+        public async Task UpdateAsync(List<T> titles)
         {
-            dbContextClass.Set<T>().UpdateRange(title);
+            try
+            {
+                dbContextClass.Set<T>().UpdateRange(titles);
+                await dbContextClass.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao atualizar dados: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task RegisterAsync(List<T> entity)

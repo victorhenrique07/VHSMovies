@@ -1,6 +1,7 @@
 ﻿using LiveChat.Infraestructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using System;
@@ -30,7 +31,10 @@ namespace VHSMovies.DataReader
 
             container.RegisterInstance(driverManager);
 
+            container.Register<IServiceScopeFactory, SimpleInjectorServiceScopeFactory>(Lifestyle.Singleton);
+
             container.Register<SyncDataService>(Lifestyle.Transient);
+
             container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Singleton);
             container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Singleton);
 
@@ -46,7 +50,6 @@ namespace VHSMovies.DataReader
                 typeof(ImdbDataReader)
             });
 
-            // Verifica se as configurações estão corretas
             container.Verify();
         }
 

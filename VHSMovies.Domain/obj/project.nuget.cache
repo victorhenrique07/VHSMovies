@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "8qxE6HyplcE=",
+  "dgSpecHash": "75BSxcfSPDE=",
   "success": true,
   "projectFilePath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\henri\\.nuget\\packages\\htmlagilitypack\\1.11.71\\htmlagilitypack.1.11.71.nupkg.sha512",
+    "C:\\Users\\henri\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\henri\\.nuget\\packages\\selenium.webdriver\\4.27.0\\selenium.webdriver.4.27.0.nupkg.sha512"
   ],
   "logs": []

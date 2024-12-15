@@ -54,7 +54,6 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
             return titles;
         }
 
-        // Lê a pagina do filme/série.
         public override Title ReadTitlePage(HtmlDocument document)
         {
             string name = document.DocumentNode.SelectSingleNode("//h1[contains(@data-testid, 'pageTitle')]/span[contains(@class, 'primary-text')]").InnerText;
