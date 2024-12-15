@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium.DevTools.V129.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 {
                     Title title = ReadTitlesList(node, nodeNumber);
 
-                    AddOrUpdateTitle(title, titles);
+                    titles.Add(title);
 
                     nodeNumber++;
                 }
@@ -127,20 +128,54 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
             HtmlNode descriptionNode = titleNode.SelectSingleNode("div/div[2]/div/div");
 
-            HtmlNode ratingNode = titleNode.SelectSingleNode("div/div/div[2]/span/div/span/span[@class = 'ipc-rating-start--rating']");
+            HtmlNode ratingNode = titleNode.SelectSingleNode("div/div[1]/div[2]/span/div/span/span[@class = 'ipc-rating-star--rating']");
+
+            decimal rating = 0m;
+
+            if (ratingNode != null)
+            {
+                rating = decimal.Parse(ratingNode.InnerText);
+            }
+            else if (ratingNode == null)
+            {
+                ratingNode = titleNode.SelectSingleNode("div/div[1]/div[2]/span/span/span[1]");
+
+                if (ratingNode != null)
+                    rating = decimal.Parse(ratingNode.InnerText) / 10;
+            }
+
 
             List<Review> reviews = new List<Review>()
             {
-                new Review(GetSourceName(), decimal.Parse(ratingNode.InnerText))
+                new Review(GetSourceName(), rating)
             };
 
-            return new Title(
+            HtmlNode checkType = titleNode.SelectSingleNode("div/div[1]/div[2]/span/span");
+
+            bool isTVShow = (checkType != null) && (checkType.InnerText == "TV Series" || checkType.InnerText == "Série de TV");
+
+            if (!isTVShow)
+            {
+                return new Movie(
                 externalId,
                 name,
                 descriptionNode.InnerText,
                 new Cast(),
                 new List<Genre>(),
-                reviews);
+                reviews, 0m)
+                { Url = $"https://www.imdb.com{titleUrl}" };
+            }
+
+
+
+            return new TVShow(
+                externalId,
+                name,
+                descriptionNode.InnerText,
+                new Cast(),
+                new List<Genre>(),
+                reviews)
+            { Url = $"https://www.imdb.com{titleUrl}" };
         }
 
         private List<Person> GetPersonData(HtmlNodeCollection nodes)

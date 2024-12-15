@@ -29,6 +29,16 @@ namespace LiveChat.Infraestructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Title>().ToTable("Titles");
+            modelBuilder.Entity<Movie>().ToTable("Movies");
+            modelBuilder.Entity<TVShow>().ToTable("TVShows");
+            modelBuilder.Entity<TVShowSeason>().ToTable("TVShowSeasons");
+            modelBuilder.Entity<Cast>().ToTable("Casts");
+            modelBuilder.Entity<Person>().ToTable("People");
+            modelBuilder.Entity<Review>().ToTable("Reviews");
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }

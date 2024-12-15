@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Domain.Infraestructure;
 using VHSMovies.Domain.Infraestructure.DataReaders;
+using VHSMovies.Domain.Infraestructure.Services;
 using VHSMovies.Infraestructure.Repository;
 
 namespace VHSMovies.DataReader
@@ -20,14 +22,19 @@ namespace VHSMovies.DataReader
 
         public static void Configure(IConfiguration configuration, WebDriverManager driverManager)
         {
-            container.Register(() => DbContextFactory.Create(configuration), Lifestyle.Scoped);
+            container = new Container();
+
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+
+            container.Register(() => DbContextFactory.Create(configuration), Lifestyle.Singleton);
 
             container.RegisterInstance(driverManager);
 
-            container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Scoped);
-            container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Scoped);
+            container.Register<SyncDataService>(Lifestyle.Transient);
+            container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Singleton);
+            container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Singleton);
 
-            container.Register<IPersonRepository, PersonRepository>(Lifestyle.Scoped);
+            container.Register<IPersonRepository, PersonRepository>(Lifestyle.Singleton);
 
 
             container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
@@ -35,9 +42,9 @@ namespace VHSMovies.DataReader
             );
 
             container.Collection.Register<IDataReader>(new List<Type>
-        {
-            typeof(ImdbDataReader)
-        });
+            {
+                typeof(ImdbDataReader)
+            });
 
             // Verifica se as configurações estão corretas
             container.Verify();

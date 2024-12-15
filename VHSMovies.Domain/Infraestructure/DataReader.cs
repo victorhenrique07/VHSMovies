@@ -43,7 +43,7 @@ namespace VHSMovies.Domain.Infraestructure
 
         public void AddOrUpdateTitle(Title title, List<Title> titles)
         {
-            if (title is Movie movie)
+         /*   if (title is Movie movie)
             {
                 Movie existingTitle = movieRepository.GetByExternalIdAsync(title.ExternalId).Result;
 
@@ -70,7 +70,7 @@ namespace VHSMovies.Domain.Infraestructure
 
                 titles.Add(tvshow);
                 tvshowRepository.RegisterAsync(tvshow);
-            }
+            }*/
 
         }
 

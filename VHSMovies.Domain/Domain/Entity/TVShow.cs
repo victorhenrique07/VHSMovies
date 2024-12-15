@@ -18,6 +18,6 @@ namespace VHSMovies.Domain.Domain.Entity
         {
         }
 
-        public ICollection<TVShowSeason> Seasons { get; set; }
+        public ICollection<TVShowSeason> Seasons { get; set; } = new List<TVShowSeason>();
     }
 }

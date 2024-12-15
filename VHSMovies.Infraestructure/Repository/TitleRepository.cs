@@ -22,7 +22,6 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<IEnumerable<T>> GetAll(string reviewerName)
         {
             return await dbContextClass.Set<T>()
-                .Where(t => t.Ratings.Select(r => r.Reviewer == reviewerName) != null)
                 .ToListAsync();
         }
 
@@ -36,15 +35,27 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
         }
 
-        public async Task UpdateAsync(T title)
+        public async Task UpdateAsync(List<T> title)
         {
-            dbContextClass.Set<T>().Update(title);
-            await dbContextClass.SaveChangesAsync();
+            dbContextClass.Set<T>().UpdateRange(title);
         }
 
-        public async Task RegisterAsync(T entity)
+        public async Task RegisterAsync(List<T> entity)
         {
-            await dbContextClass.Set<T>().AddAsync(entity);
+            try
+            {
+                await dbContextClass.Set<T>().AddRangeAsync(entity);
+                await dbContextClass.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao registrar dados: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SaveChanges()
+        {
             await dbContextClass.SaveChangesAsync();
         }
     }

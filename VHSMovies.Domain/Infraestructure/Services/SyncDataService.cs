@@ -24,7 +24,7 @@ namespace VHSMovies.Domain.Infraestructure.Services
             this.tvshowRepository = tvshowRepository;
         }
 
-        public void RegisterNewData(string reviewerName)
+        public async Task RegisterNewData(string reviewerName)
         {
             IReadOnlyCollection<Title> titlesList = ReadTitles(reviewerName);
 
@@ -36,6 +36,9 @@ namespace VHSMovies.Domain.Infraestructure.Services
             titles.AddRange(movies);
             titles.AddRange(tvshows);
 
+            List<Movie> unregisteredMovies = new List<Movie>();
+            List<TVShow> unregisteredTVShows = new List<TVShow>();
+
             foreach (Title title in titlesList)
             {
                 bool existingTitle = titles
@@ -43,26 +46,23 @@ namespace VHSMovies.Domain.Infraestructure.Services
 
                 if (!existingTitle)
                 {
+                    if (title is Movie movie)
+                        unregisteredMovies.Add(movie);
+                    if (title is TVShow tvshow)
+                        unregisteredTVShows.Add(tvshow);
+
                     List<Person> allPeople = title.Cast.Actors
                         .Concat(title.Cast.Directors)
                         .Concat(title.Cast.Writers).ToList();
 
-                    foreach (Person person in allPeople)
-                    {
-                        Person existingPerson = personRepository.GetByExternalIdAsync(person.ExternalId).Result;
-
-                        if (existingPerson != null)
-                        {
-                            RegisterPeople(person);
-                        }
-                    }
-
-                    if (title is Movie movie)
-                        movieRepository.RegisterAsync(movie);
-                    if (title is TVShow tvshow)
-                        tvshowRepository.RegisterAsync(tvshow);
+                    RegisterPeople(allPeople);
                 }
             }
+
+            await movieRepository.RegisterAsync(unregisteredMovies);
+           // await tvshowRepository.RegisterAsync(unregisteredTVShows);
+
+           // await movieRepository.SaveChanges();
         }
 
         public void UpdateTitles(string reviewerName)
@@ -74,6 +74,9 @@ namespace VHSMovies.Domain.Infraestructure.Services
 
             titles.AddRange(movies);
             titles.AddRange(tvshows);
+
+            List<Movie> unregisteredMovies = new List<Movie>();
+            List<TVShow> unregisteredTVShows = new List<TVShow>();
 
             foreach (Title title in titles)
             {
@@ -91,15 +94,7 @@ namespace VHSMovies.Domain.Infraestructure.Services
                     .Concat(title.Cast.Directors)
                     .Concat(title.Cast.Writers);
 
-                foreach (Person person in allPeople)
-                {
-                    Person existingPerson = personRepository.GetByExternalIdAsync(person.ExternalId).Result;
-
-                    if (existingPerson != null)
-                    {
-                        RegisterPeople(person);
-                    }
-                }
+                RegisterPeople(allPeople.ToList());
 
                 title.Cast = updatedTitle.Cast;
                 title.Genres = updatedTitle.Genres;
@@ -108,12 +103,17 @@ namespace VHSMovies.Domain.Infraestructure.Services
                 {
                     tvshow.Seasons = updatedTVShow.Seasons;
 
-                    tvshowRepository.UpdateAsync(tvshow);
-                    continue;
+                    unregisteredTVShows.Add(tvshow);
                 }
                 else if (title is Movie movie)
-                    movieRepository.UpdateAsync(movie);
+                    unregisteredMovies.Add(movie);
+                    
             }
+
+            movieRepository.UpdateAsync(unregisteredMovies);
+            tvshowRepository.UpdateAsync(unregisteredTVShows);
+
+            movieRepository.SaveChanges();
         }
 
         private IReadOnlyCollection<Title> ReadTitles(string sourceName)
@@ -134,16 +134,17 @@ namespace VHSMovies.Domain.Infraestructure.Services
             return titles;
         }
 
-        public void RegisterPeople(Person person)
+        public void RegisterPeople(List<Person> people)
         {
-            bool existingPerson = personRepository.GetByExternalIdAsync(person.ExternalId).Result != null ? true : false;
-
-            if (!existingPerson)
+            foreach (Person personItem in people)
             {
-                personRepository.RegisterAsync(person);
+                Person existingPerson = personRepository.GetByExternalIdAsync(personItem.ExternalId).Result;
+
+                if (existingPerson == null)
+                    people.Remove(personItem);
             }
 
-            throw new Exception($"Person with Name {person.Name} ExternalId {person.ExternalId} already exists.");
+            personRepository.RegisterAsync(people);
         }
     }
 }
