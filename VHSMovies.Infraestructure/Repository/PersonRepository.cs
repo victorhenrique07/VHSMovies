@@ -34,15 +34,18 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
         }
 
-        public async Task UpdateByExternalIdAsync(Person person)
+        public async Task UpdateAsync(List<Person> person)
         {
-            dbContextClass.Set<Person>().Update(person);
-            await dbContextClass.SaveChangesAsync();
+            dbContextClass.Set<Person>().UpdateRange(person);
         }
 
-        public async Task RegisterAsync(Person entity)
+        public async Task RegisterAsync(List<Person> entity)
         {
-            await dbContextClass.Set<Person>().AddAsync(entity);
+            await dbContextClass.Set<Person>().AddRangeAsync(entity);
+        }
+
+        public async Task SaveChanges()
+        {
             await dbContextClass.SaveChangesAsync();
         }
     }

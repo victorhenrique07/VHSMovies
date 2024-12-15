@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VHSMovies.DataReader": {
+      "commandName": "Project",
+      "commandLineArgs": "imdb rt"
+    }
+  }
+}

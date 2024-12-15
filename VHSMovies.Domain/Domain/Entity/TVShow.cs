@@ -13,15 +13,11 @@ namespace VHSMovies.Domain.Domain.Entity
         }
 
         public TVShow(string externalId, string name, string description,
-            ICollection<TitleDirectors> directors, ICollection<TitleWriters> writers,
-            ICollection<Cast> actors, ICollection<Genre> genres,
-            ICollection<TVShowSeason> seasons, ICollection<Review> ratings) :
-            base(externalId, name, description, directors,
-                writers, actors, genres, ratings)
+            Cast cast, ICollection<Genre> genres, List<Review> ratings) :
+            base(externalId, name, description, cast, genres, ratings)
         {
-            Seasons = seasons;
         }
 
-        public ICollection<TVShowSeason> Seasons { get; set; }
+        public ICollection<TVShowSeason> Seasons { get; set; } = new List<TVShowSeason>();
     }
 }

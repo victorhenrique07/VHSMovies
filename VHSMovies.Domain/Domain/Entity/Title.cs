@@ -16,26 +16,25 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Description { get; set; }
 
-        public ICollection<TitleDirectors> Directors { get; set; } = new List<TitleDirectors>();
-
-        public ICollection<TitleWriters> Writers { get; set; }
-
-        public ICollection<Cast> Actors { get; set; } = new List<Cast>();
+        public Cast Cast { get; set; }
 
         public ICollection<Genre> Genres { get; set; } = new List<Genre>();
 
-        public ICollection<Review> Ratings { get; set; }
+        public List<Review> Ratings { get; set; }
+
+        public string Url { get; set; }
 
         public Title()
         {
         }
 
-        public Title(string externalId, string name, string description, ICollection<Genre> genres,
-            ICollection<Review> ratings)
+        public Title(string externalId, string name, string description, Cast cast, ICollection<Genre> genres,
+            List<Review> ratings)
         {
             ExternalId = externalId;
             Name = name;
             Description = description;
+            Cast = cast;
             Genres = genres;
             Ratings = ratings;
         }

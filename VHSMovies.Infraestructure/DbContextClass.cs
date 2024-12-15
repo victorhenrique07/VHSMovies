@@ -19,54 +19,26 @@ namespace LiveChat.Infraestructure
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
         }
 
-        public DbSet<Actor> Actors { get; set; }
         public DbSet<Cast> Casts { get; set; }
-        public DbSet<Director> Directors { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Title> Titles { get; set; }
-        public DbSet<TitleDirectors> TitleDirectors { get; set; }
-        public DbSet<TitleWriters> TitleWriters { get; set; }
         public DbSet<TVShow> TVShows { get; set; }
         public DbSet<TVShowSeason> TVShowSeasons { get; set; }
-        public DbSet<Writer> Writers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cast>()
-                .HasKey(c => new { c.ActorId, c.TitleId });
+            modelBuilder.Entity<Title>().ToTable("Titles");
+            modelBuilder.Entity<Movie>().ToTable("Movies");
+            modelBuilder.Entity<TVShow>().ToTable("TVShows");
+            modelBuilder.Entity<TVShowSeason>().ToTable("TVShowSeasons");
+            modelBuilder.Entity<Cast>().ToTable("Casts");
+            modelBuilder.Entity<Person>().ToTable("People");
+            modelBuilder.Entity<Review>().ToTable("Reviews");
 
-            modelBuilder.Entity<TitleDirectors>()
-                .HasKey(td => new { td.TitleId, td.DirectorId });
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TitleDirectors>()
-                .HasOne(td => td.Title)
-                .WithMany(t => t.Directors)
-                .HasForeignKey(td => td.TitleId);
-
-            modelBuilder.Entity<TitleDirectors>()
-                .HasOne(td => td.Director)
-                .WithMany(d => d.Titles)
-                .HasForeignKey(td => td.DirectorId);
-
-            modelBuilder.Entity<TitleWriters>()
-                .HasKey(tw => new { tw.TitleId, tw.WriterId });
-
-            modelBuilder.Entity<TitleWriters>()
-                .HasOne(tw => tw.Title)
-                .WithMany(t => t.Writers)
-                .HasForeignKey(tw => tw.TitleId);
-
-            modelBuilder.Entity<TitleWriters>()
-                .HasOne(tw => tw.Writer)
-                .WithMany(w => w.Titles)
-                .HasForeignKey(tw => tw.WriterId);
-
-            modelBuilder.Entity<TVShow>()
-                .HasMany(tv => tv.Seasons)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

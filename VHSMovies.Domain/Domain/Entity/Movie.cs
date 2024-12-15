@@ -11,12 +11,13 @@ namespace VHSMovies.Domain.Domain.Entity
         public Movie() { }
 
         public Movie(string externalId, string name, string description,
-            ICollection<TitleDirectors> directors, ICollection<TitleWriters> writers,
-            ICollection<Cast> actors, ICollection<Genre> genres,
-            ICollection<Review> ratings) :
-            base(externalId, name, description, directors,
-                writers, actors, genres, ratings)
+            Cast cast, ICollection<Genre> genres,
+            List<Review> ratings, decimal? duration) :
+            base(externalId, name, description, cast, genres, ratings)
         {
+            this.Duration = duration;
         }
+
+        public decimal? Duration { get; set; }
     }
 }

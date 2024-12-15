@@ -8,12 +8,21 @@ namespace VHSMovies.Domain.Domain.Entity
 {
     public class Cast
     {
-        public int ActorId { get; set; }
+        public int Id { get; set; }
 
-        public virtual Actor Actor { get; set; }
+        public ICollection<Person> Directors { get; set; } = new List<Person>();
 
-        public int TitleId { get; set; }
+        public ICollection<Person> Writers { get; set; } = new List<Person>();
 
-        public virtual Title Title { get; set; }
+        public ICollection<Person> Actors { get; set; } = new List<Person>();
+
+        public Cast() { }
+
+        public Cast(ICollection<Person> directors, ICollection<Person> writers, ICollection<Person> actors)
+        {
+            Directors = directors;
+            Writers = writers;
+            Actors = actors;
+        }
     }
 }

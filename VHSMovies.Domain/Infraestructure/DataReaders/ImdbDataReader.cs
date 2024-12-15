@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium.DevTools.V129.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,9 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
         public ImdbDataReader(
             IPersonRepository personRepository,
             IHtmlReader htmlReader,
-            ITitleRepository titleRepository
-            ) : base(personRepository, htmlReader, titleRepository)
+            ITitleRepository<Movie> movieRepository,
+            ITitleRepository<TVShow> tvshowRepository
+            ) : base(personRepository, htmlReader, movieRepository, tvshowRepository)
         {
         }
 
@@ -41,9 +43,9 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
                 foreach (HtmlNode node in titleNodes)
                 {
-                    Title title = ReadTitlePage(node, nodeNumber);
+                    Title title = ReadTitlesList(node, nodeNumber);
 
-                    AddOrUpdateTitle(title, titles);
+                    titles.Add(title);
 
                     nodeNumber++;
                 }
@@ -69,13 +71,17 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
             HtmlNode titleUrlNode = document.DocumentNode.SelectSingleNode("//div[contains(@data-testid, 'aggregate-rating')]/a");
 
-            string titleUrl = titleUrlNode.GetAttributeValue("href", "");
+            string titleExternalId = titleUrlNode.GetAttributeValue("href", "");
 
-            titleUrl = titleUrl.Replace("/title/", string.Empty);
+            titleExternalId = titleExternalId.Replace("/title/", string.Empty);
 
-            string[] urlList = titleUrl.Split("/");
+            string[] urlList = titleExternalId.Split("/");
 
-            titleUrl = urlList[0];
+            titleExternalId = urlList[0];
+
+            string titleUrl = $"https://www.imdb.com/title/{titleExternalId}";
+
+            string description = document.DocumentNode.SelectSingleNode("//p[@data-testid='plot']/span[3]").InnerText;
 
             HtmlNode ratingNode = titleUrlNode.SelectSingleNode("span/div/div[2]/div[1]/span");
 
@@ -84,30 +90,30 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
             HtmlNode professionalsNode = document.DocumentNode.SelectSingleNode("//div[@role = 'presentation']/ul[contains(@class, 'ipc-metadata-list')]");
 
             HtmlNode directorsNode = professionalsNode.SelectSingleNode("li[1]");
+            HtmlNode writersNode = professionalsNode.SelectSingleNode("li[2]");
+            HtmlNode actorsNode = professionalsNode.SelectSingleNode("li[3]");
 
-            HtmlNodeCollection directorsNodes = directorsNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']");
+            string castNode = "div[@class = 'ipc-metadata-list-item__content-container']/ul";
 
-            List<Director> directors = new List<Director>();
+            HtmlNodeCollection directorsNodes = directorsNode.SelectNodes(castNode);
+            HtmlNodeCollection writersNodes = writersNode.SelectNodes(castNode);
+            HtmlNodeCollection actorsNodes = actorsNode.SelectNodes(castNode);
 
-            foreach (HtmlNode directorNode in directorsNodes)
+            List<Person> directors = GetPersonData(directorsNodes);
+            List<Person> writers = GetPersonData(writersNodes);
+            List<Person> actors = GetPersonData(actorsNodes);
+
+            Cast cast = new Cast() { Actors = actors, Directors = directors, Writers = writers };
+
+            List<Review> reviews = new List<Review>()
             {
-                HtmlNode nameNode = directorNode.SelectSingleNode("ul/li/a");
+                new Review(GetSourceName(), rating)
+            };
 
-                string[] externalIdList = nameNode.GetAttributeValue("href", "").Replace("/name/", string.Empty).Split("/");
-
-                string externalId = externalIdList[0];
-
-                string directorName = nameNode.InnerText;
-
-                directors.Add(new Director(directorName, externalId));
-            }
-
-
-
-            return ;
+            return new Title(titleExternalId, name, description, cast, genres, reviews);
         }
 
-        public Title ReadTitlePage(HtmlNode titleNode, int nodeNumber)
+        public Title ReadTitlesList(HtmlNode titleNode, int nodeNumber)
         {
             HtmlNode nameNode = titleNode.SelectSingleNode("div/div/div[2]/div[contains(@class, 'ipc-title')]/a/h3");
 
@@ -121,16 +127,74 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
             HtmlNode descriptionNode = titleNode.SelectSingleNode("div/div[2]/div/div");
 
-            HtmlNode ratingNode = titleNode.SelectSingleNode("div/div/div[2]/span/div/span/span[@class = 'ipc-rating-start--rating']");
+            HtmlNode ratingNode = titleNode.SelectSingleNode("div/div[1]/div[2]/span/div/span/span[@class = 'ipc-rating-star--rating']");
 
-            Review reviewer = new Review("IMDb", decimal.Parse(ratingNode.InnerText));
+            decimal rating = 0m;
 
-            return new Title(
+            if (ratingNode != null)
+            {
+                rating = decimal.Parse(ratingNode.InnerText);
+            }
+            else if (ratingNode == null)
+            {
+                ratingNode = titleNode.SelectSingleNode("div/div[1]/div[2]/span/span/span[1]");
+
+                if (ratingNode != null)
+                    rating = decimal.Parse(ratingNode.InnerText) / 10;
+            }
+
+
+            List<Review> reviews = new List<Review>()
+            {
+                new Review(GetSourceName(), rating)
+            };
+
+            HtmlNode checkType = titleNode.SelectSingleNode("div/div[1]/div[2]/span/span");
+
+            bool isTVShow = (checkType != null) && (checkType.InnerText == "TV Series" || checkType.InnerText == "Série de TV");
+
+            if (!isTVShow)
+            {
+                return new Movie(
                 externalId,
                 name,
                 descriptionNode.InnerText,
+                new Cast(),
                 new List<Genre>(),
-                new List<Review>() { reviewer });
+                reviews, 0m)
+                { Url = $"https://www.imdb.com{titleUrl}" };
+            }
+
+
+
+            return new TVShow(
+                externalId,
+                name,
+                descriptionNode.InnerText,
+                new Cast(),
+                new List<Genre>(),
+                reviews)
+            { Url = $"https://www.imdb.com{titleUrl}" };
+        }
+
+        private List<Person> GetPersonData(HtmlNodeCollection nodes)
+        {
+            List<Person> people = new List<Person>();
+
+            foreach (HtmlNode node in nodes)
+            {
+                HtmlNode nameNode = node.SelectSingleNode("li/a");
+
+                string[] externalIdList = nameNode.GetAttributeValue("href", "").Replace("/name/", string.Empty).Split("/");
+
+                string externalId = externalIdList[0];
+
+                string name = nameNode.InnerText;
+
+                people.Add(new Person(name, externalId, $"https://www.imdb.com/name/{externalId}"));
+            }
+
+            return people;
         }
 
         public override string GetSourceName()

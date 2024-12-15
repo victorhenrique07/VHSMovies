@@ -21,28 +21,35 @@ namespace VHSMovies.Infraestructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Cast", b =>
-                {
-                    b.Property<int>("ActorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ActorId", "TitleId");
-
-                    b.HasIndex("TitleId");
-
-                    b.ToTable("Casts");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Genre", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Cast", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Casts", (string)null);
+                });
+
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CastId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CastId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CastId2")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ExternalId")
                         .IsRequired()
@@ -52,42 +59,22 @@ namespace VHSMovies.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Genres");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Person", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
-
-                    b.Property<string>("ExternalId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons");
+                    b.HasIndex("CastId");
 
-                    b.HasDiscriminator().HasValue("Person");
+                    b.HasIndex("CastId1");
 
-                    b.UseTphMappingStrategy();
+                    b.HasIndex("CastId2");
+
+                    b.ToTable("People", (string)null);
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Review", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Review", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,10 +96,10 @@ namespace VHSMovies.Infraestructure.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TVShowSeason", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShowSeason", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,10 +117,10 @@ namespace VHSMovies.Infraestructure.Migrations
 
                     b.HasIndex("TVShowId");
 
-                    b.ToTable("TVShowSeasons");
+                    b.ToTable("TVShowSeasons", (string)null);
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Title", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Title", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,237 +128,128 @@ namespace VHSMovies.Infraestructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CastId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
 
                     b.Property<string>("ExternalId")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.PrimitiveCollection<int[]>("Genres")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Titles");
+                    b.HasIndex("CastId");
 
-                    b.HasDiscriminator().HasValue("Title");
+                    b.ToTable("Titles", (string)null);
 
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleDirectors", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Movie", b =>
                 {
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
+                    b.HasBaseType("VHSMovies.Domain.Domain.Entity.Title");
 
-                    b.Property<int>("DirectorId")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("Duration")
+                        .HasColumnType("numeric");
 
-                    b.HasKey("TitleId", "DirectorId");
-
-                    b.HasIndex("DirectorId");
-
-                    b.ToTable("TitleDirectors");
+                    b.ToTable("Movies", (string)null);
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleGenres", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShow", b =>
                 {
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
+                    b.HasBaseType("VHSMovies.Domain.Domain.Entity.Title");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TitleId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("TitleGenres");
+                    b.ToTable("TVShows", (string)null);
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleWriters", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Person", b =>
                 {
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WriterId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TitleId", "WriterId");
-
-                    b.HasIndex("WriterId");
-
-                    b.ToTable("TitleWriters");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Actor", b =>
-                {
-                    b.HasBaseType("VHSMovies.Domain.Entity.Person");
-
-                    b.HasDiscriminator().HasValue("Actor");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Director", b =>
-                {
-                    b.HasBaseType("VHSMovies.Domain.Entity.Person");
-
-                    b.HasDiscriminator().HasValue("Director");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Writer", b =>
-                {
-                    b.HasBaseType("VHSMovies.Domain.Entity.Person");
-
-                    b.HasDiscriminator().HasValue("Writer");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Movie", b =>
-                {
-                    b.HasBaseType("VHSMovies.Domain.Entity.Title");
-
-                    b.HasDiscriminator().HasValue("Movie");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TVShow", b =>
-                {
-                    b.HasBaseType("VHSMovies.Domain.Entity.Title");
-
-                    b.HasDiscriminator().HasValue("TVShow");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Cast", b =>
-                {
-                    b.HasOne("VHSMovies.Domain.Entity.Actor", "Actor")
-                        .WithMany("Titles")
-                        .HasForeignKey("ActorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VHSMovies.Domain.Entity.Title", "Title")
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Cast", null)
                         .WithMany("Actors")
-                        .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CastId");
 
-                    b.Navigation("Actor");
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Cast", null)
+                        .WithMany("Directors")
+                        .HasForeignKey("CastId1");
 
-                    b.Navigation("Title");
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Cast", null)
+                        .WithMany("Writers")
+                        .HasForeignKey("CastId2");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Review", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Review", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Entity.Title", null)
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", null)
                         .WithMany("Ratings")
                         .HasForeignKey("TitleId");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TVShowSeason", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShowSeason", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Entity.TVShow", null)
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.TVShow", null)
                         .WithMany("Seasons")
-                        .HasForeignKey("TVShowId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TVShowId");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleDirectors", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Title", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Entity.Director", "Director")
-                        .WithMany("Titles")
-                        .HasForeignKey("DirectorId")
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Cast", "Cast")
+                        .WithMany()
+                        .HasForeignKey("CastId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VHSMovies.Domain.Entity.Title", "Title")
-                        .WithMany("Directors")
-                        .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Director");
-
-                    b.Navigation("Title");
+                    b.Navigation("Cast");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleGenres", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Movie", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Entity.Genre", "Genre")
-                        .WithMany("Titles")
-                        .HasForeignKey("GenreId")
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", null)
+                        .WithOne()
+                        .HasForeignKey("VHSMovies.Domain.Domain.Entity.Movie", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("VHSMovies.Domain.Entity.Title", "Title")
-                        .WithMany("Genres")
-                        .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
-
-                    b.Navigation("Title");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TitleWriters", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShow", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Entity.Title", "Title")
-                        .WithMany("Writers")
-                        .HasForeignKey("TitleId")
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", null)
+                        .WithOne()
+                        .HasForeignKey("VHSMovies.Domain.Domain.Entity.TVShow", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("VHSMovies.Domain.Entity.Writer", "Writer")
-                        .WithMany("Titles")
-                        .HasForeignKey("WriterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Title");
-
-                    b.Navigation("Writer");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Genre", b =>
-                {
-                    b.Navigation("Titles");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Title", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Cast", b =>
                 {
                     b.Navigation("Actors");
 
                     b.Navigation("Directors");
 
-                    b.Navigation("Genres");
-
-                    b.Navigation("Ratings");
-
                     b.Navigation("Writers");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Actor", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Title", b =>
                 {
-                    b.Navigation("Titles");
+                    b.Navigation("Ratings");
                 });
 
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Director", b =>
-                {
-                    b.Navigation("Titles");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.Writer", b =>
-                {
-                    b.Navigation("Titles");
-                });
-
-            modelBuilder.Entity("VHSMovies.Domain.Entity.TVShow", b =>
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShow", b =>
                 {
                     b.Navigation("Seasons");
                 });
