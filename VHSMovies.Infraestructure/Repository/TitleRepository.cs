@@ -10,7 +10,7 @@ using VHSMovies.Domain.Domain.Repository;
 
 namespace VHSMovies.Infraestructure.Repository
 {
-    public class TitleRepository : ITitleRepository
+    public class TitleRepository<T> : ITitleRepository<T> where T : Title
     {
         private readonly DbContextClass dbContextClass;
 
@@ -19,33 +19,32 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IEnumerable<Title>> GetAll(string reviewerName)
+        public async Task<IEnumerable<T>> GetAll(string reviewerName)
         {
-            return await dbContextClass.Titles
+            return await dbContextClass.Set<T>()
                 .Where(t => t.Ratings.Select(r => r.Reviewer == reviewerName) != null)
                 .ToListAsync();
-                //.Where(p => p.Ratings.Select( c => c.Reviewer == reviewerName) != null).ToListAsync();
         }
 
-        public async Task<Title> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
-            return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.Id == id);
+            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Title> GetByExternalIdAsync(string externalId)
+        public async Task<T> GetByExternalIdAsync(string externalId)
         {
-            return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
+            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
         }
 
-        public async Task UpdateByExternalIdAsync(Title title)
+        public async Task UpdateAsync(T title)
         {
-            dbContextClass.Set<Title>().Update(title);
+            dbContextClass.Set<T>().Update(title);
             await dbContextClass.SaveChangesAsync();
         }
 
-        public async Task RegisterAsync(Title entity)
+        public async Task RegisterAsync(T entity)
         {
-            await dbContextClass.Set<Title>().AddAsync(entity);
+            await dbContextClass.Set<T>().AddAsync(entity);
             await dbContextClass.SaveChangesAsync();
         }
     }

@@ -12,7 +12,7 @@ namespace VHSMovies.Application.Mappers
     {
         public ActorMapper()
         {
-            CreateMap<Actor, ActorResponse>();
+            CreateMap<Person, ActorResponse>();
         }
     }
 }

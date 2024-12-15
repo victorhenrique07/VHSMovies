@@ -28,6 +28,6 @@ namespace VHSMovies.Domain.Infraestructure
 
         public async Task RegisterAsync(T entity) => await dbContext.AddAsync(entity);
 
-        public async Task UpdateByExternalIdAsync(T entity) => dbContext.Update(entity);
+        public async Task UpdateAsync(T entity) => dbContext.Update(entity);
     }
 }

@@ -19,11 +19,7 @@ class Program
 
             bool updateTitles = args[1].Contains("ut");
 
-            bool updatePeople = args[1].Contains("up");
-
             bool registerTitles = args[1].Contains("rt");
-
-            bool registerPeople = args[1].Contains("rp");
 
             string reviewerName = args.First();
 
@@ -34,8 +30,10 @@ class Program
 
             if (updateTitles)
             {
-                ServiceLocator.GetInstance<SyncDataService>().UpdateTitles();
+                ServiceLocator.GetInstance<SyncDataService>().UpdateTitles(reviewerName);
             }
+
+            ServiceLocator.Dispose();
         }
     }
 }

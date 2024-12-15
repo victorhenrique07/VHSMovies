@@ -14,18 +14,22 @@ namespace VHSMovies.Domain.Infraestructure
     {
         protected IPersonRepository personRepository;
 
-        protected ITitleRepository titleRepository;
+        protected ITitleRepository<Movie> movieRepository;
+
+        protected ITitleRepository<TVShow> tvshowRepository;
 
         protected IHtmlReader htmlReader;
 
         protected DataReader(
             IPersonRepository personRepository,
             IHtmlReader htmlReader,
-            ITitleRepository titleRepository)
+            ITitleRepository<Movie> movieRepository,
+            ITitleRepository<TVShow> tvshowRepository)
         {
             this.personRepository = personRepository;
             this.htmlReader = htmlReader;
-            this.titleRepository = titleRepository;
+            this.movieRepository = movieRepository;
+            this.tvshowRepository = tvshowRepository;
         }
 
         public Title ReadTitle(string url)
@@ -39,17 +43,35 @@ namespace VHSMovies.Domain.Infraestructure
 
         public void AddOrUpdateTitle(Title title, List<Title> titles)
         {
-            Title existingTitle = titleRepository.GetByExternalIdAsync(title.ExternalId).Result;
-
-            if (existingTitle != null)
+            if (title is Movie movie)
             {
-                titleRepository.UpdateByExternalIdAsync(title);
+                Movie existingTitle = movieRepository.GetByExternalIdAsync(title.ExternalId).Result;
 
-                return;
+                if (existingTitle != null)
+                {
+                    movieRepository.UpdateAsync(movie);
+
+                    return;
+                }
+
+                titles.Add(movie);
+                movieRepository.RegisterAsync(movie);
+            }
+            else if (title is TVShow tvshow)
+            {
+                TVShow existingTitle = tvshowRepository.GetByExternalIdAsync(title.ExternalId).Result;
+
+                if (existingTitle != null)
+                {
+                    tvshowRepository.UpdateAsync(tvshow);
+
+                    return;
+                }
+
+                titles.Add(tvshow);
+                tvshowRepository.RegisterAsync(tvshow);
             }
 
-            titles.Add(title);
-            titleRepository.RegisterAsync(title);
         }
 
         public abstract Title ReadTitlePage(HtmlDocument document);

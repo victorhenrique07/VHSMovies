@@ -20,14 +20,15 @@ namespace VHSMovies.DataReader
 
         public static void Configure(IConfiguration configuration, WebDriverManager driverManager)
         {
-            container.Register(() => DbContextFactory.Create(), Lifestyle.Scoped);
+            container.Register(() => DbContextFactory.Create(configuration), Lifestyle.Scoped);
 
             container.RegisterInstance(driverManager);
 
             container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Scoped);
+            container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Scoped);
 
             container.Register<IPersonRepository, PersonRepository>(Lifestyle.Scoped);
-            container.Register<ITitleRepository, TitleRepository>(Lifestyle.Scoped);
+
 
             container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
                 c.Consumer.ImplementationType == typeof(ImdbDataReader)
@@ -43,5 +44,7 @@ namespace VHSMovies.DataReader
         }
 
         public static T GetInstance<T>() where T : class => container.GetInstance<T>();
+
+        public static void Dispose() => container.Dispose();
     }
 }
