@@ -1,5 +1,6 @@
 ﻿using LiveChat.Infraestructure;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,19 +35,47 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
         }
 
-        public async Task UpdateAsync(List<Person> person)
+        public async Task UpdateAsync(List<Person> people)
         {
-            dbContextClass.Set<Person>().UpdateRange(person);
+            try
+            {
+                dbContextClass.Set<Person>().UpdateRange(people);
+                await dbContextClass.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao atualizar dados: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task RegisterAsync(List<Person> entity)
         {
-            await dbContextClass.Set<Person>().AddRangeAsync(entity);
+            try
+            {
+                await dbContextClass.Set<Person>().AddRangeAsync(entity);
+                await dbContextClass.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao registrar dados: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task SaveChanges()
         {
             await dbContextClass.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<Person>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Person>> GetAllByReviewerName(string reviewerName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

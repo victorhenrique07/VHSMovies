@@ -26,12 +26,13 @@ namespace VHSMovies.Domain.Infraestructure.Services
                 var personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
                 var movieRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Movie>>();
                 var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
+                var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
                 var dataReaders = scope.ServiceProvider.GetRequiredService<IEnumerable<IDataReader>>();
 
                 IReadOnlyCollection<Title> titlesList = ReadTitles(dataReaders, reviewerName);
 
-                IEnumerable<Movie> movies = await movieRepository.GetAll(reviewerName).ConfigureAwait(false);
-                IEnumerable<TVShow> tvshows = await tvshowRepository.GetAll(reviewerName).ConfigureAwait(false);
+                IEnumerable<Movie> movies = await movieRepository.GetAllByReviewerName(reviewerName);
+                IEnumerable<TVShow> tvshows = await tvshowRepository.GetAllByReviewerName(reviewerName);
 
                 List<Title> titles = new List<Title>();
                 titles.AddRange(movies);
@@ -40,28 +41,38 @@ namespace VHSMovies.Domain.Infraestructure.Services
                 List<Movie> unregisteredMovies = new List<Movie>();
                 List<TVShow> unregisteredTVShows = new List<TVShow>();
 
+                var allPeople = new List<Person>();
+                var castMembers = new List<Cast>();
+
                 foreach (Title title in titlesList)
                 {
                     bool existingTitle = titles.Any(p => p.ExternalId == title.ExternalId || p.Name == title.Name);
 
                     if (!existingTitle)
                     {
+                        allPeople.AddRange(title.Cast.Select(p => p.Person));
+
+                        // Adiciona os membros do cast para registrar as relações
+                        castMembers.AddRange(title.Cast);
+
                         if (title is Movie movie)
                             unregisteredMovies.Add(movie);
                         if (title is TVShow tvshow)
                             unregisteredTVShows.Add(tvshow);
-
-                        List<Person> allPeople = title.Cast.Actors
-                            .Concat(title.Cast.Directors)
-                            .Concat(title.Cast.Writers).ToList();
-
-                        RegisterPeople(personRepository, allPeople);
                     }
+                }
+
+                if (allPeople.Any())
+                {
+                    await RegisterPeople(personRepository, allPeople.ToList());
+                    await RegisterCastAsync(castRepository, personRepository, castMembers);
                 }
 
                 await movieRepository.RegisterAsync(unregisteredMovies);
                 await tvshowRepository.RegisterAsync(unregisteredTVShows);
             }
+
+            await UpdateTitlesAsync(reviewerName);
         }
 
         public async Task UpdateTitlesAsync(string reviewerName)
@@ -71,9 +82,10 @@ namespace VHSMovies.Domain.Infraestructure.Services
                 var personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
                 var movieRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Movie>>();
                 var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
+                var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
 
-                var movies = await movieRepository.GetAll(reviewerName);
-                var tvShows = await tvshowRepository.GetAll(reviewerName);
+                var movies = await movieRepository.GetAllByReviewerName(reviewerName);
+                var tvShows = await tvshowRepository.GetAllByReviewerName(reviewerName);
 
                 var titles = new List<Title>();
                 titles.AddRange(movies);
@@ -81,6 +93,9 @@ namespace VHSMovies.Domain.Infraestructure.Services
 
                 var updatedMovies = new List<Movie>();
                 var updatedTVShows = new List<TVShow>();
+
+                var allPeople = new List<Person>();
+                var castMembers = new List<Cast>();
 
                 foreach (var title in titles)
                 {
@@ -91,12 +106,13 @@ namespace VHSMovies.Domain.Infraestructure.Services
                         review.Rating = updatedTitle.Ratings.FirstOrDefault().Rating;
                     }
 
-                    var allPeople = title.Cast.Actors
-                        .Concat(title.Cast.Directors)
-                        .Concat(title.Cast.Writers)
-                        .ToList();
+                    foreach (var castMember in updatedTitle.Cast)
+                    {
+                        if (castMember.Person != null)
+                            allPeople.Add(castMember.Person);
 
-                    RegisterPeople(personRepository, allPeople);
+                        castMembers.Add(castMember);
+                    }
 
                     title.Cast = updatedTitle.Cast;
                     title.Genres = updatedTitle.Genres;
@@ -112,21 +128,66 @@ namespace VHSMovies.Domain.Infraestructure.Services
                     }
                 }
 
-                if (updatedMovies.Any())
+                var distinctPeople = allPeople.ToList();
+                var unregisteredPeople = new List<Person>();
+
+                foreach (var person in distinctPeople)
                 {
-                    await movieRepository.UpdateAsync(updatedMovies);
+                    var existingPerson = await personRepository.GetByExternalIdAsync(person.ExternalId);
+                    if (existingPerson == null)
+                    {
+                        unregisteredPeople.Add(person);
+                    }
                 }
 
-                if (updatedTVShows.Any())
+                if (unregisteredPeople.Any())
                 {
-                    await tvshowRepository.UpdateAsync(updatedTVShows);
+                    await RegisterPeople(personRepository, unregisteredPeople);
                 }
 
-                await movieRepository.SaveChanges();
+                await RegisterCastAsync(castRepository, personRepository, castMembers);
+
+                await tvshowRepository.UpdateAsync(updatedTVShows);
+                await movieRepository.UpdateAsync(updatedMovies);
             }
         }
 
+        public async Task RegisterCastAsync(ICastRepository castRepository, IPersonRepository personRepository, IEnumerable<Cast> castMembers)
+        {
+            var castList = castMembers.ToList();
 
+            HashSet<Person> people = new HashSet<Person>();
+            List<Cast> castsToRegister = new List<Cast>();
+
+            foreach (var cast in castList)
+            {
+                var person = cast.Person;
+
+                var existingPerson = await personRepository.GetByExternalIdAsync(person.ExternalId);
+
+                if (existingPerson == null)
+                {
+                    people.Add(person);
+                }
+
+                var existingCast = await castRepository.GetCastForTitleAsync(cast.Title.Id, person.Id);
+
+                if (existingCast == null)
+                {
+                    castsToRegister.Add(new Cast(person, cast.Title));
+                }
+            }
+
+            if (people.Any())
+            {
+                await personRepository.RegisterAsync(people.ToList());
+            }
+
+            if (castsToRegister.Any())
+            {
+                await castRepository.UpdateAsync(castsToRegister);
+            }
+        }
 
         private IReadOnlyCollection<Title> ReadTitles(IEnumerable<IDataReader> dataReaders, string sourceName)
         {
@@ -134,17 +195,24 @@ namespace VHSMovies.Domain.Infraestructure.Services
             return dataReader.ReadTitles();
         }
 
-        private void RegisterPeople(IPersonRepository personRepository, List<Person> people)
+        private async Task RegisterPeople(IPersonRepository personRepository, List<Person> people)
         {
+            var peopleToAdd = new List<Person>();
+
             foreach (Person personItem in people)
             {
-                var existingPerson = personRepository.GetByExternalIdAsync(personItem.ExternalId).Result;
+                var existingPerson = await personRepository.GetByExternalIdAsync(personItem.ExternalId);
 
                 if (existingPerson == null)
-                    people.Remove(personItem);
+                {
+                    peopleToAdd.Add(personItem);
+                }
             }
 
-            personRepository.RegisterAsync(people);
+            if (peopleToAdd.Any())
+            {
+                await personRepository.RegisterAsync(peopleToAdd);
+            }
         }
 
         private Title ReadTitlePage(string url, string sourceName)

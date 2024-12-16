@@ -20,9 +20,18 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IEnumerable<T>> GetAll(string reviewerName)
+        public async Task<IEnumerable<T>> GetAll()
         {
             return await dbContextClass.Set<T>()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName)
+        {
+            return await dbContextClass.Set<T>()
+                .Include(t => t.Ratings)
+                .Include(t => t.Cast)
+                .Where(t => t.Ratings.Any(r => r.Reviewer == reviewerName))
                 .ToListAsync();
         }
 

@@ -23,6 +23,7 @@ namespace VHSMovies.Domain.Domain.Entity
         Cyberpunk,
         History,
         Thriller,
-        TimeTravel
+        TimeTravel,
+        Musical
     }
 }

@@ -10,11 +10,12 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public Person() { }
 
-        public Person(string externalId, string name, string url)
+        public Person(string externalId, string name, string url, PersonRole role)
         {
             ExternalId = externalId;
             Name = name;
             Url = url;
+            Role = role;
         }
 
         public int Id { get; set; }
@@ -24,5 +25,9 @@ namespace VHSMovies.Domain.Domain.Entity
         public string Url { get; set; }
 
         public string Name { get; set; }
+
+        public PersonRole Role { get; set; }
+
+        public ICollection<Cast> Titles { get; set; }
     }
 }

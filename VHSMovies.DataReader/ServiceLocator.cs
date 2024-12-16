@@ -39,7 +39,7 @@ namespace VHSMovies.DataReader
             container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Singleton);
 
             container.Register<IPersonRepository, PersonRepository>(Lifestyle.Singleton);
-
+            container.Register<ICastRepository, CastRepository>(Lifestyle.Singleton);
 
             container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
                 c.Consumer.ImplementationType == typeof(ImdbDataReader)

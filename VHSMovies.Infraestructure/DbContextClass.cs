@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using VHSMovies.Domain.Domain.Entity;
 
 namespace LiveChat.Infraestructure
@@ -37,8 +38,35 @@ namespace LiveChat.Infraestructure
             modelBuilder.Entity<Person>().ToTable("People");
             modelBuilder.Entity<Review>().ToTable("Reviews");
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Title>()
+                .HasMany(t => t.Ratings)
+                .WithOne()
+                .HasForeignKey(r => r.Id)
+            .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Cast>()
+                .HasKey(tp => tp.Id);
+
+            modelBuilder.Entity<Cast>()
+                .HasOne(tp => tp.Title)
+                .WithMany(t => t.Cast)
+                .HasForeignKey(tp => tp.TitleId);
+
+            modelBuilder.Entity<Cast>()
+                .HasOne(tp => tp.Person)
+                .WithMany(p => p.Titles)
+                .HasForeignKey(tp => tp.PersonId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Title)
+                .WithMany(t => t.Ratings)
+                .HasForeignKey(r => r.TitleId);
+
+            modelBuilder.Entity<Person>()
+                .Property(p => p.Role)
+                .HasConversion<string>();
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

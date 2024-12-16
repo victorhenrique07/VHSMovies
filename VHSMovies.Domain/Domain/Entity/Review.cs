@@ -19,5 +19,9 @@ namespace VHSMovies.Domain.Domain.Entity
         public string Reviewer { get; set; }
 
         public decimal Rating { get; set; }
+
+        public int TitleId { get; set; }
+
+        public Title Title { get; set; }
     }
 }

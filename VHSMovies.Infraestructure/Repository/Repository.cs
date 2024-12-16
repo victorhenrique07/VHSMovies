@@ -20,7 +20,11 @@ namespace VHSMovies.Domain.Infraestructure
             dbContext = context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAll(string reviewerName) => await dbContext.ToListAsync();
+
+        
+        public virtual async Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName) => await dbContext.ToListAsync();
+
+        public virtual async Task<IEnumerable<T>> GetAll() => await dbContext.ToListAsync();
 
         public async Task<T> GetByIdAsync(int id) => await dbContext.FindAsync(id);
 

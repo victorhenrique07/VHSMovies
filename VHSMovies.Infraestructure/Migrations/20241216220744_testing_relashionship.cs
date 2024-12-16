@@ -6,23 +6,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VHSMovies.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class atualizando_classes : Migration
+    public partial class testing_relashionship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Casts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Casts", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "People",
                 columns: table => new
@@ -32,28 +20,11 @@ namespace VHSMovies.Infraestructure.Migrations
                     ExternalId = table.Column<string>(type: "text", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    CastId = table.Column<int>(type: "integer", nullable: true),
-                    CastId1 = table.Column<int>(type: "integer", nullable: true),
-                    CastId2 = table.Column<int>(type: "integer", nullable: true)
+                    Role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_People", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_People_Casts_CastId",
-                        column: x => x.CastId,
-                        principalTable: "Casts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_People_Casts_CastId1",
-                        column: x => x.CastId1,
-                        principalTable: "Casts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_People_Casts_CastId2",
-                        column: x => x.CastId2,
-                        principalTable: "Casts",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -65,17 +36,36 @@ namespace VHSMovies.Infraestructure.Migrations
                     ExternalId = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    CastId = table.Column<int>(type: "integer", nullable: false),
                     Genres = table.Column<int[]>(type: "integer[]", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Titles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Casts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TitleId = table.Column<int>(type: "integer", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Casts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Titles_Casts_CastId",
-                        column: x => x.CastId,
-                        principalTable: "Casts",
+                        name: "FK_Casts_People_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Casts_Titles_TitleId",
+                        column: x => x.TitleId,
+                        principalTable: "Titles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -106,7 +96,7 @@ namespace VHSMovies.Infraestructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Reviewer = table.Column<string>(type: "text", nullable: false),
                     Rating = table.Column<decimal>(type: "numeric", nullable: false),
-                    TitleId = table.Column<int>(type: "integer", nullable: true)
+                    TitleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,7 +105,8 @@ namespace VHSMovies.Infraestructure.Migrations
                         name: "FK_Reviews_Titles_TitleId",
                         column: x => x.TitleId,
                         principalTable: "Titles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,29 +146,19 @@ namespace VHSMovies.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_People_CastId",
-                table: "People",
-                column: "CastId");
+                name: "IX_Casts_PersonId",
+                table: "Casts",
+                column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_People_CastId1",
-                table: "People",
-                column: "CastId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_People_CastId2",
-                table: "People",
-                column: "CastId2");
+                name: "IX_Casts_TitleId",
+                table: "Casts",
+                column: "TitleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_TitleId",
                 table: "Reviews",
                 column: "TitleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Titles_CastId",
-                table: "Titles",
-                column: "CastId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TVShowSeasons_TVShowId",
@@ -189,10 +170,10 @@ namespace VHSMovies.Infraestructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Movies");
+                name: "Casts");
 
             migrationBuilder.DropTable(
-                name: "People");
+                name: "Movies");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -201,13 +182,13 @@ namespace VHSMovies.Infraestructure.Migrations
                 name: "TVShowSeasons");
 
             migrationBuilder.DropTable(
+                name: "People");
+
+            migrationBuilder.DropTable(
                 name: "TVShows");
 
             migrationBuilder.DropTable(
                 name: "Titles");
-
-            migrationBuilder.DropTable(
-                name: "Casts");
         }
     }
 }
