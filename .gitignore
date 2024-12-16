@@ -11,3 +11,5 @@
 /VHSMovies.Application/obj
 /VHSMovies.Api/bin/Debug/net8.0/selenium-manager
 /VHSMovies.Application/bin/Debug/net9.0
+bin
+obj
