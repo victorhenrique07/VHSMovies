@@ -10,11 +10,12 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public Person() { }
 
-        public Person(string externalId, string name, string url)
+        public Person(string externalId, string name, string url, List<PersonRoleMapping> roles)
         {
             ExternalId = externalId;
             Name = name;
             Url = url;
+            Roles = roles;
         }
 
         public int Id { get; set; }
@@ -24,5 +25,20 @@ namespace VHSMovies.Domain.Domain.Entity
         public string Url { get; set; }
 
         public string Name { get; set; }
+
+        public List<PersonRoleMapping> Roles { get; set; }
+
+        public ICollection<Cast> Titles { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Person person &&
+                   ExternalId == person.ExternalId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ExternalId);
+        }
     }
 }

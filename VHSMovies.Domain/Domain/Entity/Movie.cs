@@ -13,7 +13,7 @@ namespace VHSMovies.Domain.Domain.Entity
         public Movie(string externalId, string name, string description,
             Cast cast, ICollection<Genre> genres,
             List<Review> ratings, decimal? duration) :
-            base(externalId, name, description, cast, genres, ratings)
+            base(externalId, name, description, ratings)
         {
             this.Duration = duration;
         }

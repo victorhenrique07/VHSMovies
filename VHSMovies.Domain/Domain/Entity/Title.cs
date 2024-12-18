@@ -16,9 +16,9 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Description { get; set; }
 
-        public Cast Cast { get; set; }
+        public ICollection<Cast> Cast { get; set; } = new List<Cast>();
 
-        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
+        public ICollection<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
 
         public List<Review> Ratings { get; set; }
 
@@ -28,14 +28,11 @@ namespace VHSMovies.Domain.Domain.Entity
         {
         }
 
-        public Title(string externalId, string name, string description, Cast cast, ICollection<Genre> genres,
-            List<Review> ratings)
+        public Title(string externalId, string name, string description, List<Review> ratings)
         {
             ExternalId = externalId;
             Name = name;
             Description = description;
-            Cast = cast;
-            Genres = genres;
             Ratings = ratings;
         }
     }

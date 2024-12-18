@@ -7,7 +7,7 @@ using VHSMovies.Domain.Infraestructure.Services;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         if (args.Length < 2)
         {
@@ -25,8 +25,8 @@ class Program
         {
             ServiceLocator.Configure(configuration, manager);
 
-            string reviewerName = args[0]; // Nome do revisor, por exemplo: "imdb"
-            string operation = args[1]; // Operação, por exemplo: "rt" ou "ut"
+            string reviewerName = args[0];
+            string operation = args[1];
 
             bool registerTitles = operation.Contains("rt", StringComparison.OrdinalIgnoreCase);
             bool updateTitles = operation.Contains("ut", StringComparison.OrdinalIgnoreCase);
@@ -47,14 +47,14 @@ class Program
                     if (registerTitles)
                     {
                         Console.WriteLine($"Iniciando registro de novos dados para o revisor: {reviewerName}");
-                        syncDataService.RegisterNewData(reviewerName).Wait();
+                        await syncDataService.RegisterNewData(reviewerName);
                         Console.WriteLine("Registro concluído com sucesso.");
                     }
 
                     if (updateTitles)
                     {
                         Console.WriteLine($"Iniciando atualização de dados para o revisor: {reviewerName}");
-                        syncDataService.UpdateTitlesAsync(reviewerName).Wait();
+                        await syncDataService.UpdateTitlesAsync(reviewerName);
                         Console.WriteLine("Atualização concluída com sucesso.");
                     }
                 }

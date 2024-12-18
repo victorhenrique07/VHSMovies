@@ -12,24 +12,13 @@ namespace VHSMovies.Domain.Infraestructure
 {
     public abstract class DataReader : IDataReader
     {
-        protected IPersonRepository personRepository;
-
-        protected ITitleRepository<Movie> movieRepository;
-
-        protected ITitleRepository<TVShow> tvshowRepository;
-
+        protected IGenreRepository genreRepository;
         protected IHtmlReader htmlReader;
 
-        protected DataReader(
-            IPersonRepository personRepository,
-            IHtmlReader htmlReader,
-            ITitleRepository<Movie> movieRepository,
-            ITitleRepository<TVShow> tvshowRepository)
+        protected DataReader(IHtmlReader htmlReader, IGenreRepository genreRepository)
         {
-            this.personRepository = personRepository;
+            this.genreRepository = genreRepository;
             this.htmlReader = htmlReader;
-            this.movieRepository = movieRepository;
-            this.tvshowRepository = tvshowRepository;
         }
 
         public Title ReadTitle(string url)
@@ -41,37 +30,31 @@ namespace VHSMovies.Domain.Infraestructure
             return title;
         }
 
-        public void AddOrUpdateTitle(Title title, List<Title> titles)
+        public List<Genre> CheckValidGenres(HtmlNodeCollection nodes)
         {
-         /*   if (title is Movie movie)
+            List<Genre> genres = new List<Genre>();
+
+            List<Genre> validGenres = genreRepository
+                .GetAll().Result
+                .ToList();
+
+            foreach (HtmlNode genresNode in nodes)
             {
-                Movie existingTitle = movieRepository.GetByExternalIdAsync(title.ExternalId).Result;
+                string genreText = genresNode.InnerText.Replace("-", "").Replace(" ", "").ToLower();
 
-                if (existingTitle != null)
+                if (validGenres.Any(validGenre => genreText.Contains(validGenre.Name.ToLower())))
                 {
-                    movieRepository.UpdateAsync(movie);
+                    var matchingGenre = validGenres
+                        .FirstOrDefault(g => g.Name.ToLower().Equals(genresNode.InnerText.Replace("-", "").Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
 
-                    return;
+                    if (matchingGenre != null)
+                    {
+                        genres.Add(matchingGenre);
+                    }
                 }
-
-                titles.Add(movie);
-                movieRepository.RegisterAsync(movie);
             }
-            else if (title is TVShow tvshow)
-            {
-                TVShow existingTitle = tvshowRepository.GetByExternalIdAsync(title.ExternalId).Result;
 
-                if (existingTitle != null)
-                {
-                    tvshowRepository.UpdateAsync(tvshow);
-
-                    return;
-                }
-
-                titles.Add(tvshow);
-                tvshowRepository.RegisterAsync(tvshow);
-            }*/
-
+            return genres;
         }
 
         public abstract Title ReadTitlePage(HtmlDocument document);

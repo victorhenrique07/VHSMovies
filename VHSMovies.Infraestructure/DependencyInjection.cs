@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
 
-namespace LiveChat.Infraestructure
+namespace VHSMovies.Infraestructure
 {
     public static class DependencyInjection
     {
@@ -19,6 +19,7 @@ namespace LiveChat.Infraestructure
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
 
             return services;
         }

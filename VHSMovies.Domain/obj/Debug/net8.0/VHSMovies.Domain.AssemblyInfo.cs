@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VHSMovies.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a04b06aabb9864083420c3b31d7407018a1db900")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19f379a741e99c01ff766314b81c1b171638ef86")]
 [assembly: System.Reflection.AssemblyProductAttribute("VHSMovies.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VHSMovies.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

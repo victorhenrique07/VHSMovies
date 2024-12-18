@@ -1,4 +1,4 @@
-﻿using LiveChat.Infraestructure;
+﻿using VHSMovies.Infraestructure;
 using Microsoft.Extensions.Configuration;
 
 namespace VHSMovies.DataReader

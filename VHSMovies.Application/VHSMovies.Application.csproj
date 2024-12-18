@@ -16,8 +16,4 @@
     <ProjectReference Include="..\VHSMovies.Infraestructure\VHSMovies.Infraestructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
-
 </Project>

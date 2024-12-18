@@ -10,19 +10,30 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public int Id { get; set; }
 
-        public ICollection<Person> Directors { get; set; } = new List<Person>();
+        public int TitleId { get; set; }
+        public Title Title { get; set; }
 
-        public ICollection<Person> Writers { get; set; } = new List<Person>();
-
-        public ICollection<Person> Actors { get; set; } = new List<Person>();
+        public int PersonId { get; set; }
+        public Person Person { get; set; }
 
         public Cast() { }
 
-        public Cast(ICollection<Person> directors, ICollection<Person> writers, ICollection<Person> actors)
+        public Cast(Person person, Title title)
         {
-            Directors = directors;
-            Writers = writers;
-            Actors = actors;
+            this.Person = person;
+            this.Title = title;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Cast cast &&
+                   EqualityComparer<Person>.Default.Equals(Person, cast.Person) &&
+                   EqualityComparer<Title>.Default.Equals(Title, cast.Title);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Person, Title);
         }
     }
 }

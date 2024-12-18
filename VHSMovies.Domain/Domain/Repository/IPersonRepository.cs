@@ -9,5 +9,8 @@ namespace VHSMovies.Domain.Domain.Repository
 {
     public interface IPersonRepository : IRepository<Person>
     {
+        Task<IEnumerable<Person>> GetAllPerson(string role);
+
+        Task<bool> VerifyIfPersonExists(Person person);
     }
 }

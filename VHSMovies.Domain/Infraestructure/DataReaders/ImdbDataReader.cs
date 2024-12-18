@@ -12,12 +12,7 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 {
     public class ImdbDataReader : DataReader
     {
-        public ImdbDataReader(
-            IPersonRepository personRepository,
-            IHtmlReader htmlReader,
-            ITitleRepository<Movie> movieRepository,
-            ITitleRepository<TVShow> tvshowRepository
-            ) : base(personRepository, htmlReader, movieRepository, tvshowRepository)
+        public ImdbDataReader(IGenreRepository genreRepository, IHtmlReader htmlReader) : base(htmlReader, genreRepository)
         {
         }
 
@@ -60,57 +55,214 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
             HtmlNodeCollection genresCollection = document.DocumentNode.SelectNodes("//div[@class = 'ipc-chip-list__scroller']/a");
 
-            List<Genre> genres = new List<Genre>();
-
-            foreach (HtmlNode genresNode in genresCollection)
-            {
-                 genres = genres
-                    .Where(g => Enum.TryParse(typeof(Genre), genresNode.InnerText.Replace("-", "").Replace(" ", ""), true, out _))
-                    .ToList();
-            }
+            List<Genre> genres = CheckValidGenres(genresCollection);
 
             HtmlNode titleUrlNode = document.DocumentNode.SelectSingleNode("//div[contains(@data-testid, 'aggregate-rating')]/a");
+            string titleExternalId = "";
+            string titleUrl = "";
+            decimal rating = 0m;
 
-            string titleExternalId = titleUrlNode.GetAttributeValue("href", "");
+            if (titleUrlNode != null)
+            {
+                titleExternalId = titleUrlNode.GetAttributeValue("href", "").Replace("/title/", "").Split("/")[0];
+                titleUrl = $"https://www.imdb.com/title/{titleExternalId}";
 
-            titleExternalId = titleExternalId.Replace("/title/", string.Empty);
-
-            string[] urlList = titleExternalId.Split("/");
-
-            titleExternalId = urlList[0];
-
-            string titleUrl = $"https://www.imdb.com/title/{titleExternalId}";
+                HtmlNode ratingNode = titleUrlNode.SelectSingleNode("span/div/div[2]/div[1]/span");
+                if (ratingNode != null)
+                {
+                    rating = decimal.Parse(ratingNode.InnerText);
+                }
+            }
 
             string description = document.DocumentNode.SelectSingleNode("//p[@data-testid='plot']/span[3]").InnerText;
 
-            HtmlNode ratingNode = titleUrlNode.SelectSingleNode("span/div/div[2]/div[1]/span");
+            HtmlNodeCollection professionalsNode = document.DocumentNode.SelectNodes("//div[@role = 'presentation']/ul[contains(@class, 'ipc-metadata-list')]/li");
 
-            decimal rating = decimal.Parse(ratingNode.InnerText);
+            List<Person> directors = new List<Person>();
+            List<Person> writers = new List<Person>();
+            List<Person> actors = new List<Person>();
 
-            HtmlNode professionalsNode = document.DocumentNode.SelectSingleNode("//div[@role = 'presentation']/ul[contains(@class, 'ipc-metadata-list')]");
+            foreach (HtmlNode professionalNode in professionalsNode)
+            {
+                HtmlNode role = professionalNode.SelectSingleNode("span");
 
-            HtmlNode directorsNode = professionalsNode.SelectSingleNode("li[1]");
-            HtmlNode writersNode = professionalsNode.SelectSingleNode("li[2]");
-            HtmlNode actorsNode = professionalsNode.SelectSingleNode("li[3]");
+                if (role != null)
+                {
+                    if (role.InnerText == "Directors" || role.InnerText == "Diretores")
+                    {
+                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                    }
+                    else if (role.InnerText == "Writers" || role.InnerText == "Roteiristas")
+                    {
+                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                    }
+                    else if (role.InnerText == "Stars" || role.InnerText == "Artistas")
+                    {
+                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                    }
+                    else if (role.InnerText.Contains("Director") || role.InnerText.Contains("Direção"))
+                    {
+                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                    }
+                    else if (role.InnerText.Contains("Writer") || role.InnerText.Contains("Roteirista"))
+                    {
+                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                    }
+                    else if (role.InnerText.Contains("Star") || role.InnerText.Contains("Artista") || role.InnerText.Contains("Ator"))
+                    {
+                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                    }
+                }
+                else
+                {
+                    role = professionalNode.SelectSingleNode("a[1]");
 
-            string castNode = "div[@class = 'ipc-metadata-list-item__content-container']/ul";
+                    if (role != null)
+                    {
+                        if (role.InnerText == "Directors" || role.InnerText == "Diretores")
+                        {
+                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                        }
+                        else if (role.InnerText == "Writers" || role.InnerText == "Roteiristas")
+                        {
+                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                        }
+                        else if (role.InnerText == "Stars" || role.InnerText == "Artistas")
+                        {
+                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                        }
+                        else if (role.InnerText.Contains("Director") || role.InnerText.Contains("Direção"))
+                        {
+                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                        }
+                        else if (role.InnerText.Contains("Writer") || role.InnerText.Contains("Roteirista"))
+                        {
+                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                        }
+                        else if (role.InnerText.Contains("Star") || role.InnerText.Contains("Artista") || role.InnerText.Contains("Ator"))
+                        {
+                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                        }
+                    }
+                }
+            }
 
-            HtmlNodeCollection directorsNodes = directorsNode.SelectNodes(castNode);
-            HtmlNodeCollection writersNodes = writersNode.SelectNodes(castNode);
-            HtmlNodeCollection actorsNodes = actorsNode.SelectNodes(castNode);
-
-            List<Person> directors = GetPersonData(directorsNodes);
-            List<Person> writers = GetPersonData(writersNodes);
-            List<Person> actors = GetPersonData(actorsNodes);
-
-            Cast cast = new Cast() { Actors = actors, Directors = directors, Writers = writers };
-
-            List<Review> reviews = new List<Review>()
+            List<Review> reviews = new List<Review>
             {
                 new Review(GetSourceName(), rating)
             };
 
-            return new Title(titleExternalId, name, description, cast, genres, reviews);
+            Title title = new Title(titleExternalId, name, description, reviews)
+            {
+                Url = titleUrl
+            };
+
+            List<TitleGenre> titleGenres = new List<TitleGenre>();
+
+            titleGenres.AddRange(genres.Select(g => new TitleGenre(title, g)));
+
+            List<Cast> cast = new List<Cast>();
+
+            foreach (var writer in writers)
+            {
+                var existingCastMember = cast.FirstOrDefault(c => c.Person.ExternalId == writer.ExternalId);
+
+                if (existingCastMember != null)
+                {
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Writer))
+                    {
+                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        {
+                            PersonId = existingCastMember.Person.Id,
+                            Person = existingCastMember.Person,
+                            Role = PersonRole.Writer
+                        });
+                    }
+                }
+                else
+                {
+                    cast.Add(new Cast
+                    {
+                        Person = new Person(writer.ExternalId, writer.Name, writer.Url, new List<PersonRoleMapping>
+                        {
+                            new PersonRoleMapping
+                            {
+                                Role = PersonRole.Writer
+                            }
+                        }),
+                        Title = title
+                    });
+                }
+            }
+
+            foreach (var director in directors)
+            {
+                var existingCastMember = cast.FirstOrDefault(c => c.Person.ExternalId == director.ExternalId);
+
+                if (existingCastMember != null)
+                {
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Director))
+                    {
+                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        {
+                            PersonId = existingCastMember.Person.Id,
+                            Person = existingCastMember.Person,
+                            Role = PersonRole.Director
+                        });
+                    }
+                }
+                else
+                {
+                    cast.Add(new Cast
+                    {
+                        Person = new Person(director.ExternalId, director.Name, director.Url, new List<PersonRoleMapping>
+                        {
+                            new PersonRoleMapping
+                            {
+                                Role = PersonRole.Director
+                            }
+                        }),
+                        Title = title
+                    });
+                }
+            }
+
+            foreach (var actor in actors)
+            {
+                var existingCastMember = cast.FirstOrDefault(c => c.Person.ExternalId == actor.ExternalId);
+
+                if (existingCastMember != null)
+                {
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Actor))
+                    {
+                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        {
+                            PersonId = existingCastMember.Person.Id,
+                            Person = existingCastMember.Person,
+                            Role = PersonRole.Actor
+                        });
+                    }
+                }
+                else
+                {
+                    cast.Add(new Cast
+                    {
+                        Person = new Person(actor.ExternalId, actor.Name, actor.Url, new List<PersonRoleMapping>
+                        {
+                            new PersonRoleMapping
+                            {
+                                Role = PersonRole.Actor
+                            }
+                        }),
+                        Title = title
+                    });
+                }
+            }
+
+            title.Cast = cast;
+            title.Genres = titleGenres;
+
+            return title;
         }
 
         public Title ReadTitlesList(HtmlNode titleNode, int nodeNumber)
@@ -177,21 +329,26 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
             { Url = $"https://www.imdb.com{titleUrl}" };
         }
 
-        private List<Person> GetPersonData(HtmlNodeCollection nodes)
+        private List<Person> GetPersonData(HtmlNodeCollection nodes, PersonRole role)
         {
             List<Person> people = new List<Person>();
 
             foreach (HtmlNode node in nodes)
             {
-                HtmlNode nameNode = node.SelectSingleNode("li/a");
-
-                string[] externalIdList = nameNode.GetAttributeValue("href", "").Replace("/name/", string.Empty).Split("/");
+                string[] externalIdList = node.GetAttributeValue("href", "").Replace("/pt/name/", string.Empty).Split("/");
 
                 string externalId = externalIdList[0];
 
-                string name = nameNode.InnerText;
+                string name = node.InnerText;
 
-                people.Add(new Person(name, externalId, $"https://www.imdb.com/name/{externalId}"));
+                PersonRoleMapping personRole = new PersonRoleMapping() { Role = role };
+
+                List<PersonRoleMapping> roles = new List<PersonRoleMapping>() { personRole };
+
+                if (!people.Any(p => p.ExternalId == externalId))
+                {
+                    people.Add(new Person(externalId, name, $"https://www.imdb.com/name/{externalId}", roles));
+                }
             }
 
             return people;
