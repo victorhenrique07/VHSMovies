@@ -23,5 +23,17 @@ namespace VHSMovies.Domain.Domain.Entity
             this.Person = person;
             this.Title = title;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Cast cast &&
+                   EqualityComparer<Person>.Default.Equals(Person, cast.Person) &&
+                   EqualityComparer<Title>.Default.Equals(Title, cast.Title);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Person, Title);
+        }
     }
 }

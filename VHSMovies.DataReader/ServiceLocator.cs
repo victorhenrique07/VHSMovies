@@ -1,4 +1,4 @@
-﻿using LiveChat.Infraestructure;
+﻿using VHSMovies.Infraestructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +40,7 @@ namespace VHSMovies.DataReader
 
             container.Register<IPersonRepository, PersonRepository>(Lifestyle.Singleton);
             container.Register<ICastRepository, CastRepository>(Lifestyle.Singleton);
+            container.Register<IGenreRepository, GenreRepository>(Lifestyle.Singleton);
 
             container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
                 c.Consumer.ImplementationType == typeof(ImdbDataReader)

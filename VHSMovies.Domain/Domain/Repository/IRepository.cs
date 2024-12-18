@@ -13,7 +13,8 @@ namespace VHSMovies.Domain.Domain.Repository
         Task<T> GetByIdAsync(int id);
         Task<T> GetByExternalIdAsync(string externalId);
         Task UpdateAsync(List<T> entity);
-        Task RegisterAsync(List<T> entity);
+        Task RegisterListAsync(List<T> entity);
+        Task RegisterAsync(T entity);
         Task SaveChanges();
     }
 }

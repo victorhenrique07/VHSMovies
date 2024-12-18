@@ -1,4 +1,4 @@
-﻿using LiveChat.Infraestructure;
+﻿using VHSMovies.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -38,11 +38,25 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task RegisterAsync(List<Cast> casts)
+        public async Task RegisterListAsync(List<Cast> casts)
         {
             try
             {
                 await _dbContext.Casts.AddRangeAsync(casts);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao registrar Casts: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task RegisterAsync(Cast cast)
+        {
+            try
+            {
+                await _dbContext.Casts.AddAsync(cast);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -18,7 +18,7 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public ICollection<Cast> Cast { get; set; } = new List<Cast>();
 
-        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
+        public ICollection<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
 
         public List<Review> Ratings { get; set; }
 

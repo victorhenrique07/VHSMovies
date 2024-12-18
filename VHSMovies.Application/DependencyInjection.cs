@@ -14,7 +14,7 @@ namespace VHSMovies.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(ActorMapper));
+            services.AddAutoMapper(typeof(PersonMapper));
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 

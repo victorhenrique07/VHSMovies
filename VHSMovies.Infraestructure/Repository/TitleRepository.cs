@@ -1,4 +1,4 @@
-﻿using LiveChat.Infraestructure;
+﻿using VHSMovies.Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
@@ -59,7 +59,24 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task RegisterAsync(List<T> entity)
+        public async Task RegisterAsync(T entity)
+        {
+            try
+            {
+                await dbContextClass.Set<T>().AddAsync(entity);
+
+                Console.WriteLine($"Adding: {entity.ToString()}");
+
+                await dbContextClass.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao registrar dados: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task RegisterListAsync(List<T> entity)
         {
             try
             {
