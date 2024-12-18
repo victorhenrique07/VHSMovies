@@ -8,6 +8,8 @@
 
         public string Description { get; set; }
 
+        public string[] Genres { get; set; }
+
         public TitleResponse(int id, string name, string description)
         {
             Id = id;

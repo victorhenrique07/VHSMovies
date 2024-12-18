@@ -53,6 +53,10 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<TitleGenre>()
                 .HasKey(tp => tp.Id);
 
+            modelBuilder.Entity<TitleGenre>()
+                .Property(tg => tg.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Cast>()
                 .HasKey(tp => tp.Id);
 
