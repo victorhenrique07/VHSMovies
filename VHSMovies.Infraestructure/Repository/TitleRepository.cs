@@ -23,6 +23,10 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<IEnumerable<T>> GetAll()
         {
             return await dbContextClass.Set<T>()
+                .Include(t => t.Ratings)
+                .Include(t => t.Cast)
+                .Include(t => t.Genres)
+                    .ThenInclude(g => g.Genre)
                 .ToListAsync();
         }
 

@@ -31,11 +31,6 @@ namespace VHSMovies.Application.Handlers
                         person.Name,
                         person.Titles.Select(
                             title => new TitleResponse(title.TitleId,title.Title.Name,title.Title.Description)
-                            {
-                                Genres = title.Title.Genres
-                                    .Select(g => g.Genre.Name)
-                                    .ToArray()
-                            }
                         ).ToList()
                     )
                 ).ToList();
