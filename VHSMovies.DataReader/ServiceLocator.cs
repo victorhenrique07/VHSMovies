@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Domain.Infraestructure;
-using VHSMovies.Domain.Infraestructure.DataReaders;
+//using VHSMovies.Domain.Infraestructure.DataReaders;
 using VHSMovies.Domain.Infraestructure.Services;
 using VHSMovies.Infraestructure.Repository;
 
@@ -42,14 +42,14 @@ namespace VHSMovies.DataReader
             container.Register<ICastRepository, CastRepository>(Lifestyle.Singleton);
             container.Register<IGenreRepository, GenreRepository>(Lifestyle.Singleton);
 
-            container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
+            /*container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
                 c.Consumer.ImplementationType == typeof(ImdbDataReader)
             );
 
             container.Collection.Register<IDataReader>(new List<Type>
             {
                 typeof(ImdbDataReader)
-            });
+            });*/
 
             container.Verify();
         }

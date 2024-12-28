@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace VHSMovies.Domain.Domain.Entity
 {
-    public enum PersonRole
+    public class PersonRole
     {
-        None,
-        Actor,
-        Director,
-        Writer
+        public int PersonId { get; set; }
+        public Person Person { get; set; }
+
+        public Role Role { get; set; }
     }
 }

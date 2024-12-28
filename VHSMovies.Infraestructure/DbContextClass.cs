@@ -23,9 +23,10 @@ namespace VHSMovies.Infraestructure
         public DbSet<Cast> Casts { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Person> People { get; set; }
-        public DbSet<PersonRoleMapping> Roles { get; set; }
+        public DbSet<PersonRole> Roles { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Title> Titles { get; set; }
+        public DbSet<Reviewer> Reviewers { get; set; }
         public DbSet<TitleGenre> TitlesGenres { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<TVShow> TVShows { get; set; }
@@ -33,59 +34,53 @@ namespace VHSMovies.Infraestructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Title>().ToTable("Titles");
-            modelBuilder.Entity<TitleGenre>().ToTable("TitlesGenres");
-            modelBuilder.Entity<Movie>().ToTable("Movies");
-            modelBuilder.Entity<TVShow>().ToTable("TVShows");
-            modelBuilder.Entity<TVShowSeason>().ToTable("TVShowSeasons");
-            modelBuilder.Entity<Cast>().ToTable("Casts");
-            modelBuilder.Entity<Person>().ToTable("People");
-            modelBuilder.Entity<PersonRoleMapping>().ToTable("PersonRoleMapping");
-            modelBuilder.Entity<Review>().ToTable("Reviews");
-            modelBuilder.Entity<Genre>().ToTable("Genres");
+            modelBuilder.Entity<Title>().ToTable("titles");
+            modelBuilder.Entity<TitleGenre>().ToTable("titles_genres");
+            modelBuilder.Entity<Movie>().ToTable("movies");
+            modelBuilder.Entity<TVShow>().ToTable("tvshows");
+            modelBuilder.Entity<TVShowSeason>().ToTable("tvshow_seasons");
+            modelBuilder.Entity<Cast>().ToTable("casts");
+            modelBuilder.Entity<Person>().ToTable("people");
+            modelBuilder.Entity<PersonRole>().ToTable("person_role");
+            modelBuilder.Entity<Reviewer>().ToTable("reviewers");
+            modelBuilder.Entity<Review>().ToTable("reviews");
+            modelBuilder.Entity<Genre>().ToTable("genres");
 
-            modelBuilder.Entity<Title>()
-                .HasMany(t => t.Ratings)
-                .WithOne()
-                .HasForeignKey(r => r.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Person>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<PersonRole>(entity =>
+            {
+                entity.HasKey(pr => new { pr.PersonId, pr.Role });
+                entity.HasOne(pr => pr.Person)
+                    .WithMany(p => p.Roles)
+                    .HasForeignKey(pr => pr.PersonId);
+            });
+
+            modelBuilder.Entity<Title>(entity =>
+            {
+                entity.HasKey(t => t.Id);
+                entity.Property(t => t.Name).IsRequired().HasMaxLength(200);
+                entity.Property(t => t.Description).HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<Cast>(entity =>
+            {
+                entity.HasKey(c => new { c.TitleId, c.PersonId });
+                entity.HasOne(c => c.Title)
+                    .WithMany(t => t.Cast)
+                    .HasForeignKey(c => c.TitleId);
+                entity.HasOne(c => c.Person)
+                    .WithMany(p => p.Titles)
+                    .HasForeignKey(c => c.PersonId);
+            });
 
             modelBuilder.Entity<TitleGenre>()
-                .HasKey(tp => tp.Id);
-
-            modelBuilder.Entity<TitleGenre>()
-                .Property(tg => tg.Id)
+                .Property(t => t.Id)
                 .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Cast>()
-                .HasKey(tp => tp.Id);
-
-            modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Title)
-                .WithMany(t => t.Cast)
-                .HasForeignKey(tp => tp.TitleId);
-
-            modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Person)
-                .WithMany(p => p.Titles)
-                .HasForeignKey(tp => tp.PersonId);
-
-            modelBuilder.Entity<Cast>()
-                .HasIndex(tp => tp.Id)
-                .IsUnique();
-
-            modelBuilder.Entity<Person>()
-                .HasIndex(tp => tp.Id)
-                .IsUnique();
-
-            modelBuilder.Entity<Person>()
-                .HasIndex(tp => tp.ExternalId)
-                .IsUnique();
-
-            modelBuilder.Entity<Review>()
-                .HasOne(r => r.Title)
-                .WithMany(t => t.Ratings)
-                .HasForeignKey(r => r.TitleId);
 
             modelBuilder.Entity<TitleGenre>()
                 .HasKey(tg => new { tg.TitleId, tg.GenreId });
@@ -103,17 +98,27 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<Genre>()
                 .HasKey(g => g.Id);
 
-            modelBuilder.Entity<PersonRoleMapping>(entity =>
+            modelBuilder.Entity<Reviewer>(entity =>
             {
-                entity.HasKey(pr => new { pr.PersonId, pr.Role });
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Name).IsRequired().HasMaxLength(100);
+                entity.Property(r => r.ShortName).HasMaxLength(50);
+            });
 
-                entity.HasOne(pr => pr.Person)
-                      .WithMany(p => p.Roles)
-                      .HasForeignKey(pr => pr.PersonId);
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.TitleExternalId).HasMaxLength(40);
+                entity.Property(r => r.TitleExternalUrl).HasMaxLength(200);
+                entity.Property(r => r.Rating).IsRequired().HasPrecision(2, 1);
 
-                entity.Property(pr => pr.Role)
-                      .HasConversion<string>()
-                      .IsRequired();
+                entity.HasOne(r => r.Title)
+                    .WithMany(t => t.Reviews)
+                    .HasForeignKey(r => r.TitleId);
+
+                entity.HasOne(r => r.Reviewer)
+                    .WithMany(rv => rv.Reviews)
+                    .HasForeignKey(r => r.ReviewerId);
             });
 
             base.OnModelCreating(modelBuilder);

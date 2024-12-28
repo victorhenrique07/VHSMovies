@@ -8,20 +8,17 @@ namespace VHSMovies.Domain.Domain.Entity
 {
     public class Review
     {
-        public Review(string reviewer, decimal rating)
-        {
-            Reviewer = reviewer;
-            Rating = rating;
-        }
-
         public int Id { get; set; }
+        public int TitleId { get; set; }
+        public Title Title { get; set; }
 
-        public string Reviewer { get; set; }
+        public int ReviewerId { get; set; }
+        public Reviewer Reviewer { get; set; }
+
+        public string TitleExternalId { get; set; }
+
+        public string TitleExternalUrl { get; set; }
 
         public decimal Rating { get; set; }
-
-        public int TitleId { get; set; }
-
-        public Title Title { get; set; }
     }
 }

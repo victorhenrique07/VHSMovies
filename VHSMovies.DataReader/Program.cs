@@ -44,12 +44,12 @@ class Program
 
                 try
                 {
-                    if (registerTitles)
+                    /*if (registerTitles)
                     {
                         Console.WriteLine($"Iniciando registro de novos dados para o revisor: {reviewerName}");
                         await syncDataService.RegisterNewData(reviewerName);
                         Console.WriteLine("Registro concluído com sucesso.");
-                    }
+                    }*/
 
                     if (updateTitles)
                     {

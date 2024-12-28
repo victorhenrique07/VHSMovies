@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+﻿/*using HtmlAgilityPack;
 using OpenQA.Selenium.DevTools.V129.Network;
 using System;
 using System.Collections.Generic;
@@ -90,27 +90,27 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 {
                     if (role.InnerText == "Directors" || role.InnerText == "Diretores")
                     {
-                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Director));
                     }
                     else if (role.InnerText == "Writers" || role.InnerText == "Roteiristas")
                     {
-                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Writer));
                     }
                     else if (role.InnerText == "Stars" || role.InnerText == "Artistas")
                     {
-                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Actor));
                     }
                     else if (role.InnerText.Contains("Director") || role.InnerText.Contains("Direção"))
                     {
-                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                        directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Director));
                     }
                     else if (role.InnerText.Contains("Writer") || role.InnerText.Contains("Roteirista"))
                     {
-                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                        writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Writer));
                     }
                     else if (role.InnerText.Contains("Star") || role.InnerText.Contains("Artista") || role.InnerText.Contains("Ator"))
                     {
-                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                        actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Actor));
                     }
                 }
                 else
@@ -121,27 +121,27 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                     {
                         if (role.InnerText == "Directors" || role.InnerText == "Diretores")
                         {
-                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Director));
                         }
                         else if (role.InnerText == "Writers" || role.InnerText == "Roteiristas")
                         {
-                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Writer));
                         }
                         else if (role.InnerText == "Stars" || role.InnerText == "Artistas")
                         {
-                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Actor));
                         }
                         else if (role.InnerText.Contains("Director") || role.InnerText.Contains("Direção"))
                         {
-                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Director));
+                            directors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Director));
                         }
                         else if (role.InnerText.Contains("Writer") || role.InnerText.Contains("Roteirista"))
                         {
-                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Writer));
+                            writers.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Writer));
                         }
                         else if (role.InnerText.Contains("Star") || role.InnerText.Contains("Artista") || role.InnerText.Contains("Ator"))
                         {
-                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), PersonRole.Actor));
+                            actors.AddRange(GetPersonData(professionalNode.SelectNodes("div[@class = 'ipc-metadata-list-item__content-container']/ul/li/a"), Role.Actor));
                         }
                     }
                 }
@@ -169,13 +169,13 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
                 if (existingCastMember != null)
                 {
-                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Writer))
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == Role.Writer))
                     {
-                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        existingCastMember.Person.Roles.Add(new PersonRole
                         {
                             PersonId = existingCastMember.Person.Id,
                             Person = existingCastMember.Person,
-                            Role = PersonRole.Writer
+                            Role = Role.Writer
                         });
                     }
                 }
@@ -183,11 +183,11 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 {
                     cast.Add(new Cast
                     {
-                        Person = new Person(writer.ExternalId, writer.Name, writer.Url, new List<PersonRoleMapping>
+                        Person = new Person(writer.ExternalId, writer.Name, writer.Url, new List<PersonRole>
                         {
-                            new PersonRoleMapping
+                            new PersonRole
                             {
-                                Role = PersonRole.Writer
+                                Role = Role.Writer
                             }
                         }),
                         Title = title
@@ -201,13 +201,13 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
                 if (existingCastMember != null)
                 {
-                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Director))
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == Role.Director))
                     {
-                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        existingCastMember.Person.Roles.Add(new PersonRole
                         {
                             PersonId = existingCastMember.Person.Id,
                             Person = existingCastMember.Person,
-                            Role = PersonRole.Director
+                            Role = Role.Director
                         });
                     }
                 }
@@ -215,11 +215,11 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 {
                     cast.Add(new Cast
                     {
-                        Person = new Person(director.ExternalId, director.Name, director.Url, new List<PersonRoleMapping>
+                        Person = new Person(director.ExternalId, director.Name, director.Url, new List<PersonRole>
                         {
-                            new PersonRoleMapping
+                            new PersonRole
                             {
-                                Role = PersonRole.Director
+                                Role = Role.Director
                             }
                         }),
                         Title = title
@@ -233,13 +233,13 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
                 if (existingCastMember != null)
                 {
-                    if (!existingCastMember.Person.Roles.Any(r => r.Role == PersonRole.Actor))
+                    if (!existingCastMember.Person.Roles.Any(r => r.Role == Role.Actor))
                     {
-                        existingCastMember.Person.Roles.Add(new PersonRoleMapping
+                        existingCastMember.Person.Roles.Add(new PersonRole
                         {
                             PersonId = existingCastMember.Person.Id,
                             Person = existingCastMember.Person,
-                            Role = PersonRole.Actor
+                            Role = Role.Actor
                         });
                     }
                 }
@@ -247,11 +247,11 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 {
                     cast.Add(new Cast
                     {
-                        Person = new Person(actor.ExternalId, actor.Name, actor.Url, new List<PersonRoleMapping>
+                        Person = new Person(actor.ExternalId, actor.Name, actor.Url, new List<PersonRole>
                         {
-                            new PersonRoleMapping
+                            new PersonRole
                             {
-                                Role = PersonRole.Actor
+                                Role = Role.Actor
                             }
                         }),
                         Title = title
@@ -329,7 +329,7 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
             { Url = $"https://www.imdb.com{titleUrl}" };
         }
 
-        private List<Person> GetPersonData(HtmlNodeCollection nodes, PersonRole role)
+        private List<Person> GetPersonData(HtmlNodeCollection nodes, Role role)
         {
             List<Person> people = new List<Person>();
 
@@ -341,9 +341,9 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
                 string name = node.InnerText;
 
-                PersonRoleMapping personRole = new PersonRoleMapping() { Role = role };
+                PersonRole personRole = new PersonRole() { Role = role };
 
-                List<PersonRoleMapping> roles = new List<PersonRoleMapping>() { personRole };
+                List<PersonRole> roles = new List<PersonRole>() { personRole };
 
                 if (!people.Any(p => p.ExternalId == externalId))
                 {
@@ -361,3 +361,4 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
     }
 }
+*/

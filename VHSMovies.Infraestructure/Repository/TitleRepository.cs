@@ -23,19 +23,11 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<IEnumerable<T>> GetAll()
         {
             return await dbContextClass.Set<T>()
-                .Include(t => t.Ratings)
+                .Include(t => t.Reviews)
+                    .ThenInclude(t => t.Rating)
                 .Include(t => t.Cast)
                 .Include(t => t.Genres)
                     .ThenInclude(g => g.Genre)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName)
-        {
-            return await dbContextClass.Set<T>()
-                .Include(t => t.Ratings)
-                .Include(t => t.Cast)
-                .Where(t => t.Ratings.Any(r => r.Reviewer == reviewerName))
                 .ToListAsync();
         }
 
@@ -46,7 +38,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<T> GetByExternalIdAsync(string externalId)
         {
-            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
+            return await dbContextClass.Set<T>().Where(r => r.Reviews.Any(review => review.TitleExternalId == externalId)).FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(List<T> titles)
@@ -97,6 +89,11 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task SaveChanges()
         {
             await dbContextClass.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

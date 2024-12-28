@@ -18,51 +18,6 @@ namespace VHSMovies.Domain.Infraestructure.Services
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-
-        public async Task RegisterNewData(string reviewerName)
-        {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
-                var movieRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Movie>>();
-                var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
-                var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
-                var dataReaders = scope.ServiceProvider.GetRequiredService<IEnumerable<IDataReader>>();
-
-                IReadOnlyCollection<Title> titlesList = ReadTitles(dataReaders, reviewerName);
-
-                IEnumerable<Movie> movies = await movieRepository.GetAllByReviewerName(reviewerName);
-                IEnumerable<TVShow> tvshows = await tvshowRepository.GetAllByReviewerName(reviewerName);
-
-                List<Title> titles = new List<Title>();
-                titles.AddRange(movies);
-                titles.AddRange(tvshows);
-
-                List<Movie> unregisteredMovies = new List<Movie>();
-                List<TVShow> unregisteredTVShows = new List<TVShow>();
-
-                foreach (Title title in titlesList)
-                {
-                    bool existingTitle = titles.Any(p => p.ExternalId == title.ExternalId || p.Name == title.Name);
-
-                    if (!existingTitle)
-                    {
-
-                        if (title is Movie movie)
-                            unregisteredMovies.Add(movie);
-                        if (title is TVShow tvshow)
-                            unregisteredTVShows.Add(tvshow);
-                    }
-                }
-                foreach (Movie movie in unregisteredMovies)
-                    await movieRepository.RegisterAsync(movie);
-                foreach (TVShow tvshow in unregisteredTVShows)
-                    await tvshowRepository.RegisterAsync(tvshow);
-            }
-
-            await UpdateTitlesAsync(reviewerName);
-        }
-
         public async Task UpdateTitlesAsync(string reviewerName)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
@@ -74,7 +29,6 @@ namespace VHSMovies.Domain.Infraestructure.Services
                     var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
                     var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
 
-                    // Obtém os títulos (filmes e séries) associados ao reviewer
                     var movies = await movieRepository.GetAllByReviewerName(reviewerName);
                     var tvShows = await tvshowRepository.GetAllByReviewerName(reviewerName);
 
@@ -87,15 +41,17 @@ namespace VHSMovies.Domain.Infraestructure.Services
 
                     foreach (var title in titles)
                     {
-                        var updatedTitle = ReadTitlePage(title.Url, reviewerName);
+                        Review titleValues = title.Reviews.Where(p => p.Reviewer.Name == reviewerName).FirstOrDefault();
 
-                        foreach (var review in title.Ratings.Where(r => r.Reviewer.Equals(reviewerName, StringComparison.OrdinalIgnoreCase)))
+                        var updatedTitle = ReadTitlePage(titleValues.TitleExternalUrl, titleValues.Reviewer.ShortName);
+
+                        Review review = title.Reviews.Where(r => r.Reviewer.ShortName.Equals(reviewerName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                        var updatedRating = updatedTitle.Reviews.Where(r => r.Reviewer.ShortName.Equals(reviewerName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                        if (updatedRating != null)
                         {
-                            var updatedRating = updatedTitle.Ratings.FirstOrDefault()?.Rating;
-                            if (updatedRating != null)
-                            {
-                                review.Rating = updatedRating.Value;
-                            }
+                            review.Rating = updatedRating.Rating;
                         }
 
                         foreach (var castMember in updatedTitle.Cast)
@@ -114,9 +70,6 @@ namespace VHSMovies.Domain.Infraestructure.Services
                             }
                         }
 
-                        title.Cast = updatedTitle.Cast;
-                        title.Genres = updatedTitle.Genres;
-
                         if (title is TVShow tvShow && updatedTitle is TVShow updatedTVShow)
                         {
                             tvShow.Seasons = updatedTVShow.Seasons;
@@ -127,9 +80,6 @@ namespace VHSMovies.Domain.Infraestructure.Services
                             updatedMovies.Add(movie);
                         }
                     }
-
-                    var allCastMembers = titles.SelectMany(t => t.Cast).ToList();
-                    await RegisterCastAsync(castRepository, personRepository, allCastMembers);
 
                     if (updatedTVShows.Any())
                     {

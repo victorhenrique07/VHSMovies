@@ -6,14 +6,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VHSMovies.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class adicionando_autoincrement_em_titlegenre : Migration
+    public partial class adicionando_autoincrement_title_genre : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
                 name: "Id",
-                table: "TitlesGenres",
+                table: "titles_genres",
                 type: "integer",
                 nullable: false,
                 oldClrType: typeof(int),
@@ -26,7 +26,7 @@ namespace VHSMovies.Infraestructure.Migrations
         {
             migrationBuilder.AlterColumn<int>(
                 name: "Id",
-                table: "TitlesGenres",
+                table: "titles_genres",
                 type: "integer",
                 nullable: false,
                 oldClrType: typeof(int),

@@ -24,7 +24,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<IEnumerable<Person>> GetAllPerson(string personRole)
         {
-            Enum.TryParse<PersonRole>(personRole, out PersonRole role);
+            Enum.TryParse<Role>(personRole, out Role role);
 
             var teste = await dbContextClass.People
                 .Include(p => p.Titles)

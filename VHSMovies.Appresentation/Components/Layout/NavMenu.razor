@@ -1,0 +1,29 @@
+@inherits LayoutComponentBase
+
+<MudAppBar Color="Color.Primary" Fixed="true">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-grow-1"></div>
+
+        <div class="d-flex justify-content-center gap-10 flex-grow-1 mb-2">
+            <MudButton Href="about/" Variant="Variant.Outlined" IconColor="Color.Primary">ABOUT</MudButton>
+            <MudButton Href="title/movies" Variant="Variant.Outlined" IconColor="Color.Primary">MOVIES</MudButton>
+            <MudButton Href="title/tvseries" Variant="Variant.Outlined" IconColor="Color.Primary">SERIES</MudButton>
+            <MudButton Variant="Variant.Outlined" IconColor="Color.Primary">UPCOMMING</MudButton>
+        </div>
+
+        <div class="d-flex justify-content-end gap-4 flex-grow-1 mb-2">
+            <MudButton Variant="Variant.Outlined" IconColor="Color.Primary">SIGN IN</MudButton>
+            <MudButton Variant="Variant.Outlined" IconColor="Color.Primary">SIGN UP</MudButton>
+        </div>
+    </MudContainer>
+</MudAppBar>
+
+<style>
+    .mud-button {
+        color: #FFFFFF;
+    }
+
+    .mud-appbar {
+        border: 1px solid #FFFFFF;
+    }
+</style>
