@@ -42,7 +42,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<T> GetByExternalIdAsync(string externalId)
         {
-            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
+            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.Ratings.Any(e => e.TitleExternalId == externalId));
         }
 
         public async Task UpdateAsync(List<T> titles)

@@ -10,8 +10,6 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public int Id { get; set; }
 
-        public string ExternalId { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -22,18 +20,20 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public List<Review> Ratings { get; set; }
 
-        public string Url { get; set; }
-
         public Title()
         {
         }
 
-        public Title(string externalId, string name, string description, List<Review> ratings)
+        public Title(string name, string description, List<Review> ratings)
         {
-            ExternalId = externalId;
             Name = name;
             Description = description;
             Ratings = ratings;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.Id} - {this.Name}";
         }
     }
 }

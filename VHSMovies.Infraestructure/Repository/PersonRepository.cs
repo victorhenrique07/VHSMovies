@@ -29,7 +29,7 @@ namespace VHSMovies.Infraestructure.Repository
             var teste = await dbContextClass.People
                 .Include(p => p.Titles)
                     .ThenInclude(c => c.Title)
-                .Where(p => p.Roles.Any(r => r.Role == role))
+                .Where(p => p.Titles.Any(r => r.Role == role))
                 .ToListAsync();
 
             return teste;
@@ -40,7 +40,7 @@ namespace VHSMovies.Infraestructure.Repository
             try
             {
                 Person existingPerson = await dbContextClass.People
-                        .Where(p => p.ExternalId == person.ExternalId).FirstOrDefaultAsync();
+                        .Where(p => p.Id == person.Id).FirstOrDefaultAsync();
 
                 return existingPerson != null;
             }
@@ -63,7 +63,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<Person> GetByExternalIdAsync(string externalId)
         {
-            return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.ExternalId == externalId);
+            return new Person();
         }
 
         public async Task UpdateAsync(List<Person> people)

@@ -20,6 +20,8 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public decimal Rating { get; set; }
 
+        public string TitleExternalId { get; set; }
+
         public int TitleId { get; set; }
 
         public Title Title { get; set; }

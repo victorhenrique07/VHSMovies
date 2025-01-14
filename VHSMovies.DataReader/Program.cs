@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium.DevTools.V129.Network;
 using VHSMovies.DataReader;
 using VHSMovies.Domain.Infraestructure;
-using VHSMovies.Domain.Infraestructure.Services;
 
 class Program
 {
@@ -38,7 +37,7 @@ class Program
                 return;
             }
 
-            using (var scope = ServiceLocator.GetInstance<IServiceScopeFactory>().CreateScope())
+            /*using (var scope = ServiceLocator.GetInstance<IServiceScopeFactory>().CreateScope())
             {
                 var syncDataService = scope.ServiceProvider.GetRequiredService<SyncDataService>();
 
@@ -63,7 +62,7 @@ class Program
                     Console.WriteLine($"Erro durante a execução: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                 }
-            }
+            }*/
 
             ServiceLocator.Dispose();
         }

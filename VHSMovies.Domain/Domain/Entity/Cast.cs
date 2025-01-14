@@ -15,6 +15,7 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public int PersonId { get; set; }
         public Person Person { get; set; }
+        public PersonRole Role { get; set; }
 
         public Cast() { }
 

@@ -23,7 +23,6 @@ namespace VHSMovies.Infraestructure
         public DbSet<Cast> Casts { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Person> People { get; set; }
-        public DbSet<PersonRoleMapping> Roles { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Title> Titles { get; set; }
         public DbSet<TitleGenre> TitlesGenres { get; set; }
@@ -40,7 +39,6 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<TVShowSeason>().ToTable("TVShowSeasons");
             modelBuilder.Entity<Cast>().ToTable("Casts");
             modelBuilder.Entity<Person>().ToTable("People");
-            modelBuilder.Entity<PersonRoleMapping>().ToTable("PersonRoleMapping");
             modelBuilder.Entity<Review>().ToTable("Reviews");
             modelBuilder.Entity<Genre>().ToTable("Genres");
 
@@ -78,10 +76,6 @@ namespace VHSMovies.Infraestructure
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
 
-            modelBuilder.Entity<Person>()
-                .HasIndex(tp => tp.ExternalId)
-                .IsUnique();
-
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Title)
                 .WithMany(t => t.Ratings)
@@ -102,19 +96,6 @@ namespace VHSMovies.Infraestructure
 
             modelBuilder.Entity<Genre>()
                 .HasKey(g => g.Id);
-
-            modelBuilder.Entity<PersonRoleMapping>(entity =>
-            {
-                entity.HasKey(pr => new { pr.PersonId, pr.Role });
-
-                entity.HasOne(pr => pr.Person)
-                      .WithMany(p => p.Roles)
-                      .HasForeignKey(pr => pr.PersonId);
-
-                entity.Property(pr => pr.Role)
-                      .HasConversion<string>()
-                      .IsRequired();
-            });
 
             base.OnModelCreating(modelBuilder);
         }

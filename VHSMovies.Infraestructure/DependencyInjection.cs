@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
 
@@ -20,6 +21,10 @@ namespace VHSMovies.Infraestructure
 
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<ITitleRepository<Title>, TitleRepository<Title>>();
+            services.AddScoped<ITitleRepository<Movie>, TitleRepository<Movie>>();
+            services.AddScoped<ITitleRepository<TVShow>, TitleRepository<TVShow>>();
+            services.AddScoped<ICastRepository, CastRepository>();
 
             return services;
         }
