@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.DataReader", "VHS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "VHSMovies.Api\VHSMovies.Api.csproj", "{58E28368-1EB1-470D-B60A-69C7B6214D4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Test", "VHSMovies.Test\VHSMovies.Test.csproj", "{F924AC1E-4686-437E-93FE-DA861ABBFF8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

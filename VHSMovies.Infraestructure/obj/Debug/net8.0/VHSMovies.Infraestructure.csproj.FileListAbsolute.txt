@@ -1,9 +1,3 @@
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.csproj.AssemblyReference.cache
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.AssemblyInfoInputs.cache
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.AssemblyInfo.cs
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.csproj.CoreCompileInputs.cache
-C:\Users\henri\source\repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.sourcelink.json
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\linux\selenium-manager
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\macos\selenium-manager
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\selenium-manager\windows\selenium-manager.exe
@@ -13,6 +7,12 @@ C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\VHSMovies.Infraestructure.pdb
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\VHSMovies.Domain.dll
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\bin\Debug\net8.0\VHSMovies.Domain.pdb
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.csproj.AssemblyReference.cache
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.AssemblyInfoInputs.cache
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.AssemblyInfo.cs
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.csproj.CoreCompileInputs.cache
+C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.sourcelink.json
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovie.8637F5E5.Up2Date
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\VHSMovies.Infraestructure.dll
 C:\Users\henri\Source\Repos\VHSMovies\VHSMovies.Infraestructure\obj\Debug\net8.0\refint\VHSMovies.Infraestructure.dll

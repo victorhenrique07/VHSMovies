@@ -16,9 +16,9 @@ namespace VHSMovies.Application.Handlers
     {
         private readonly ITitleGenreRepository titleGenreRepository;
         private readonly ITitleRepository<Title> titleRepository;
-        private readonly ILogger<ReadPeopleCommandHandler> _logger;
+        private readonly ILogger<ReadTitlesGenresCommandHandler> _logger;
 
-        public ReadTitlesGenresCommandHandler(ILogger<ReadPeopleCommandHandler> _logger, ITitleGenreRepository titleGenreRepository, ITitleRepository<Title> titleRepository)
+        public ReadTitlesGenresCommandHandler(ILogger<ReadTitlesGenresCommandHandler> _logger, ITitleGenreRepository titleGenreRepository, ITitleRepository<Title> titleRepository)
         {
             this._logger = _logger;
             this.titleGenreRepository = titleGenreRepository;
@@ -31,10 +31,21 @@ namespace VHSMovies.Application.Handlers
 
             var existingTitles = await titleRepository.GetAll();
 
+            List<string> validHeaders = new List<string>()
+            {
+                "filmid",
+                "genreid"
+            };
+
             foreach (var rows in command.GenresRows)
             {
                 int titleId = 0;
                 int genreId = 0;
+
+                bool matchKeys = rows.All(r => validHeaders.Contains(r.Key.ToLower()));
+
+                if (!matchKeys)
+                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
 
                 foreach (var row in rows)
                 {

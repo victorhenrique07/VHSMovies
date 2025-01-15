@@ -37,6 +37,14 @@ namespace VHSMovies.Application.Handlers
             var existingPeople = new HashSet<Person>(await personRepository.GetAll());
             var existingTitles = new HashSet<Title>(await titleRepository.GetAll());
 
+            List<string> validHeaders = new List<string>()
+            {
+                "personid",
+                "name",
+                "filmid",
+                "departmentid"
+            };
+
             foreach (var rows in command.CastRows)
             {
                 int personId = 0;
@@ -46,6 +54,11 @@ namespace VHSMovies.Application.Handlers
 
                 Person person = new Person();
                 Cast cast = new Cast();
+
+                bool matchKeys = rows.All(r => validHeaders.Contains(r.Key.ToLower()));
+
+                if (!matchKeys)
+                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
 
                 foreach (var row in rows)
                 {

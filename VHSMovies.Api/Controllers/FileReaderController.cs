@@ -188,6 +188,7 @@ namespace VHSMovies.Api.Controllers
                                 rowData[headers[col - 1]] = worksheet.Cells[row, col].Text;
                             }
                             rows.Add(rowData);
+
                         }
                     }
                 }

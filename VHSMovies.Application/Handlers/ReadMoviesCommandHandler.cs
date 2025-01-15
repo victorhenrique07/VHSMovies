@@ -34,6 +34,15 @@ namespace VHSMovies.Application.Handlers
 
             var existingIds = new HashSet<int>((await titleRepository.GetAll()).Select(x => x.Id));
 
+            List<string> validHeaders = new List<string>()
+            {
+                "filmid",
+                "title",
+                "overview",
+                "imdb_id",
+                "runtime"
+            };
+
             foreach (var rows in command.TitlesRows)
             {
                 int id = 0;
@@ -41,6 +50,11 @@ namespace VHSMovies.Application.Handlers
                 string description = "";
                 string IMDbId = "";
                 int runTime = 0;
+
+                bool matchKeys = rows.All(r => validHeaders.Contains(r.Key.ToLower()));
+
+                if (!matchKeys)
+                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
 
                 foreach (var row in rows)
                 {
