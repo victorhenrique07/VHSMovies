@@ -3061,11 +3061,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Infraestructure\\VHSMovies.Infraestructure.csproj",
+      "projectUniqueName": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Infraestructure\\VHSMovies.Infraestructure.csproj",
       "projectName": "VHSMovies.Infraestructure",
-      "projectPath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Infraestructure\\VHSMovies.Infraestructure.csproj",
+      "projectPath": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Infraestructure\\VHSMovies.Infraestructure.csproj",
       "packagesPath": "C:\\Users\\henri\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Infraestructure\\obj\\",
+      "outputPath": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Infraestructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3086,8 +3086,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {
-              "projectPath": "C:\\Users\\henri\\source\\repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj"
+            "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj": {
+              "projectPath": "C:\\Users\\henri\\Source\\Repos\\VHSMovies\\VHSMovies.Domain\\VHSMovies.Domain.csproj"
             }
           }
         }

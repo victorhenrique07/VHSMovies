@@ -12,8 +12,7 @@ namespace VHSMovies.Domain.Domain.Entity
         {
         }
 
-        public TVShow(string name, string description,
-            Cast cast, ICollection<Genre> genres, List<Review> ratings) :
+        public TVShow(string name, string description, List<Review> ratings) :
             base(name, description, ratings)
         {
         }

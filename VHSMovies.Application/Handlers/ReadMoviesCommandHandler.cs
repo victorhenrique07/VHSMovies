@@ -30,6 +30,8 @@ namespace VHSMovies.Application.Handlers
         {
             List<Title> titles = new List<Title>();
 
+            var teste = await titleRepository.GetAllByReviewerName("imdb");
+
             var existingIds = new HashSet<int>((await titleRepository.GetAll()).Select(x => x.Id));
 
             foreach (var rows in command.TitlesRows)
@@ -70,7 +72,7 @@ namespace VHSMovies.Application.Handlers
                     TitleExternalId = IMDbId
                 };
 
-                Movie movie = new Movie(name, description, new Cast(), new List<Genre>(), new List<Review>() { review }, runTime)
+                Movie movie = new Movie(name, description, new List<Review>() { review }, runTime)
                 {
                     Id = id
                 };

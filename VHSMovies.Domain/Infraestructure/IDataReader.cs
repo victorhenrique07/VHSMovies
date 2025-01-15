@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,14 @@ namespace VHSMovies.Domain.Infraestructure
 {
     public interface IDataReader
     {
-        IReadOnlyCollection<Title> ReadTitles();
-
-        Title ReadTitle(string url);
-
         string GetSourceName();
+
+        string GetFullUrl(string externalId);
+
+        Review ReadReview(string url);
+
+        List<TitleGenre> ReadGenres(string url, int titleId);
+
+        List<TitleGenre> ReadTitleGenres(HtmlDocument document, int titleId);
     }
 }

@@ -19,11 +19,5 @@ namespace VHSMovies.Domain.Domain.Entity
         public TitleGenre()
         {
         }
-
-        public TitleGenre(Title title, Genre genre)
-        {
-            Title = title;
-            Genre = genre;
-        }
     }
 }

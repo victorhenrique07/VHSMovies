@@ -10,7 +10,7 @@ using VHSMovies.Application.Commands;
 namespace VHSMovies.Api.Controllers
 {
     [ApiController]
-    [Route("/api/read")]
+    [Route("/api/")]
     [RequestSizeLimit(100 * 1024 * 1024)]
     public class FileReaderController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace VHSMovies.Api.Controllers
             this.mediator = mediator;
         }
 
-        [HttpPost("titles")]
+        [HttpPost("read/titles")]
         public async Task<IActionResult> ReadTitles(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -48,7 +48,7 @@ namespace VHSMovies.Api.Controllers
             });
         }
 
-        [HttpPost("people")]
+        [HttpPost("read/people")]
         public async Task<IActionResult> ReadPeople(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -75,7 +75,7 @@ namespace VHSMovies.Api.Controllers
             });
         }
 
-        [HttpPost("cast")]
+        [HttpPost("read/cast")]
         public async Task<IActionResult> ReadCast(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -99,6 +99,60 @@ namespace VHSMovies.Api.Controllers
                 Status = StatusCode(201),
                 Message = $"{rows.Count()} casts has been registered.",
                 ProcessingTime = $"{stopwatch.Elapsed} ms"
+            });
+        }
+
+        [HttpPost("read/genres")]
+        public async Task<IActionResult> ReadGenres(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("None file sent or file is empty.");
+
+            var stopwatch = Stopwatch.StartNew();
+
+            List<Dictionary<string, string>> rows = await ReadAllRows(file);
+
+            ReadTitlesGenresCommand command = new ReadTitlesGenresCommand()
+            {
+                GenresRows = rows
+            };
+
+            await mediator.Send(command);
+
+            stopwatch.Stop();
+
+            return Ok(new
+            {
+                Status = StatusCode(201),
+                Message = $"{rows.Count()} casts has been registered.",
+                ProcessingTime = $"{stopwatch.Elapsed} ms"
+            });
+        }
+
+        [HttpPatch("update/reviews")]
+        public async Task<IActionResult> ReadReviews(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("None file sent or file is empty.");
+
+            var stopwatch = Stopwatch.StartNew();
+
+            List<Dictionary<string, string>> rows = await ReadAllRows(file);
+
+            ReadReviewsCommand command = new ReadReviewsCommand()
+            {
+                ReviewsRows = rows
+            };
+
+            await mediator.Send(command);
+
+            stopwatch.Stop();
+
+            return Ok(new
+            {
+                Status = StatusCode(200),
+                Message = $"{rows.Count()} reviews has been updated.",
+                ProcessingTime = $"{stopwatch.Elapsed}"
             });
         }
 

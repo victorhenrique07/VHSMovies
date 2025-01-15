@@ -18,6 +18,7 @@ namespace VHSMovies.Infraestructure
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+            options.EnableSensitiveDataLogging();
         }
 
         public DbSet<Cast> Casts { get; set; }
@@ -49,7 +50,14 @@ namespace VHSMovies.Infraestructure
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TitleGenre>()
-                .HasKey(tp => tp.Id);
+                .HasOne(tp => tp.Title)
+                .WithMany(t => t.Genres)
+                .HasForeignKey(tp => tp.TitleId);
+
+            modelBuilder.Entity<TitleGenre>()
+                .HasOne(tp => tp.Genre)
+                .WithMany(t => t.Titles)
+                .HasForeignKey(tp => tp.GenreId);
 
             modelBuilder.Entity<TitleGenre>()
                 .Property(tg => tg.Id)

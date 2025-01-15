@@ -1,4 +1,5 @@
-﻿/*using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,127 +19,33 @@ namespace VHSMovies.Domain.Infraestructure.Services
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-
-        public async Task RegisterNewData(string reviewerName)
-        {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
-                var movieRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Movie>>();
-                var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
-                var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
-                var dataReaders = scope.ServiceProvider.GetRequiredService<IEnumerable<IDataReader>>();
-
-                IReadOnlyCollection<Title> titlesList = ReadTitles(dataReaders, reviewerName);
-
-                IEnumerable<Movie> movies = await movieRepository.GetAllByReviewerName(reviewerName);
-                IEnumerable<TVShow> tvshows = await tvshowRepository.GetAllByReviewerName(reviewerName);
-
-                List<Title> titles = new List<Title>();
-                titles.AddRange(movies);
-                titles.AddRange(tvshows);
-
-                List<Movie> unregisteredMovies = new List<Movie>();
-                List<TVShow> unregisteredTVShows = new List<TVShow>();
-
-                foreach (Title title in titlesList)
-                {
-                    bool existingTitle = titles.Any(p => p.ExternalId == title.ExternalId || p.Name == title.Name);
-
-                    if (!existingTitle)
-                    {
-
-                        if (title is Movie movie)
-                            unregisteredMovies.Add(movie);
-                        if (title is TVShow tvshow)
-                            unregisteredTVShows.Add(tvshow);
-                    }
-                }
-                foreach (Movie movie in unregisteredMovies)
-                    await movieRepository.RegisterAsync(movie);
-                foreach (TVShow tvshow in unregisteredTVShows)
-                    await tvshowRepository.RegisterAsync(tvshow);
-            }
-
-            await UpdateTitlesAsync(reviewerName);
-        }
-
         public async Task UpdateTitlesAsync(string reviewerName)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 try
                 {
-                    var personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
-                    var movieRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Movie>>();
-                    var tvshowRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<TVShow>>();
-                    var castRepository = scope.ServiceProvider.GetRequiredService<ICastRepository>();
+                    var reviewRepository = scope.ServiceProvider.GetRequiredService<IReviewRepository>();
 
-                    // Obtém os títulos (filmes e séries) associados ao reviewer
-                    var movies = await movieRepository.GetAllByReviewerName(reviewerName);
-                    var tvShows = await tvshowRepository.GetAllByReviewerName(reviewerName);
+                    List<Review> reviews = await reviewRepository.GetByReviewerName(reviewerName);
 
-                    var titles = new List<Title>();
-                    titles.AddRange(movies);
-                    titles.AddRange(tvShows);
+                    List<Review> reviewsToUpdate = new List<Review>();
 
-                    var updatedMovies = new List<Movie>();
-                    var updatedTVShows = new List<TVShow>();
-
-                    foreach (var title in titles)
+                    foreach (Review review in reviews)
                     {
-                        var updatedTitle = ReadTitlePage(title.Url, reviewerName);
+                        Review updatedReview = ReadTitleReview(review.TitleExternalId, reviewerName);
 
-                        foreach (var review in title.Ratings.Where(r => r.Reviewer.Equals(reviewerName, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            var updatedRating = updatedTitle.Ratings.FirstOrDefault()?.Rating;
-                            if (updatedRating != null)
-                            {
-                                review.Rating = updatedRating.Value;
-                            }
-                        }
+                        if (review.Rating == updatedReview.Rating)
+                            continue;
 
-                        foreach (var castMember in updatedTitle.Cast)
-                        {
-                            if (castMember.Person != null)
-                            {
-                                var existingPerson = await personRepository.GetByExternalIdAsync(castMember.Person.ExternalId);
+                        review.Rating = updatedReview.Rating;
 
-                                if (existingPerson == null)
-                                {
-                                    await personRepository.RegisterAsync(castMember.Person);
-                                    existingPerson = castMember.Person;
-                                }
-
-                                castMember.Person = existingPerson;
-                            }
-                        }
-
-                        title.Cast = updatedTitle.Cast;
-                        title.Genres = updatedTitle.Genres;
-
-                        if (title is TVShow tvShow && updatedTitle is TVShow updatedTVShow)
-                        {
-                            tvShow.Seasons = updatedTVShow.Seasons;
-                            updatedTVShows.Add(tvShow);
-                        }
-                        else if (title is Movie movie)
-                        {
-                            updatedMovies.Add(movie);
-                        }
+                        reviewsToUpdate.Add(review);
                     }
 
-                    var allCastMembers = titles.SelectMany(t => t.Cast).ToList();
-                    await RegisterCastAsync(castRepository, personRepository, allCastMembers);
-
-                    if (updatedTVShows.Any())
+                    if (reviewsToUpdate.Any())
                     {
-                        await tvshowRepository.UpdateAsync(updatedTVShows);
-                    }
-
-                    if (updatedMovies.Any())
-                    {
-                        await movieRepository.UpdateAsync(updatedMovies);
+                        await reviewRepository.UpdateReviews(reviewsToUpdate);
                     }
                 }
                 catch (Exception ex)
@@ -149,44 +56,39 @@ namespace VHSMovies.Domain.Infraestructure.Services
             }
         }
 
-        public async Task RegisterCastAsync(ICastRepository castRepository, IPersonRepository personRepository, IEnumerable<Cast> castMembers)
+        public async Task UpdateTitlesGenres(string reviewerName)
         {
-            var castList = castMembers.ToList();
-
-            List<Cast> castsToRegister = new List<Cast>();
-
-            foreach (var cast in castList)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var person = cast.Person;
-
-                Person existingPerson = await personRepository.GetByExternalIdAsync(person.ExternalId);
-
-                if (existingPerson == null)
+                try
                 {
-                    await personRepository.RegisterAsync(person);
+                    var reviewRepository = scope.ServiceProvider.GetRequiredService<IReviewRepository>();
+                    var titleRepository = scope.ServiceProvider.GetRequiredService<ITitleRepository<Title>>();
+
+                    IEnumerable<Review> reviews = await reviewRepository.GetByReviewerName(reviewerName);
+
+                    List<Title> titlesGenresToUpdate = new List<Title>();
+
+                    foreach (Review review in reviews)
+                    {
+                        List<TitleGenre> genres = ReadTitleGenres(review.TitleExternalId, review.Reviewer, review.TitleId);
+
+                        review.Title.Genres = genres;
+
+                        titlesGenresToUpdate.Add(review.Title);
+                    }
+
+                    await titleRepository.UpdateAsync(titlesGenresToUpdate);
                 }
-
-                var existingCast = await castRepository.GetCastForTitleAsync(cast.Title.Id, person.Id);
-
-                if (existingCast == null)
+                catch (Exception ex)
                 {
-                    castsToRegister.Add(new Cast(person, cast.Title));
+                    Console.WriteLine($"Erro ao atualizar os títulos: {ex.Message}");
+                    throw;
                 }
-            }
-
-            if (castsToRegister.Any())
-            {
-                await castRepository.UpdateAsync(castsToRegister);
             }
         }
 
-        private IReadOnlyCollection<Title> ReadTitles(IEnumerable<IDataReader> dataReaders, string sourceName)
-        {
-            IDataReader dataReader = dataReaders.Single(r => r.GetSourceName() == sourceName);
-            return dataReader.ReadTitles();
-        }
-
-        private Title ReadTitlePage(string url, string sourceName)
+        private Review ReadTitleReview(string externalId, string sourceName)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
@@ -194,11 +96,30 @@ namespace VHSMovies.Domain.Infraestructure.Services
 
                 IDataReader dataReader = dataReaders.Single(r => r.GetSourceName() == sourceName);
 
-                Title titles = dataReader.ReadTitle(url);
+                string url = dataReader.GetFullUrl(externalId);
 
-                return titles;
+                Review review = dataReader.ReadReview(url);
+
+                Console.WriteLine($"Titulo sendo lido: {review.Title.Name} - {externalId}");
+
+                return review;
+            }
+        }
+
+        private List<TitleGenre> ReadTitleGenres(string externalId, string sourceName, int titleId)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var dataReaders = scope.ServiceProvider.GetRequiredService<IEnumerable<IDataReader>>();
+
+                IDataReader dataReader = dataReaders.Single(r => r.GetSourceName() == sourceName.ToLower());
+
+                string url = dataReader.GetFullUrl(externalId);
+
+                List<TitleGenre> genres = dataReader.ReadGenres(url, titleId);
+
+                return genres;
             }
         }
     }
 }
-*/

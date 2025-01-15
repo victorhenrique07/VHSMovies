@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium.DevTools.V129.Network;
 using VHSMovies.DataReader;
 using VHSMovies.Domain.Infraestructure;
+using VHSMovies.Domain.Infraestructure.Services;
 
 class Program
 {
@@ -27,33 +28,33 @@ class Program
             string reviewerName = args[0];
             string operation = args[1];
 
-            bool registerTitles = operation.Contains("rt", StringComparison.OrdinalIgnoreCase);
-            bool updateTitles = operation.Contains("ut", StringComparison.OrdinalIgnoreCase);
+            bool updateReviews = operation.Contains("ur", StringComparison.OrdinalIgnoreCase);
+            bool updateTitlesGenres = operation.Contains("utg", StringComparison.OrdinalIgnoreCase);
 
-            if (!registerTitles && !updateTitles)
+            if (!updateReviews && !updateTitlesGenres)
             {
                 Console.WriteLine($"Operação inválida: {operation}");
-                Console.WriteLine("Operações válidas: rt (registrar títulos), ut (atualizar títulos)");
+                Console.WriteLine("Operações válidas: ur (Atualizar Reviews) & utg (Atualizar gêneros dos títulos).");
                 return;
             }
 
-            /*using (var scope = ServiceLocator.GetInstance<IServiceScopeFactory>().CreateScope())
+            using (var scope = ServiceLocator.GetInstance<IServiceScopeFactory>().CreateScope())
             {
                 var syncDataService = scope.ServiceProvider.GetRequiredService<SyncDataService>();
 
                 try
                 {
-                    if (registerTitles)
+                    if (updateReviews)
                     {
-                        Console.WriteLine($"Iniciando registro de novos dados para o revisor: {reviewerName}");
-                        await syncDataService.RegisterNewData(reviewerName);
-                        Console.WriteLine("Registro concluído com sucesso.");
+                        Console.WriteLine($"Iniciando atualização de dados de: {reviewerName}");
+                        await syncDataService.UpdateTitlesAsync(reviewerName);
+                        Console.WriteLine("Atualização concluída com sucesso.");
                     }
 
-                    if (updateTitles)
+                    if (updateTitlesGenres)
                     {
-                        Console.WriteLine($"Iniciando atualização de dados para o revisor: {reviewerName}");
-                        await syncDataService.UpdateTitlesAsync(reviewerName);
+                        Console.WriteLine($"Iniciando atualização de gêneros de títulos em: {reviewerName}");
+                        await syncDataService.UpdateTitlesGenres(reviewerName);
                         Console.WriteLine("Atualização concluída com sucesso.");
                     }
                 }
@@ -62,7 +63,7 @@ class Program
                     Console.WriteLine($"Erro durante a execução: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                 }
-            }*/
+            }
 
             ServiceLocator.Dispose();
         }

@@ -10,5 +10,7 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public ICollection<TitleGenre> Titles { get; set; } = new List<TitleGenre>();
     }
 }

@@ -17,14 +17,18 @@ namespace VHSMovies.Infraestructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DbContextClass>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging() // Habilita log detalhado
+                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<ICastRepository, CastRepository>();
+            services.AddScoped<ITitleGenreRepository, TitleGenreRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<ITitleRepository<Title>, TitleRepository<Title>>();
             services.AddScoped<ITitleRepository<Movie>, TitleRepository<Movie>>();
             services.AddScoped<ITitleRepository<TVShow>, TitleRepository<TVShow>>();
-            services.AddScoped<ICastRepository, CastRepository>();
 
             return services;
         }

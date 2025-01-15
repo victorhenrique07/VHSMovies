@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Domain.Infraestructure;
 using VHSMovies.Infraestructure.Repository;
+using VHSMovies.Domain.Infraestructure.Services;
+using VHSMovies.Domain.Infraestructure.DataReaders;
+using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.DataReader
 {
@@ -25,29 +28,29 @@ namespace VHSMovies.DataReader
 
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register(() => DbContextFactory.Create(configuration), Lifestyle.Singleton);
+            container.Register(() => DbContextFactory.Create(configuration), Lifestyle.Scoped);
 
             container.RegisterInstance(driverManager);
 
             container.Register<IServiceScopeFactory, SimpleInjectorServiceScopeFactory>(Lifestyle.Singleton);
 
-            //container.Register<SyncDataService>(Lifestyle.Transient);
+            container.Register<SyncDataService>(Lifestyle.Transient);
 
-            container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Singleton);
-            container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Singleton);
+            container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Scoped);
+            container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Scoped);
+            container.Register<IPersonRepository, PersonRepository>(Lifestyle.Scoped);
+            container.Register<ICastRepository, CastRepository>(Lifestyle.Scoped);
+            container.Register<IGenreRepository, GenreRepository>(Lifestyle.Scoped);
+            container.Register<IReviewRepository, ReviewRepository>(Lifestyle.Scoped);
 
-            container.Register<IPersonRepository, PersonRepository>(Lifestyle.Singleton);
-            container.Register<ICastRepository, CastRepository>(Lifestyle.Singleton);
-            container.Register<IGenreRepository, GenreRepository>(Lifestyle.Singleton);
-
-            /*container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
+            container.RegisterConditional<IHtmlReader, SeleniumManager>(Lifestyle.Singleton, c =>
                 c.Consumer.ImplementationType == typeof(ImdbDataReader)
             );
 
             container.Collection.Register<IDataReader>(new List<Type>
             {
                 typeof(ImdbDataReader)
-            });*/
+            });
 
             container.Verify();
         }

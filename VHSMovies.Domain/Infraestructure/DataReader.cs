@@ -14,20 +14,34 @@ namespace VHSMovies.Domain.Infraestructure
     {
         protected IGenreRepository genreRepository;
         protected IHtmlReader htmlReader;
+        protected IReviewRepository reviewRepository;
 
-        protected DataReader(IHtmlReader htmlReader, IGenreRepository genreRepository)
+        protected DataReader(
+            IHtmlReader htmlReader,
+            IGenreRepository genreRepository,
+            IReviewRepository reviewRepository)
         {
             this.genreRepository = genreRepository;
             this.htmlReader = htmlReader;
+            this.reviewRepository = reviewRepository;
         }
 
-        public Title ReadTitle(string url)
+        public Review ReadReview(string url)
         {
             HtmlDocument document = htmlReader.Read(url);
 
-            Title title = ReadTitlePage(document);
+            Review review = ReadTitlePage(document);
 
-            return title;
+            return review;
+        }
+
+        public List<TitleGenre> ReadGenres(string url, int titleId)
+        {
+            HtmlDocument document = htmlReader.Read(url);
+
+            List<TitleGenre> genres = ReadTitleGenres(document, titleId);
+
+            return genres;
         }
 
         public List<Genre> CheckValidGenres(HtmlNodeCollection nodes)
@@ -57,10 +71,12 @@ namespace VHSMovies.Domain.Infraestructure
             return genres;
         }
 
-        public abstract Title ReadTitlePage(HtmlDocument document);
-
-        public abstract IReadOnlyCollection<Title> ReadTitles();
+        public abstract Review ReadTitlePage(HtmlDocument document);
 
         public abstract string GetSourceName();
+
+        public abstract string GetFullUrl(string externalId);
+
+        public abstract List<TitleGenre> ReadTitleGenres(HtmlDocument document, int titleId);
     }
 }
