@@ -51,7 +51,7 @@ namespace VHSMovies.Application.Handlers
                 string IMDbId = "";
                 int runTime = 0;
 
-                bool matchKeys = rows.All(r => validHeaders.Contains(r.Key.ToLower()));
+                bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
 
                 if (!matchKeys)
                     throw new KeyNotFoundException("Cabeçalhos não correspondentes.");

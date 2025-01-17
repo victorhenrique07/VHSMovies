@@ -47,7 +47,7 @@ namespace VHSMovies.Application.Handlers
                 int id = 0;
                 string name = "";
 
-                bool matchKeys = rows.All(r => validHeaders.Contains(r.Key.ToLower()));
+                bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
 
                 if (!matchKeys)
                     throw new KeyNotFoundException("Cabeçalhos não correspondentes.");

@@ -30,4 +30,8 @@
     <ProjectReference Include="..\VHSMovies.Infraestructure\VHSMovies.Infraestructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\swagger-ui\SwaggerDark.css" />
+  </ItemGroup>
+
 </Project>

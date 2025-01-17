@@ -19,7 +19,7 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Name { get; set; }
 
-        public ICollection<Cast> Titles { get; set; }
+        public ICollection<Cast> Titles { get; set; } = new List<Cast>();
 
         public override int GetHashCode()
         {
