@@ -14,7 +14,6 @@ namespace VHSMovies.Domain.Domain.Entity
         public Title Title { get; set; }
 
         public int GenreId { get; set; }
-        public Genre Genre { get; set; }
 
         public TitleGenre()
         {

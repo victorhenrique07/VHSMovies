@@ -14,17 +14,19 @@ namespace VHSMovies.Application.Handlers
     public class ReadReviewsCommandHandler : IRequestHandler<ReadReviewsCommand, Unit>
     {
         private readonly IReviewRepository reviewRepository;
+        private readonly ITitleRepository<Title> titleRepository;
         private readonly ILogger<ReadReviewsCommandHandler> _logger;
 
-        public ReadReviewsCommandHandler(ILogger<ReadReviewsCommandHandler> _logger, IReviewRepository reviewRepository)
+        public ReadReviewsCommandHandler(ILogger<ReadReviewsCommandHandler> _logger, IReviewRepository reviewRepository, ITitleRepository<Title> titleRepository)
         {
             this._logger = _logger;
             this.reviewRepository = reviewRepository;
+            this.titleRepository = titleRepository;
         }
 
         public async Task<Unit> Handle(ReadReviewsCommand command, CancellationToken cancellationToken)
         {
-            IEnumerable<Review> reviews = await reviewRepository.GetAll();
+            IEnumerable<Title> titles = await titleRepository.GetAll();
 
             List<Review> reviewsToUpdate = new List<Review>();
 
@@ -41,9 +43,11 @@ namespace VHSMovies.Application.Handlers
                         rating = !string.IsNullOrEmpty(row.Value) ? Convert.ToDecimal(row.Value) : 0m;
                 }
 
-                Review review = reviews.Where(r => r.TitleId == titleId).FirstOrDefault();
+                Title title = titles.Where(r => r.Id == titleId).FirstOrDefault();
 
-                if (review != null)
+                Review review = title.Ratings.Where(r => r.Reviewer.ToLower() == "imdb").FirstOrDefault();
+
+                if (review != null && review.Rating != rating)
                 {
                     review.Rating = rating;
 

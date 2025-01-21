@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace VHSMovies.Domain.Domain.Entity
@@ -14,11 +15,7 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Description { get; set; }
 
-        public ICollection<Cast> Cast { get; set; } = new List<Cast>();
-
-        public ICollection<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
-
-        public List<Review> Ratings { get; set; }
+        public List<Review> Ratings { get; set; } = new List<Review>();
 
         public Title()
         {
@@ -35,5 +32,7 @@ namespace VHSMovies.Domain.Domain.Entity
         {
             return $"{this.Id} - {this.Name}";
         }
+
+
     }
 }

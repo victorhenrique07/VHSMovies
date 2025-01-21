@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium.DevTools.V129.Network;
 using VHSMovies.DataReader;
 using VHSMovies.Domain.Infraestructure;
-using VHSMovies.Domain.Infraestructure.Services;
 
 class Program
 {
     static async Task Main(string[] args)
     {
+/*
         if (args.Length < 2)
         {
             Console.WriteLine("Uso: dotnet run <source> <operation>");
@@ -67,5 +67,6 @@ class Program
 
             ServiceLocator.Dispose();
         }
+*/
     }
 }

@@ -10,5 +10,9 @@ namespace VHSMovies.Domain.Domain.Repository
     public interface ITitleGenreRepository
     {
         Task RegisterGenresList(List<TitleGenre> genres);
+
+        Task<List<TitleGenre>> GetTitleGenresById(int id);
+
+        Task<List<TitleGenre>> GetTitlesByGenreId(int genreId);
     }
 }

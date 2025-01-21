@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿/*using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections.Generic;
@@ -123,3 +123,4 @@ namespace VHSMovies.Domain.Infraestructure.Services
         }
     }
 }
+*/

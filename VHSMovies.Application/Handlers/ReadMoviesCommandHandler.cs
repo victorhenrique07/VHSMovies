@@ -91,8 +91,6 @@ namespace VHSMovies.Application.Handlers
                     Id = id
                 };
 
-                review.Title = movie;
-
                 titles.Add(movie);
             }
 

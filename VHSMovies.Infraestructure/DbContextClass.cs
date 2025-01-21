@@ -9,7 +9,8 @@ namespace VHSMovies.Infraestructure
     {
         protected readonly IConfiguration Configuration;
 
-        public DbContextClass(IConfiguration configuration)
+        public DbContextClass(IConfiguration configuration, DbContextOptions<DbContextClass> options = null)
+            : base(options)
         {
             Configuration = configuration;
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -17,8 +18,11 @@ namespace VHSMovies.Infraestructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            options.EnableSensitiveDataLogging();
+            if (!options.IsConfigured)
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging();
+            }
         }
 
         public DbSet<Cast> Casts { get; set; }
@@ -50,31 +54,11 @@ namespace VHSMovies.Infraestructure
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TitleGenre>()
-                .HasOne(tp => tp.Title)
-                .WithMany(t => t.Genres)
-                .HasForeignKey(tp => tp.TitleId);
-
-            modelBuilder.Entity<TitleGenre>()
-                .HasOne(tp => tp.Genre)
-                .WithMany(t => t.Titles)
-                .HasForeignKey(tp => tp.GenreId);
-
-            modelBuilder.Entity<TitleGenre>()
                 .Property(tg => tg.Id)
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Cast>()
                 .HasKey(tp => tp.Id);
-
-            modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Title)
-                .WithMany(t => t.Cast)
-                .HasForeignKey(tp => tp.TitleId);
-
-            modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Person)
-                .WithMany(p => p.Titles)
-                .HasForeignKey(tp => tp.PersonId);
 
             modelBuilder.Entity<Cast>()
                 .HasIndex(tp => tp.Id)
@@ -84,26 +68,22 @@ namespace VHSMovies.Infraestructure
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
 
-            modelBuilder.Entity<Review>()
-                .HasOne(r => r.Title)
-                .WithMany(t => t.Ratings)
-                .HasForeignKey(r => r.TitleId);
-
             modelBuilder.Entity<TitleGenre>()
                 .HasKey(tg => new { tg.TitleId, tg.GenreId });
 
-            modelBuilder.Entity<TitleGenre>()
-                .HasOne(tg => tg.Title)
-                .WithMany(t => t.Genres)
-                .HasForeignKey(tg => tg.TitleId);
-
-            modelBuilder.Entity<TitleGenre>()
-                .HasOne(tg => tg.Genre)
-                .WithMany()
-                .HasForeignKey(tg => tg.GenreId);
-
             modelBuilder.Entity<Genre>()
                 .HasKey(g => g.Id);
+
+            modelBuilder.Entity<Review>()
+                .HasKey(t => t.Id);
+
+            modelBuilder.Entity<Review>()
+                .Property(t => t.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Title>()
+                .Property(t => t.Id)
+                .ValueGeneratedOnAdd();
 
             base.OnModelCreating(modelBuilder);
         }

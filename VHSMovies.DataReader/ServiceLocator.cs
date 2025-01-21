@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Domain.Infraestructure;
 using VHSMovies.Infraestructure.Repository;
-using VHSMovies.Domain.Infraestructure.Services;
 using VHSMovies.Domain.Infraestructure.DataReaders;
 using VHSMovies.Domain.Domain.Entity;
 
@@ -34,7 +33,7 @@ namespace VHSMovies.DataReader
 
             container.Register<IServiceScopeFactory, SimpleInjectorServiceScopeFactory>(Lifestyle.Singleton);
 
-            container.Register<SyncDataService>(Lifestyle.Transient);
+            //container.Register<SyncDataService>(Lifestyle.Transient);
 
             container.Register(typeof(IRepository<>), typeof(Repository<>), Lifestyle.Scoped);
             container.Register(typeof(ITitleRepository<>), typeof(TitleRepository<>), Lifestyle.Scoped);

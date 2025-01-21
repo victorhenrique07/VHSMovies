@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.BiDi.Modules.Log;
+﻿using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,32 @@ namespace VHSMovies.Infraestructure.Repository
                 {
                     Console.WriteLine("Inner exception: " + ex.InnerException.Message);
                 }
+                throw;
+            }
+        }
+
+        public async Task<List<TitleGenre>> GetTitleGenresById(int id)
+        {
+            try
+            {
+                return await _dbContext.TitlesGenres.Where(t => t.Title.Id == id).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<TitleGenre>> GetTitlesByGenreId(int genreId)
+        {
+            try
+            {
+                return await _dbContext.TitlesGenres.Where(t => t.GenreId == genreId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.Message);
                 throw;
             }
         }

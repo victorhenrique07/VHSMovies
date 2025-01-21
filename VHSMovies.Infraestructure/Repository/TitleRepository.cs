@@ -30,7 +30,6 @@ namespace VHSMovies.Infraestructure.Repository
         {
             return await dbContextClass.Set<T>()
                 .Include(t => t.Ratings)
-                .Include(t => t.Cast)
                 .Where(t => t.Ratings.Any(r => r.Reviewer == reviewerName))
                 .ToListAsync();
         }

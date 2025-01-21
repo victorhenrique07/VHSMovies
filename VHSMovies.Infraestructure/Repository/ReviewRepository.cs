@@ -26,7 +26,6 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<List<Review>> GetByReviewerName(string reviewerName)
         {
             return await _dbContext.Reviews
-                .Include(r => r.Title)
                 .Where(r => r.Reviewer.ToLower() == reviewerName)
                 .ToListAsync();
         }

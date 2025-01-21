@@ -43,7 +43,7 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
 
             List<TitleGenre> titleGenres = new List<TitleGenre>();
 
-            titleGenres.AddRange(genres.Select(g => new TitleGenre() { Genre = g, TitleId = titleId }));
+            titleGenres.AddRange(genres.Select(g => new TitleGenre() { GenreId = g.Id, TitleId = titleId }));
 
             return titleGenres;
         }

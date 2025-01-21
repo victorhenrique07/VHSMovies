@@ -1,5 +1,7 @@
 ﻿using Autofac.Extras.Moq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -8,241 +10,275 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Infraestructure;
 using VHSMovies.Infraestructure.Repository;
+using AutoFixture;
 
 namespace VHSMovies.Test
 {
     public class RepositoriesTest
     {
-        private readonly Mock<ITitleRepository<Title>> titleRepository;
-        private readonly Mock<ITitleRepository<Movie>> movieRepository;
-        private readonly Mock<ITitleGenreRepository> titleGenreRepositoryMock;
-        private readonly Mock<IPersonRepository> peopleRepositoryMock;
-        private readonly Mock<ICastRepository> castRepositoryMock;
+        private TitleRepository<Title> titleRepository;
+        private TitleRepository<Movie> movieRepository;
+        private TitleGenreRepository titleGenreRepository;
+        private PersonRepository personRepository;
+        private CastRepository castRepository;
+
+        private readonly Title TitleOne;
+        private readonly Title TitleTwo;
+        private readonly Movie MovieOne;
+        private readonly Movie MovieTwo;
+        private readonly Person PersonOne;
+        private readonly Person PersonTwo;
+        private readonly Cast CastOne;
+        private readonly Cast CastTwo;
+        private readonly List<TitleGenre> TitleGenres;
 
         public RepositoriesTest()
         {
-            this.titleRepository = new();
-            this.movieRepository = new();
-            this.titleGenreRepositoryMock = new();
-            this.peopleRepositoryMock = new();
-            this.castRepositoryMock = new();
+            var options = new DbContextOptionsBuilder<DbContextClass>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .EnableSensitiveDataLogging()
+                .Options;
+
+            var configurationMock = new ConfigurationBuilder().Build();
+
+            var dbContext = new DbContextClass(configurationMock, options);
+
+            titleRepository = new TitleRepository<Title>(dbContext);
+            movieRepository = new TitleRepository<Movie>(dbContext);
+            titleGenreRepository = new TitleGenreRepository(dbContext);
+            personRepository = new PersonRepository(dbContext);
+            castRepository = new CastRepository(dbContext);
+
+            var fixture = new Fixture();
+
+            fixture.Customize<Title>(composer =>
+                composer.Without(t => t.Ratings));
+
+            fixture.Customize<Movie>(composer =>
+                composer.Without(t => t.Ratings));
+
+            fixture.Customize<Person>(composer =>
+                composer.Without(t => t.Titles));
+
+            this.TitleOne = fixture.Create<Title>();
+            this.TitleTwo = fixture.Create<Title>();
+            this.MovieOne = fixture.Create<Movie>();
+            this.MovieTwo = fixture.Create<Movie>();
+            this.PersonOne = fixture.Create<Person>();
+            this.PersonTwo = fixture.Create<Person>();
+
+            this.CastOne = new Cast()
+            {
+                Id = 1,
+                TitleId = this.TitleOne.Id,
+                Title = this.TitleOne,
+                PersonId = this.PersonOne.Id,
+                Role = PersonRole.Actor
+            };
+
+            this.CastTwo = new Cast()
+            {
+                Id = 2,
+                TitleId = this.TitleOne.Id,
+                Title = this.TitleOne,
+                PersonId = this.PersonTwo.Id,
+                Role = PersonRole.Actor
+            };
+
+            this.TitleGenres = CreateTitlesGenresList();
+        }
+
+        private List<TitleGenre> CreateTitlesGenresList()
+        {
+            Random rnd = new();
+
+            List<TitleGenre> titleGenres = new List<TitleGenre>();
+
+            int[] genres = 
+            {
+                28,12,16
+            };
+
+            foreach (int i in genres)
+            {
+                TitleGenre genre = new TitleGenre()
+                {
+                    Title = this.TitleOne,
+                    TitleId = this.TitleOne.Id,
+                    GenreId = i
+                };
+
+                titleGenres.Add(genre);
+            }
+
+            foreach (int i in genres)
+            {
+                TitleGenre genre = new TitleGenre()
+                {
+                    Title = this.TitleTwo,
+                    TitleId = this.TitleTwo.Id,
+                    GenreId = i
+                };
+
+                titleGenres.Add(genre);
+            }
+
+            return titleGenres;
         }
 
         [Fact]
         public async Task Test_If_Is_Saving_All_Titles()
         {
-            using (var mock = AutoMock.GetLoose())
+
+            List<Title> list = new List<Title>()
             {
-                // Arrange
-                Review review = new Review("IMDb", 9.0m);
+                TitleOne, TitleTwo
+            };
 
-                Title title = new Title("Title1", "description1", new List<Review>() { review })
-                {
-                    Id = 1
-                };
-                Title title2 = new Title("Title2", "description2", new List<Review>() { review })
-                {
-                    Id = 2
-                };
+            //Act
+            await titleRepository.RegisterListAsync(list);
+            IEnumerable<Title> allTitles = await titleRepository.GetAll();
 
-                List<Title> list = new List<Title>()
-                {
-                    title, title2
-                };
+            // Assert
+            allTitles.Should().NotBeNull();
+            allTitles.Should().BeEquivalentTo(list);
+            allTitles.First().Should().BeEquivalentTo(list.First());
+            allTitles.First().Should().Match<Title>(t =>
+                t.Name == TitleOne.Name &&
+                t.Id == TitleOne.Id &&
+                t.Description == TitleOne.Description);
 
-                titleRepository
-                    .Setup(x => x.RegisterListAsync(list))
-                    .Returns(Task.CompletedTask);
-
-                titleRepository
-                    .Setup(x => x.GetAll())
-                    .ReturnsAsync(list);
-
-                //Act
-                await titleRepository.Object.RegisterListAsync(list);
-                IEnumerable<Title> allTitles = await titleRepository.Object.GetAll();
-
-                // Assert
-                titleRepository.Verify(x => x.RegisterListAsync(It.Is<List<Title>>(l => l.Count == 2)), Times.Once);
-                allTitles.Count().Should().Be(2);
-            }
+            allTitles.Last().Should().BeEquivalentTo(list.Last());
+            allTitles.Last().Should().Match<Title>(t =>
+                t.Name == TitleTwo.Name &&
+                t.Id == TitleTwo.Id &&
+                t.Description == TitleTwo.Description);
         }
 
         [Fact]
         public async Task Test_If_Is_Saving_All_Titles_As_Movies()
         {
             // Arrange
-            Review review = new Review("IMDb", 9.0m);
-
-            Movie title = new Movie("Title1", "description1", new List<Review>() { review }, 120)
-            {
-                Id = 1
-            };
-            Movie title2 = new Movie("Title2", "description2", new List<Review>() { review }, 120)
-            {
-                Id = 2
-            };
-
             List<Title> list = new List<Title>()
             {
-                title, title2
+                MovieOne, MovieTwo
             };
 
-            titleRepository
-                .Setup(x => x.RegisterListAsync(list))
-                .Returns(Task.CompletedTask);
-
-            titleRepository
-                .Setup(x => x.GetAll())
-                .ReturnsAsync(list);
-
-            movieRepository
-                .Setup(x => x.GetAll())
-                .ReturnsAsync(
-                    new List<Movie>()
-                    {
-                        title, title2
-                    }
-                );
-
             //Act
-            await titleRepository.Object.RegisterListAsync(list);
-            IEnumerable<Title> allTitles = await titleRepository.Object.GetAll();
-            IEnumerable<Movie> allMovies = await movieRepository.Object.GetAll();
-
-            var firstTitle = allMovies.FirstOrDefault();
-            var lastTitle = allTitles.Last();
+            await titleRepository.RegisterListAsync(list);
+            IEnumerable<Movie> allMovies = await movieRepository.GetAll();
 
             // Assert
-            titleRepository.Verify(x => x.RegisterListAsync(It.Is<List<Title>>(l => l.Count == 2)), Times.Once);
 
-            firstTitle.Should().NotBeNull();
-            firstTitle.Should().Match<Title>(t =>
-                t.Name == "Title1" &&
-                t.Id == 1 &&
-                t.Description == "description1" &&
-                t.Ratings.Count == 1 &&
-                t.Ratings.First().Reviewer == "IMDb" &&
-                t.Ratings.First().Rating == 9.0m);
+            allMovies.Should().NotBeNull();
+            allMovies.Should().BeEquivalentTo(list);
+            allMovies.First().Should().Match<Movie>(t =>
+                t.Name == MovieOne.Name &&
+                t.Id == MovieOne.Id &&
+                t.Description == MovieOne.Description);
 
-            lastTitle.Should().NotBeNull();
-            lastTitle.Should().Match<Title>(t =>
-                t.Name == "Title2" &&
-                t.Id == 2 &&
-                t.Description == "description2" &&
-                t.Ratings.Count == 1 &&
-                t.Ratings.First().Reviewer == "IMDb" &&
-                t.Ratings.First().Rating == 9.0m);
+            allMovies.Last().Should().Match<Movie>(t =>
+                t.Name == MovieTwo.Name &&
+                t.Id == MovieTwo.Id &&
+                t.Description == MovieTwo.Description);
         }
 
         [Fact]
         public async Task Test_If_Is_Saving_All_People()
         {
             // Arrange
-            Person person1 = new Person("Person1");
-
-            Person person2 = new Person("Person2");
-
             List<Person> people = new List<Person>()
             {
-                person1,
-                person2,
+                PersonOne,
+                PersonTwo,
             };
 
             // Act
-
-            peopleRepositoryMock
-                .Setup(x => x.RegisterListAsync(people))
-                .Returns(Task.CompletedTask);
-
-            peopleRepositoryMock
-                .Setup(x => x.GetAll())
-                .ReturnsAsync(people);
-
-            await peopleRepositoryMock.Object.RegisterListAsync(people);
-            IEnumerable<Person> allPeople = await peopleRepositoryMock.Object.GetAll();
-
-            Person firstPerson = allPeople.First();
-            Person secondPerson = allPeople.Last();
+            await personRepository.RegisterListAsync(people);
+            IEnumerable<Person> allPeople = await personRepository.GetAll();
 
             // Assert
-            peopleRepositoryMock.Verify(x => x.RegisterListAsync(It.Is<List<Person>>(l => l.Count == 2)), Times.Once);
-
             allPeople.Should().NotBeEmpty();
-            allPeople.Count().Should().Be(2);
+            allPeople.Should().BeEquivalentTo(people);
 
-            firstPerson.Name.Should().Be("Person1");
-
-            secondPerson.Name.Should().Be("Person2");
+            allPeople.First().Should().Match<Person>(p =>
+                p.Id == PersonOne.Id &&
+                p.Name == PersonOne.Name);
+            allPeople.Last().Should().Match<Person>(p =>
+                p.Id == PersonTwo.Id &&
+                p.Name == PersonTwo.Name);
         }
 
         [Fact]
         public async Task Test_If_Is_Saving_All_Casts()
         {
-            Review review = new Review("IMDb", 9.0m);
-
-            Movie title = new Movie("Title1", "description1", new List<Review>() { review }, 120);
-
-            Person person1 = new Person("Person1");
-
-            Person person2 = new Person("Person2");
-
-            Cast cast1 = new Cast(person1, title)
-            {
-                Role = PersonRole.Actor
-            };
-
-            person1.Titles.Add(cast1);
-
-            Cast cast2 = new Cast(person2, title)
-            {
-                Role = PersonRole.Actor
-            };
-
-            person2.Titles.Add(cast2);
-
+            // Arrange
             List<Cast> casts = new List<Cast>()
             {
-                cast1,
-                cast2,
+                CastOne,
+                CastTwo,
             };
 
-            castRepositoryMock
-                .Setup(x => x.RegisterListAsync(casts))
-                .Returns(Task.CompletedTask);
+            // Act
+            await castRepository.RegisterListAsync(casts);
+            IEnumerable<Cast> allCasts = await castRepository.GetAll();
 
-            castRepositoryMock
-                .Setup(x => x.GetAll())
-                .ReturnsAsync(casts);
-
-            await castRepositoryMock.Object.RegisterListAsync(casts);
-            IEnumerable<Cast> allCasts = await castRepositoryMock.Object.GetAll();
-
-            Cast firstCast = allCasts.First();
-            Cast secondCast = allCasts.Last();
-
+            // Assert
             allCasts.Should().NotBeEmpty();
             allCasts.Count().Should().Be(2);
 
-            firstCast.Should().Match<Cast>(t =>
-                t.Person.Name == "Person1" &&
+            allCasts.First().Should().Match<Cast>(t =>
+                t.PersonId == PersonOne.Id &&
                 t.Role == PersonRole.Actor &&
-                t.Title.Name == "Title1" &&
-                t.Title.Description == "description1" &&
-                t.Title.Ratings.Count == 1 &&
-                t.Title.Ratings.First().Reviewer == "IMDb" &&
-                t.Title.Ratings.First().Rating == 9.0m);
+                t.Title.Name == TitleOne.Name &&
+                t.Title.Description == TitleOne.Description);
 
 
-            secondCast.Should().Match<Cast>(t =>
-                t.Person.Name == "Person2" &&
+            allCasts.Last().Should().Match<Cast>(t =>
+                t.PersonId == PersonTwo.Id &&
                 t.Role == PersonRole.Actor &&
-                t.Title.Name == "Title1" &&
-                t.Title.Description == "description1" &&
-                t.Title.Ratings.Count == 1 &&
-                t.Title.Ratings.First().Reviewer == "IMDb" &&
-                t.Title.Ratings.First().Rating == 9.0m);
+                t.Title.Name == TitleOne.Name &&
+                t.Title.Description == TitleOne.Description);
+        }
+
+        [Fact]
+        public async Task Test_If_Is_Saving_All_Titles_Genres()
+        {
+            // Arrange
+            int[] genres =
+            {
+                28,12,16
+            };
+
+            // Act
+            await titleGenreRepository.RegisterGenresList(TitleGenres);
+
+            IEnumerable<TitleGenre> allTitleOneGenres = await titleGenreRepository.GetTitleGenresById(TitleOne.Id);
+            IEnumerable<TitleGenre> allTitleTwoGenres = await titleGenreRepository.GetTitleGenresById(TitleTwo.Id);
+
+            // Assert
+            allTitleOneGenres.Should().HaveCount(3);
+            allTitleTwoGenres.Should().HaveCount(3);
+
+            foreach (TitleGenre item in allTitleOneGenres)
+            {
+                item.TitleId.Should().Be(TitleOne.Id);
+                item.Title.Name.Should().Be(TitleOne.Name);
+                item.Title.Description.Should().Be(TitleOne.Description);
+                item.Title.Ratings.Should().BeEquivalentTo(TitleOne.Ratings);
+                Assert.Contains(item.GenreId, genres);
+            }
+
+            foreach (TitleGenre item in allTitleTwoGenres)
+            {
+                item.TitleId.Should().Be(TitleTwo.Id);
+                item.Title.Name.Should().Be(TitleTwo.Name);
+                item.Title.Description.Should().Be(TitleTwo.Description);
+                item.Title.Ratings.Should().BeEquivalentTo(TitleTwo.Ratings);
+                Assert.Contains(item.GenreId, genres);
+            }
         }
     }
 }

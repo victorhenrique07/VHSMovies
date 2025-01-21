@@ -76,9 +76,9 @@ namespace VHSMovies.Infraestructure.Repository
             return cast;
         }
 
-        public Task<IEnumerable<Cast>> GetAll()
+        public async Task<IEnumerable<Cast>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Casts.ToListAsync();
         }
 
         public Task<IEnumerable<Cast>> GetAllByReviewerName(string reviewerName)
