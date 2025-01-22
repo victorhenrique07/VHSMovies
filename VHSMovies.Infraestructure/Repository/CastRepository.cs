@@ -76,6 +76,12 @@ namespace VHSMovies.Infraestructure.Repository
             return cast;
         }
 
+        public async Task<IReadOnlyCollection<Cast>> GetCastsByPersonRole(PersonRole role)
+        {
+            return await _dbContext.Casts
+                .Where(c => c.Role == role).ToListAsync();
+        }
+
         public async Task<IEnumerable<Cast>> GetAll()
         {
             return await _dbContext.Casts.ToListAsync();

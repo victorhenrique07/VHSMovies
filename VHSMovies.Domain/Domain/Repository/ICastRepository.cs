@@ -10,5 +10,7 @@ namespace VHSMovies.Domain.Domain.Repository
     public interface ICastRepository : IRepository<Cast>
     {
         Task<Cast> GetCastForTitleAsync(int titleId, int personId);
+
+        Task<IReadOnlyCollection<Cast>> GetCastsByPersonRole(PersonRole personRole);
     }
 }

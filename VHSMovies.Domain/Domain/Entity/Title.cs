@@ -32,7 +32,5 @@ namespace VHSMovies.Domain.Domain.Entity
         {
             return $"{this.Id} - {this.Name}";
         }
-
-
     }
 }

@@ -8,7 +8,7 @@
 
         public string Description { get; set; }
 
-        public string[] Genres { get; set; }
+        public IReadOnlyCollection<GenreResponse> Genres { get; set; }
 
         public TitleResponse(int id, string name, string description)
         {

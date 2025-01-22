@@ -13,6 +13,6 @@ namespace VHSMovies.Domain.Domain.Repository
 
         Task<List<TitleGenre>> GetTitleGenresById(int id);
 
-        Task<List<TitleGenre>> GetTitlesByGenreId(int genreId);
+        Task<List<TitleGenre>> GetTitlesByGenreId(int[] genresIds);
     }
 }

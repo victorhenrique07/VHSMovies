@@ -51,11 +51,11 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task<List<TitleGenre>> GetTitlesByGenreId(int genreId)
+        public async Task<List<TitleGenre>> GetTitlesByGenreId(int[] genresIds)
         {
             try
             {
-                return await _dbContext.TitlesGenres.Where(t => t.GenreId == genreId).ToListAsync();
+                return await _dbContext.TitlesGenres.Where(t => genresIds.Contains(t.GenreId)).ToListAsync();
             }
             catch (Exception ex)
             {

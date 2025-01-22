@@ -12,7 +12,7 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public int TitleId { get; set; }
         public Title Title { get; set; }
-
+        public Genre Genre { get; set; }
         public int GenreId { get; set; }
 
         public TitleGenre()
