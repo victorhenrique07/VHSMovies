@@ -37,7 +37,7 @@ namespace VHSMovies.Application.Handlers
 
             if (query.Genres != null)
             {
-                IEnumerable<TitleGenre> genres = (await titleGenreRepository.GetTitlesByGenreId(query.Genres)).ToList(); // Materializa os 15 objetos.
+                IEnumerable<TitleGenre> genres = (await titleGenreRepository.GetTitlesByGenreId(query.Genres)).ToList();
 
                 titles = genres
                     .GroupJoin(
@@ -63,25 +63,43 @@ namespace VHSMovies.Application.Handlers
 
             if (query.Directors != null)
             {
-                IEnumerable<Cast> actors = await castRepository.GetCastsByPersonRole(PersonRole.Director);
+                IEnumerable<Cast> directors = await castRepository.GetCastsByPersonRole(PersonRole.Director);
 
-                titles = from cast in actors
-                         join title in titles
-                         on cast.TitleId equals title.Id
-                         select title;
+                titles = directors
+                .GroupJoin(
+                    titles,
+                    cast => cast.TitleId,
+                    title => title.Id,
+                    (cast, matchingTitles) => matchingTitles
+                )
+                .SelectMany(list => list)
+                .GroupBy(title => title.Id)
+                .Select(group => group.First());
             }
 
             if (query.Writers != null)
             {
-                IEnumerable<Cast> actors = await castRepository.GetCastsByPersonRole(PersonRole.Writer);
+                IEnumerable<Cast> writers = await castRepository.GetCastsByPersonRole(PersonRole.Writer);
 
-                titles = from cast in actors
-                         join title in titles
-                         on cast.TitleId equals title.Id
-                         select title;
+                titles = writers
+                    .GroupJoin(
+                    titles,
+                    cast => cast.TitleId,
+                    title => title.Id,
+                    (cast, matchingTitles) => matchingTitles
+                )
+                .SelectMany(list => list)
+                .GroupBy(title => title.Id)
+                .Select(group => group.First());
             }
 
-            response = titles.ToList().Select(t => new TitleResponse(t.Id, t.Name, t.Description)).ToList();
+            response = titles
+                .Select(t => 
+                    new TitleResponse(t.Id, t.Name, t.Description) 
+                    { 
+                        Genres = t.Genres.Select(g => 
+                            new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList() 
+                    }).ToList();
 
             return response;
         }

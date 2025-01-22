@@ -52,9 +52,13 @@ namespace VHSMovies.Test
             castRepository = new CastRepository(dbContext);
 
             var fixture = new Fixture();
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
             fixture.Customize<Title>(composer =>
-                composer.Without(t => t.Ratings));
+                composer
+                    .Without(t => t.Ratings)
+                    .Without(t => t.Genres));
 
             fixture.Customize<Movie>(composer =>
                 composer.Without(t => t.Ratings));

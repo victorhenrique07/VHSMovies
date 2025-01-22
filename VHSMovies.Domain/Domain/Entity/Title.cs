@@ -17,6 +17,8 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public List<Review> Ratings { get; set; } = new List<Review>();
 
+        public List<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
+
         public Title()
         {
         }

@@ -11,5 +11,11 @@ namespace VHSMovies.Application.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public GenreResponse(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 }
