@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/VHSMovies
+/VHSMovies.Api/obj
+/.vs
+/VHSMovies.DataReader/bin/Debug/net9.0
+/VHSMovies.DataReader/obj
+/VHSMovies.Data/obj
+/VHSMovies.Application/obj
+/VHSMovies.Api/bin/Debug/net8.0/selenium-manager
+/VHSMovies.Application/bin/Debug/net9.0
+bin
+obj
+*.pdb
+*.dll
