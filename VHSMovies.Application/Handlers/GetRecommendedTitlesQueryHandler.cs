@@ -31,24 +31,18 @@ namespace VHSMovies.Application.Handlers
 
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetRecommendedTitlesQuery query, CancellationToken cancellationToken)
         {
-            IEnumerable<Title> titles = (await titleRepository.GetAll()).ToList();
+            IEnumerable<Title> titles = await titleRepository.GetAll();
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
-            if (query.Genres != null)
+            if (query.IncludeGenres != null)
             {
-                IEnumerable<TitleGenre> genres = (await titleGenreRepository.GetTitlesByGenreId(query.Genres)).ToList();
+                titles = titles.Where(title => title.Genres.Any(genre => query.IncludeGenres.Contains(genre.GenreId)));
+            }
 
-                titles = genres
-                    .GroupJoin(
-                        titles,
-                        genre => genre.TitleId,
-                        title => title.Id,
-                        (genre, matchingTitles) => matchingTitles
-                    )
-                    .SelectMany(lsit => lsit)
-                    .GroupBy(title => title.Id)
-                    .Select(group => group.First());
+            if (query.ExcludeGenres != null)
+            {
+                titles = titles.Where(title => !title.Genres.Any(genre => query.ExcludeGenres.Contains(genre.GenreId)));
             }
 
             if (query.Actors != null)

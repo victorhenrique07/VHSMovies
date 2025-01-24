@@ -10,7 +10,8 @@ namespace VHSMovies.Application.Commands
 {
     public class GetRecommendedTitlesQuery : IRequest<IReadOnlyCollection<TitleResponse>>
     {
-        public int[]? Genres { get; set; }
+        public int[]? IncludeGenres { get; set; }
+        public int[]? ExcludeGenres { get; set; }
 
         public IEnumerable<decimal>? Ratings { get; set; }
 
