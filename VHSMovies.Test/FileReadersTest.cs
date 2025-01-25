@@ -67,25 +67,37 @@ namespace VHSMovies.Test
                     {
                         {"filmid", "1"},
                         {"title", "TitleTest1" },
+                        {"backdrop_path", "backdrop_one" },
                         {"overview", "OverviewTest1" },
+                        {"poster_path", "poster_one" },
                         {"imdb_id", "11" },
-                        {"runtime", "120" }
+                        {"runtime", "120" },
+                        {"vote_average", "9" },
+                        {"vote_count", "10" },
                     },
                     new Dictionary<string, string>()
                     {
                         {"filmid", "2"},
                         {"title", "TitleTest2" },
+                        {"backdrop_path", "backdrop_one" },
                         {"overview", "OverviewTest2" },
+                        {"poster_path", "poster_one" },
                         {"imdb_id", "12" },
-                        {"runtime", "120" }
+                        {"runtime", "120" },
+                        {"vote_average", "8" },
+                        {"vote_count", "1000" },
                     },
                     new Dictionary<string, string>()
                     {
                         {"filmid", "3"},
                         {"title", "TitleTest3" },
+                        {"backdrop_path", "backdrop_one" },
                         {"overview", "OverviewTest3" },
                         {"imdb_id", "13" },
-                        {"runtime", "120" }
+                        {"poster_path", "poster_one" },
+                        {"runtime", "120" },
+                        {"vote_average", "9.2" },
+                        {"vote_count", "1290" },
                     },
                 }
             };

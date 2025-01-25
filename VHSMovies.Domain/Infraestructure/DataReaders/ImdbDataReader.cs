@@ -30,7 +30,7 @@ namespace VHSMovies.Domain.Infraestructure.DataReaders
                 }
             }
 
-            Review review = new Review(GetSourceName(), rating);
+            Review review = new Review(GetSourceName(), rating, 0);
 
             return review;
         }

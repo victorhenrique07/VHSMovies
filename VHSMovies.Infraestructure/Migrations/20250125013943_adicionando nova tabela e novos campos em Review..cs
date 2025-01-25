@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VHSMovies.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class teste : Migration
+    public partial class adicionandonovatabelaenovoscamposemReview : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,10 +30,7 @@ namespace VHSMovies.Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ExternalId = table.Column<string>(type: "text", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,10 +43,8 @@ namespace VHSMovies.Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ExternalId = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,7 +58,8 @@ namespace VHSMovies.Infraestructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TitleId = table.Column<int>(type: "integer", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: false)
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,17 +100,38 @@ namespace VHSMovies.Infraestructure.Migrations
                 name: "Reviews",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<int>(type: "integer", nullable: false),
                     Reviewer = table.Column<string>(type: "text", nullable: false),
                     Rating = table.Column<decimal>(type: "numeric", nullable: false),
-                    TitleId = table.Column<int>(type: "integer", nullable: false)
+                    TitleExternalId = table.Column<string>(type: "text", nullable: false),
+                    ReviewCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_Titles_TitleId",
+                        name: "FK_Reviews_Titles_Id",
+                        column: x => x.Id,
+                        principalTable: "Titles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Title_Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PrincipalImageUrl = table.Column<string>(type: "text", nullable: false),
+                    PosterImageUrl = table.Column<string>(type: "text", nullable: false),
+                    TitleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Title_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Title_Images_Titles_TitleId",
                         column: x => x.TitleId,
                         principalTable: "Titles",
                         principalColumn: "Id",
@@ -125,13 +142,14 @@ namespace VHSMovies.Infraestructure.Migrations
                 name: "TitlesGenres",
                 columns: table => new
                 {
-                    TitleId = table.Column<int>(type: "integer", nullable: false),
-                    GenreId = table.Column<int>(type: "integer", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TitleId = table.Column<int>(type: "integer", nullable: false),
+                    GenreId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TitlesGenres", x => new { x.TitleId, x.GenreId });
+                    table.PrimaryKey("PK_TitlesGenres", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TitlesGenres_Genres_GenreId",
                         column: x => x.GenreId,
@@ -183,6 +201,12 @@ namespace VHSMovies.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Casts_Id",
+                table: "Casts",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Casts_PersonId",
                 table: "Casts",
                 column: "PersonId");
@@ -193,14 +217,25 @@ namespace VHSMovies.Infraestructure.Migrations
                 column: "TitleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_TitleId",
-                table: "Reviews",
+                name: "IX_People_Id",
+                table: "People",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Title_Images_TitleId",
+                table: "Title_Images",
                 column: "TitleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TitlesGenres_GenreId",
                 table: "TitlesGenres",
                 column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TitlesGenres_TitleId",
+                table: "TitlesGenres",
+                column: "TitleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TVShowSeasons_TVShowId",
@@ -219,6 +254,9 @@ namespace VHSMovies.Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "Title_Images");
 
             migrationBuilder.DropTable(
                 name: "TitlesGenres");

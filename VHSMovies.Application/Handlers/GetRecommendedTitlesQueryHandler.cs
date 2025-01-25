@@ -37,7 +37,7 @@ namespace VHSMovies.Application.Handlers
 
             if (query.IncludeGenres != null)
             {
-                titles = titles.Where(title => title.Genres.Any(genre => query.IncludeGenres.Contains(genre.GenreId)));
+                titles = titles.Where(title => title.Genres.Any(genre => query.IncludeGenres.Contains(genre.Genre.Id)));
             }
 
             if (query.ExcludeGenres != null)
@@ -49,10 +49,16 @@ namespace VHSMovies.Application.Handlers
             {
                 IEnumerable<Cast> actors = await castRepository.GetCastsByPersonRole(PersonRole.Actor);
 
-                titles = from cast in actors
-                         join title in titles
-                         on cast.TitleId equals title.Id
-                         select title;
+                titles = actors.
+                    GroupJoin(
+                        titles,
+                        cast => cast.TitleId,
+                        title => title.Id,
+                        (cast, matchingTitles) => matchingTitles
+                    )
+                    .SelectMany(list => list)
+                    .GroupBy(title => title.Id)
+                    .Select(group => group.First());
             }
 
             if (query.Directors != null)

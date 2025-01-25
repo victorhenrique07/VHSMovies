@@ -10,7 +10,7 @@ using VHSMovies.Application.Commands;
 namespace VHSMovies.Api.Controllers
 {
     [ApiController]
-    [Route("/api/")]
+    [Route("api")]
     [RequestSizeLimit(100 * 1024 * 1024)]
     public class FileReaderController : ControllerBase
     {

@@ -16,7 +16,6 @@ namespace VHSMovies.Application.Handlers
     public class ReadMoviesCommandHandler : IRequestHandler<ReadMoviesCommand, Unit>
     {
         private readonly ITitleRepository<Title> titleRepository;
-
         private readonly ILogger<ReadMoviesCommandHandler> _logger;
 
         public ReadMoviesCommandHandler(ITitleRepository<Title> titleRepository,
@@ -30,6 +29,8 @@ namespace VHSMovies.Application.Handlers
         {
             List<Title> titles = new List<Title>();
 
+            List<TitleImages> images = new List<TitleImages>();
+
             var teste = await titleRepository.GetAllByReviewerName("imdb");
 
             var existingIds = new HashSet<int>((await titleRepository.GetAll()).Select(x => x.Id));
@@ -38,9 +39,13 @@ namespace VHSMovies.Application.Handlers
             {
                 "filmid",
                 "title",
+                "backdrop_path",
                 "overview",
+                "poster_path",
                 "imdb_id",
-                "runtime"
+                "runtime",
+                "vote_average",
+                "vote_count"
             };
 
             foreach (var rows in command.TitlesRows)
@@ -50,6 +55,10 @@ namespace VHSMovies.Application.Handlers
                 string description = "";
                 string IMDbId = "";
                 int runTime = 0;
+                string poster_path = "";
+                string backdrop_path = "";
+                decimal ratingAverage = 0.0m;
+                int ratingsCount = 0;
 
                 bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
 
@@ -62,10 +71,18 @@ namespace VHSMovies.Application.Handlers
                         id = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
                     if (row.Key.ToLower() == "title")
                         name = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "overview")
-                        description = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
                     if (row.Key.ToLower() == "imdb_id")
                         IMDbId = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
+                    if (row.Key.ToLower() == "backdrop_path")
+                        backdrop_path = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
+                    if (row.Key.ToLower() == "overview")
+                        description = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
+                    if (row.Key.ToLower() == "poster_path")
+                        poster_path = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
+                    if (row.Key.ToLower() == "vote_average")
+                        ratingAverage = !string.IsNullOrEmpty(row.Value) ? decimal.Parse(row.Value) : 0;
+                    if (row.Key.ToLower() == "vote_count")
+                        ratingsCount = !string.IsNullOrEmpty(row.Value) ? int.Parse(row.Value) : 0;
                     if (row.Key.ToLower() == "runtime")
                         runTime = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
                 }
@@ -81,16 +98,15 @@ namespace VHSMovies.Application.Handlers
                     continue;
                 }
 
-                Review review = new Review("IMDb", 0.0m)
+                Review review = new Review("IMDb", ratingAverage, ratingsCount)
                 {
                     TitleExternalId = IMDbId
                 };
 
-                Movie movie = new Movie(name, description, new List<Review>() { review }, runTime)
+                Movie movie = new Movie(name, description, backdrop_path, poster_path, new List<Review>() { review }, runTime)
                 {
                     Id = id
                 };
-
                 titles.Add(movie);
             }
 

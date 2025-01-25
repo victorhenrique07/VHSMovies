@@ -60,6 +60,16 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<Cast>()
                 .HasKey(tp => tp.Id);
 
+            /*modelBuilder.Entity<Cast>()
+                .HasOne(tp => tp.Title)
+                .WithMany(t => t.Cast)
+                .HasForeignKey(tp => tp.TitleId);*/
+
+            modelBuilder.Entity<Cast>()
+                .HasOne(tp => tp.Person)
+                .WithMany(p => p.Titles)
+                .HasForeignKey(tp => tp.PersonId);
+
             modelBuilder.Entity<Cast>()
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
@@ -68,22 +78,23 @@ namespace VHSMovies.Infraestructure
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
 
+            /*modelBuilder.Entity<Review>()
+                .HasOne(r => r.Title)
+                .WithMany(t => t.Ratings)
+                .HasForeignKey(r => r.TitleId);*/
+
             modelBuilder.Entity<TitleGenre>()
-                .HasKey(tg => new { tg.TitleId, tg.GenreId });
+                .HasOne(tg => tg.Title)
+                .WithMany(t => t.Genres)
+                .HasForeignKey(tg => tg.TitleId);
+
+            modelBuilder.Entity<TitleGenre>()
+                .HasOne(tg => tg.Genre)
+                .WithMany(t => t.Titles)
+                .HasForeignKey(tg => tg.GenreId);
 
             modelBuilder.Entity<Genre>()
                 .HasKey(g => g.Id);
-
-            modelBuilder.Entity<Review>()
-                .HasKey(t => t.Id);
-
-            modelBuilder.Entity<Review>()
-                .Property(t => t.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Title>()
-                .Property(t => t.Id)
-                .ValueGeneratedOnAdd();
 
             base.OnModelCreating(modelBuilder);
         }

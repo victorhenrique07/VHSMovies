@@ -193,7 +193,7 @@ namespace VHSMovies.Test
         {
             foreach (var t in this.Titles_Action_SciFi_Fantasy)
             {
-                var titleToAdd = new Title(t.Name, t.Description, new List<Review>())
+                var titleToAdd = new Title(t.Name, t.Description, "", "", new List<Review>())
                 {
                     Id = t.Id,
                     Genres = t.Genres.Select(g => new TitleGenre()
@@ -212,7 +212,7 @@ namespace VHSMovies.Test
             }
             foreach (var t in this.Titles_Drama_SciFi_Thriller)
             {
-                var titleToAdd = new Title(t.Name, t.Description, new List<Review>())
+                var titleToAdd = new Title(t.Name, t.Description, "", "", new List<Review>())
                 {
                     Id = t.Id,
                     Genres = t.Genres.Select(g => new TitleGenre()
@@ -231,7 +231,7 @@ namespace VHSMovies.Test
             }
             foreach (var t in this.Titles_Romance_Comedy_Thriller)
             {
-                var titleToAdd = new Title(t.Name, t.Description, new List<Review>())
+                var titleToAdd = new Title(t.Name, t.Description, "", "", new List<Review>())
                 {
                     Id = t.Id,
                     Genres = t.Genres.Select(g => new TitleGenre()
@@ -255,7 +255,7 @@ namespace VHSMovies.Test
 
             foreach (TitleResponse title in Titles_Action_SciFi_Fantasy)
             {
-                Title titleToAdd = new Title(title.Name, title.Description, new List<Review>())
+                Title titleToAdd = new Title(title.Name, title.Description, "", "", new List<Review>())
                 {
                     Id = title.Id
                 };
@@ -283,7 +283,7 @@ namespace VHSMovies.Test
 
             foreach (TitleResponse title in Titles_Drama_SciFi_Thriller)
             {
-                Title titleToAdd = new Title(title.Name, title.Description, new List<Review>())
+                Title titleToAdd = new Title(title.Name, title.Description, "", "", new List<Review>())
                 {
                     Id = title.Id
                 };
@@ -309,7 +309,7 @@ namespace VHSMovies.Test
             }
             foreach (TitleResponse title in Titles_Romance_Comedy_Thriller)
             {
-                Title titleToAdd = new Title(title.Name, title.Description, new List<Review>())
+                Title titleToAdd = new Title(title.Name, title.Description, "", "", new List<Review>())
                 {
                     Id = title.Id
                 };

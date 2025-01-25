@@ -10,8 +10,14 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public Movie() { }
 
-        public Movie(string name, string description, List<Review> ratings, decimal? duration) :
-            base(name, description, ratings)
+        public Movie(
+            string name, 
+            string description, 
+            string principalImageUrl, 
+            string posterImageUrl, 
+            List<Review> ratings, 
+            decimal? duration) :
+            base(name, description, principalImageUrl, posterImageUrl, ratings)
         {
             this.Duration = duration;
         }

@@ -11,8 +11,8 @@ using VHSMovies.Infraestructure;
 namespace VHSMovies.Infraestructure.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20250114213323_a-migration")]
-    partial class amigration
+    [Migration("20250125165038_adicionando mapeamento para TitleImages.")]
+    partial class adicionandomapeamentoparaTitleImages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,13 +93,13 @@ namespace VHSMovies.Infraestructure.Migrations
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Review", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Rating")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Reviewer")
                         .IsRequired()
@@ -109,12 +109,7 @@ namespace VHSMovies.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TitleId");
 
                     b.ToTable("Reviews", (string)null);
                 });
@@ -165,23 +160,51 @@ namespace VHSMovies.Infraestructure.Migrations
 
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TitleGenre", b =>
                 {
-                    b.Property<int>("TitleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.HasKey("TitleId", "GenreId");
+                    b.Property<int>("GenreId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TitleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("GenreId");
 
+                    b.HasIndex("TitleId");
+
                     b.ToTable("TitlesGenres", (string)null);
+                });
+
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TitleImages", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PosterImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrincipalImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TitleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TitleId");
+
+                    b.ToTable("TitleImages", (string)null);
                 });
 
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Movie", b =>
@@ -210,7 +233,7 @@ namespace VHSMovies.Infraestructure.Migrations
                         .IsRequired();
 
                     b.HasOne("VHSMovies.Domain.Domain.Entity.Title", "Title")
-                        .WithMany("Cast")
+                        .WithMany()
                         .HasForeignKey("TitleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -222,13 +245,11 @@ namespace VHSMovies.Infraestructure.Migrations
 
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Review", b =>
                 {
-                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", "Title")
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", null)
                         .WithMany("Ratings")
-                        .HasForeignKey("TitleId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Title");
                 });
 
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TVShowSeason", b =>
@@ -241,7 +262,7 @@ namespace VHSMovies.Infraestructure.Migrations
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TitleGenre", b =>
                 {
                     b.HasOne("VHSMovies.Domain.Domain.Entity.Genre", "Genre")
-                        .WithMany()
+                        .WithMany("Titles")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -253,6 +274,17 @@ namespace VHSMovies.Infraestructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Genre");
+
+                    b.Navigation("Title");
+                });
+
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.TitleImages", b =>
+                {
+                    b.HasOne("VHSMovies.Domain.Domain.Entity.Title", "Title")
+                        .WithMany()
+                        .HasForeignKey("TitleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Title");
                 });
@@ -275,6 +307,11 @@ namespace VHSMovies.Infraestructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Genre", b =>
+                {
+                    b.Navigation("Titles");
+                });
+
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Person", b =>
                 {
                     b.Navigation("Titles");
@@ -282,8 +319,6 @@ namespace VHSMovies.Infraestructure.Migrations
 
             modelBuilder.Entity("VHSMovies.Domain.Domain.Entity.Title", b =>
                 {
-                    b.Navigation("Cast");
-
                     b.Navigation("Genres");
 
                     b.Navigation("Ratings");
