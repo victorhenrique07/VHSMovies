@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using OpenQA.Selenium.DevTools.V129.Audits;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +17,17 @@ namespace VHSMovies.Application.Handlers
     public class ReadMoviesCommandHandler : IRequestHandler<ReadMoviesCommand, Unit>
     {
         private readonly ITitleRepository<Title> titleRepository;
+        private readonly IGenreRepository genreRepository;
         private readonly ILogger<ReadMoviesCommandHandler> _logger;
 
+
+
         public ReadMoviesCommandHandler(ITitleRepository<Title> titleRepository,
+            IGenreRepository genreRepository,
             ILogger<ReadMoviesCommandHandler> _logger)
         {
             this.titleRepository = titleRepository;
+            this.genreRepository = genreRepository;
             this._logger = _logger;
         }
 
@@ -33,19 +39,22 @@ namespace VHSMovies.Application.Handlers
 
             var teste = await titleRepository.GetAllByReviewerName("imdb");
 
+            IEnumerable<Genre> genres = await genreRepository.GetAll();
+
             var existingIds = new HashSet<int>((await titleRepository.GetAll()).Select(x => x.Id));
 
             List<string> validHeaders = new List<string>()
             {
-                "filmid",
+                "id",
                 "title",
+                "runtime",
                 "backdrop_path",
+                "tconst",
                 "overview",
                 "poster_path",
-                "imdb_id",
-                "runtime",
-                "vote_average",
-                "vote_count"
+                "genres",
+                "averageRating",
+                "numVotes"
             };
 
             foreach (var rows in command.TitlesRows)
@@ -59,32 +68,36 @@ namespace VHSMovies.Application.Handlers
                 string backdrop_path = "";
                 decimal ratingAverage = 0.0m;
                 int ratingsCount = 0;
+                List<string> titleGenres = new List<string>();
 
-                bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
+                bool matchKeys = validHeaders.All(header =>
+                    rows.Any(r => r.Key.Trim().ToLower() == header.Trim().ToLower())
+                );
 
                 if (!matchKeys)
                     throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
 
+                Dictionary<string, Action<string>> headerToPropertyMap = new Dictionary<string, Action<string>>
+                {
+                    { "id", value => id = ParseInt(value) },
+                    { "title", value => name = GetValueOrDefault(value) },
+                    { "runtime", value => runTime = ParseInt(value) },
+                    { "backdrop_path", value => backdrop_path = GetValueOrDefault(value) },
+                    { "tconst", value => IMDbId = GetValueOrDefault(value) },
+                    { "overview", value => description = GetValueOrDefault(value) },
+                    { "poster_path", value => poster_path = GetValueOrDefault(value) },
+                    { "genres", value => titleGenres = !string.IsNullOrEmpty(value) ? value.Split(",").Select(g => g.Trim()).ToList() : new List<string>() },
+                    { "averagerating", value => ratingAverage = ParseDecimal(value) },
+                    { "numvotes", value => ratingsCount = ParseInt(value) },
+                };
+
                 foreach (var row in rows)
                 {
-                    if (row.Key.ToLower() == "filmid")
-                        id = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-                    if (row.Key.ToLower() == "title")
-                        name = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "imdb_id")
-                        IMDbId = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "backdrop_path")
-                        backdrop_path = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "overview")
-                        description = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "poster_path")
-                        poster_path = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "vote_average")
-                        ratingAverage = !string.IsNullOrEmpty(row.Value) ? decimal.Parse(row.Value) : 0;
-                    if (row.Key.ToLower() == "vote_count")
-                        ratingsCount = !string.IsNullOrEmpty(row.Value) ? int.Parse(row.Value) : 0;
-                    if (row.Key.ToLower() == "runtime")
-                        runTime = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
+                    var key = row.Key.Trim().ToLower();
+                    if (headerToPropertyMap.ContainsKey(key))
+                    {
+                        headerToPropertyMap[key](row.Value);
+                    }
                 }
 
                 _logger.LogInformation($"Processando filme: {id} - {name}");
@@ -98,21 +111,57 @@ namespace VHSMovies.Application.Handlers
                     continue;
                 }
 
+                List<TitleGenre> titlesGenres = new List<TitleGenre>();
+
+                foreach (string genre in titleGenres)
+                {
+                    Genre genreExists = genres.FirstOrDefault(g => string.Equals(g.Name.Trim(), genre, StringComparison.OrdinalIgnoreCase));
+
+                    if (genreExists == null)
+                        continue;
+
+                    TitleGenre titleGenre = new TitleGenre()
+                    {
+                        Genre = genreExists,
+                        GenreId = genreExists.Id
+                    };
+
+                    titlesGenres.Add(titleGenre);
+                }
+
                 Review review = new Review("IMDb", ratingAverage, ratingsCount)
                 {
-                    TitleExternalId = IMDbId
+                    TitleExternalId = IMDbId,
+                    TitleId = id
                 };
 
                 Movie movie = new Movie(name, description, backdrop_path, poster_path, new List<Review>() { review }, runTime)
                 {
-                    Id = id
+                    Id = id,
+                    Genres = titlesGenres
                 };
+
                 titles.Add(movie);
             }
+
+            titles = titles.DistinctBy(t => t.Id).ToList();
 
             await titleRepository.RegisterListAsync(titles);
 
             return Unit.Value;
+        }
+
+        private static string GetValueOrDefault(string value, string defaultValue = "")
+        {
+            return !string.IsNullOrEmpty(value) ? value : defaultValue;
+        }
+        private static int ParseInt(string value)
+        {
+            return int.TryParse(value, out var result) ? result : 0;
+        }
+        private static decimal ParseDecimal(string value)
+        {
+            return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : 0.0m;
         }
     }
 }

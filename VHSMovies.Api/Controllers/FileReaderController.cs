@@ -6,12 +6,18 @@ using MediatR;
 using VHSMovies.Application.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using VHSMovies.Application.Commands;
+using System.Formats.Asn1;
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.VisualBasic.FileIO;
+using System.Collections.Generic;
 
 namespace VHSMovies.Api.Controllers
 {
     [ApiController]
     [Route("api")]
-    [RequestSizeLimit(100 * 1024 * 1024)]
+    [RequestSizeLimit(100 * 1024 * 4096)]
     public class FileReaderController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -34,6 +40,34 @@ namespace VHSMovies.Api.Controllers
             ReadMoviesCommand command = new ReadMoviesCommand()
             {
                 TitlesRows = rows
+            };
+
+            await mediator.Send(command);
+
+            stopwatch.Stop();
+
+            return Ok(new
+            {
+                Status = StatusCode(201),
+                Message = $"{rows.Count()} titles has been registered.",
+                ProcessingTime = $"{stopwatch.Elapsed} ms"
+            });
+        }
+
+        [HttpPost("read/titles/csv")]
+        public async Task<IActionResult> ReadTitlesCsv(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Nenhum arquivo enviado ou arquivo vazio.");
+
+            var stopwatch = Stopwatch.StartNew();
+
+            List<Dictionary<string, string>> rows = await ReadCsvFile(file);
+
+            ReadMoviesCommand command = new ReadMoviesCommand()
+            {
+                TitlesRows = rows,
+                isCsv = true
             };
 
             await mediator.Send(command);
@@ -130,18 +164,28 @@ namespace VHSMovies.Api.Controllers
         }
 
         [HttpPatch("update/reviews")]
-        public async Task<IActionResult> ReadReviews(IFormFile file)
+        public async Task<IActionResult> ReadReviews(IFormFile file, bool isCsv)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("None file sent or file is empty.");
 
             var stopwatch = Stopwatch.StartNew();
 
-            List<Dictionary<string, string>> rows = await ReadAllRows(file);
+            List<Dictionary<string, string>> rows = new List<Dictionary<string, string>>();
+
+            if (isCsv)
+            {
+                rows = await ReadCsvFile(file);
+            }
+            else
+            {
+                rows = await ReadAllRows(file);
+            }
 
             ReadReviewsCommand command = new ReadReviewsCommand()
             {
-                ReviewsRows = rows
+                ReviewsRows = rows,
+                isCsv = isCsv
             };
 
             await mediator.Send(command);
@@ -195,6 +239,55 @@ namespace VHSMovies.Api.Controllers
             }
 
             return rows;
+        }
+
+        private async Task<List<Dictionary<string, string>>> ReadCsvFile(IFormFile file)
+        {
+            var allData = new List<Dictionary<string, string>>();
+
+            try
+            {
+                using var stream = file.OpenReadStream();
+                using var reader = new StreamReader(stream);
+                using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HasHeaderRecord = true,
+                    HeaderValidated = null,
+                    Mode = CsvMode.RFC4180,
+                    TrimOptions = TrimOptions.Trim,
+                    Delimiter = ",",
+                    PrepareHeaderForMatch = args => args.Header.Trim()
+                });
+
+                var records = new List<CsvMovie>();
+                await foreach (var record in csv.GetRecordsAsync<CsvMovie>())
+                {
+                    if (record == null) continue;
+
+                    var processedRecord = new Dictionary<string, string>
+                    {
+                        { "id", record.id },
+                        { "title", record.title },
+                        { "runtime", record.runtime },
+                        { "backdrop_path", record.backdrop_path },
+                        { "tconst", record.tconst },
+                        { "overview", record.overview },
+                        { "poster_path", record.poster_path },
+                        { "genres", record.genres },
+                        { "averageRating", record.averageRating },
+                        { "numVotes", record.numVotes }
+                    };
+
+                    allData.Add(processedRecord);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao processar o CSV: {ex.Message}");
+                throw;
+            }
+
+            return allData;
         }
     }
 }

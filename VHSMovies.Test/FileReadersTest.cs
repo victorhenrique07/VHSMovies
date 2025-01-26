@@ -18,6 +18,7 @@ namespace VHSMovies.Test
         private readonly Mock<ITitleGenreRepository> titleGenreRepositoryMock;
         private readonly Mock<IPersonRepository> peopleRepositoryMock;
         private readonly Mock<ICastRepository> castRepositoryMock;
+        private readonly Mock<IGenreRepository> genreRepositoryMock;
         private readonly Mock<ILogger<ReadMoviesCommandHandler>> loggerTitlesMock;
         private readonly Mock<ILogger<ReadPeopleCommandHandler>> loggerPeopleMock;
         private readonly Mock<ILogger<ReadCastCommandHandler>> loggerCastMock;
@@ -29,6 +30,7 @@ namespace VHSMovies.Test
             this.titleGenreRepositoryMock = new();
             this.peopleRepositoryMock = new();
             this.castRepositoryMock = new();
+            this.genreRepositoryMock = new();
             this.loggerTitlesMock = new();
             this.loggerPeopleMock = new();
             this.loggerCastMock = new();
@@ -102,7 +104,7 @@ namespace VHSMovies.Test
                 }
             };
 
-            var handler = new ReadMoviesCommandHandler(titleRepositoryMock.Object, loggerTitlesMock.Object);
+            var handler = new ReadMoviesCommandHandler(titleRepositoryMock.Object, genreRepositoryMock.Object, loggerTitlesMock.Object);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -119,7 +121,7 @@ namespace VHSMovies.Test
                 TitlesRows = invalidRows
             };
 
-            var handler = new ReadMoviesCommandHandler(titleRepositoryMock.Object, loggerTitlesMock.Object);
+            var handler = new ReadMoviesCommandHandler(titleRepositoryMock.Object, genreRepositoryMock.Object, loggerTitlesMock.Object);
 
             // Act
             Func<Task> result = async () => await handler.Handle(command, CancellationToken.None);

@@ -45,6 +45,12 @@ namespace VHSMovies.Application.Handlers
                 titles = titles.Where(title => !title.Genres.Any(genre => query.ExcludeGenres.Contains(genre.GenreId)));
             }
 
+            if (query.MustInclude != null)
+            {
+                titles = titles
+                    .Where(title => query.MustInclude.All(mustId => title.Genres.Any(genre => genre.Genre.Id == mustId)));
+            }
+
             if (query.Actors != null)
             {
                 IEnumerable<Cast> actors = await castRepository.GetCastsByPersonRole(PersonRole.Actor);
@@ -93,9 +99,14 @@ namespace VHSMovies.Application.Handlers
                 .Select(group => group.First());
             }
 
+            titles = titles
+                .OrderByDescending(t => t.TotalRatings)
+                .ThenByDescending(t => t.MedianRate)
+                .Take(10);
+
             response = titles
                 .Select(t => 
-                    new TitleResponse(t.Id, t.Name, t.Description) 
+                    new TitleResponse(t.Id, t.Name, t.Description, t.MedianRate, t.TotalRatings) 
                     { 
                         Genres = t.Genres.Select(g => 
                             new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList() 

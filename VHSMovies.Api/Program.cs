@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.OpenApi.Models;
+using VHSMovies.Api;
 using VHSMovies.Application;
 using VHSMovies.Infraestructure;
 
@@ -10,6 +12,11 @@ builder.Services.AddControllers();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 400 * 1024 * 1024;
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -35,6 +42,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "VHS Movies API V1");
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

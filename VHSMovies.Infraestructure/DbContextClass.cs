@@ -78,10 +78,17 @@ namespace VHSMovies.Infraestructure
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
 
-            /*modelBuilder.Entity<Review>()
+            modelBuilder.Entity<Review>()
                 .HasOne(r => r.Title)
                 .WithMany(t => t.Ratings)
-                .HasForeignKey(r => r.TitleId);*/
+                .HasForeignKey(r => r.TitleId)
+                .IsRequired();
+
+            modelBuilder.Entity<Title>()
+                .HasMany(r => r.Ratings)
+                .WithOne(r => r.Title)
+                .HasForeignKey(r => r.TitleId)
+                .IsRequired();
 
             modelBuilder.Entity<TitleGenre>()
                 .HasOne(tg => tg.Title)

@@ -23,6 +23,9 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string TitleExternalId { get; set; }
 
+        public Title Title { get; set; }
+        public int TitleId { get; set; }
+
         public int ReviewCount { get; set; }
     }
 }

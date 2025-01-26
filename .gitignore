@@ -16,3 +16,4 @@ obj
 packages
 *.pdb
 *.dll
+/.containers/vhsmovies-db

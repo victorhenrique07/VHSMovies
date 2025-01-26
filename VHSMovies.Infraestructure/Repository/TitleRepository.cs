@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using EFCore.BulkExtensions;
 
 namespace VHSMovies.Infraestructure.Repository
 {
@@ -25,6 +26,7 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.Set<T>()
                 .Include(t => t.Genres)
                 .ThenInclude(tg => tg.Genre)
+                .Include(t => t.Ratings)
                 .ToListAsync();
         }
 

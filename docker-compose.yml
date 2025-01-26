@@ -1,0 +1,23 @@
+services:
+  vhsmovies.api:
+    image: ${DOCKER_REGISTRY-}vhsmoviesapi
+    container_name: vhsmovies.api
+    build:
+      context: .
+      dockerfile: VHSMovies.Api/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+
+  vhsmovies.database:
+     image: postgres:latest
+     container_name: vhsmovies.database
+     environment:
+       - POSTGRES_DB=vhsmovies
+       - POSTGRES_USER=postgres
+       - POSTGRES_PASSWORD=postgres
+     volumes:
+       - ./.containers/vhsmovies-db:/var/lib/postgresql/data
+     ports:
+       - "5432:5432"
+  

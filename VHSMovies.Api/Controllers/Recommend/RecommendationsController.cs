@@ -19,12 +19,13 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("titles")]
-        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? excludeGenres, string? ratingsRange)
+        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, string? ratingsRange)
         {
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
                 IncludeGenres = includeGenres != null ? ParseStringIntoIntArray(includeGenres) : null,
                 ExcludeGenres = excludeGenres != null ? ParseStringIntoIntArray(excludeGenres) : null,
+                MustInclude = mustInclude != null ? ParseStringIntoIntArray(mustInclude) : null
                 //Ratings = ParseStringIntoDecimalList(ratingsRange)
             };
 

@@ -18,12 +18,6 @@ namespace VHSMovies.Domain.Domain.Entity
             Name = name;
             Description = description;
             Ratings = ratings;
-
-            if (Ratings.Count() > 0)
-            { 
-                this.TotalRatings = CalculateTotalRatingsValue();
-                this.MedianRate = CalculateMedianRateValue();
-            }
         }
 
         public int Id { get; set; }
@@ -32,9 +26,19 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Description { get; set; }
 
-        public int TotalRatings { get; }
+        public int TotalRatings {
+            get
+            {
+                return CalculateTotalRatingsValue();
+            }
+        }
 
-        public decimal MedianRate { get; }
+        public decimal MedianRate { 
+            get 
+            {
+                return CalculateMedianRateValue();
+            } 
+        }
 
         public List<Review> Ratings { get; set; } = new List<Review>();
 

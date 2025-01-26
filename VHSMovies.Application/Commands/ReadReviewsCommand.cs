@@ -11,5 +11,7 @@ namespace VHSMovies.Application.Commands
     public class ReadReviewsCommand : IRequest<Unit>
     {
         public List<Dictionary<string, string>> ReviewsRows { get; set; }
+
+        public bool isCsv { get; set; }
     }
 }
