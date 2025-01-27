@@ -4,30 +4,27 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 8080
+EXPOSE 8081
 
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["VHSMovies.Api/VHSMovies.Api.csproj", "VHSMovies.Api/"]
-COPY ["VHSMovies.Application/VHSMovies.Application.csproj", "VHSMovies.Application/"]
-COPY ["VHSMovies.Domain/VHSMovies.Domain.csproj", "VHSMovies.Domain/"]
-COPY ["VHSMovies.Infraestructure/VHSMovies.Infraestructure.csproj", "VHSMovies.Infraestructure/"]
-RUN dotnet restore "./VHSMovies.Api/VHSMovies.Api.csproj"
+COPY ["VHSMovies.Website/VHSMovies.Website.csproj", "VHSMovies.Website/"]
+RUN dotnet restore "./VHSMovies.Website/VHSMovies.Website.csproj"
 COPY . .
-WORKDIR "/src/VHSMovies.Api"
-RUN dotnet build "./VHSMovies.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/VHSMovies.Website"
+RUN dotnet build "./VHSMovies.Website.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./VHSMovies.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./VHSMovies.Website.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "VHSMovies.Api.dll"]
+ENTRYPOINT ["dotnet", "VHSMovies.Website.dll"]

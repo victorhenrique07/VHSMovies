@@ -1,4 +1,13 @@
 services:
+  vhsmovies.website:
+    image: ${DOCKER_REGISTRY-}vhsmovieswebsite
+    build:
+      context: .
+      dockerfile: VHSMovies.Website/Dockerfile
+    ports:
+    - "8080:8080"
+    - "8081:8081"
+
   vhsmovies.api:
     image: ${DOCKER_REGISTRY-}vhsmoviesapi
     container_name: vhsmovies.api
@@ -20,4 +29,3 @@ services:
        - ./.containers/vhsmovies-db:/var/lib/postgresql/data
      ports:
        - "5432:5432"
-  

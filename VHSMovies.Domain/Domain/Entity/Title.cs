@@ -40,6 +40,14 @@ namespace VHSMovies.Domain.Domain.Entity
             } 
         }
 
+        public decimal Relevance
+        {
+            get
+            {
+                return CalculateRelevance();
+            }
+        }
+
         public List<Review> Ratings { get; set; } = new List<Review>();
 
         public List<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
@@ -66,6 +74,13 @@ namespace VHSMovies.Domain.Domain.Entity
             }
 
             return medianRate / Ratings.Count();
+        }
+
+        public decimal CalculateRelevance()
+        {
+            decimal totalRatingsLog = (decimal)Math.Log10(this.TotalRatings);
+
+            return (this.MedianRate * 0.6m) + totalRatingsLog;
         }
 
         public override string ToString()

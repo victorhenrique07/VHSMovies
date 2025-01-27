@@ -156,7 +156,6 @@ namespace VHSMovies.Test
             response.Should().BeEquivalentTo(Titles_Romance_Comedy_Thriller);
             response.Should().NotBeEquivalentTo(Titles_Drama_SciFi_Thriller);
             response.Should().NotBeEquivalentTo(Titles_Action_SciFi_Fantasy);
-
         }
 
         [Fact]

@@ -100,16 +100,16 @@ namespace VHSMovies.Application.Handlers
             }
 
             titles = titles
-                .OrderByDescending(t => t.TotalRatings)
-                .ThenByDescending(t => t.MedianRate)
-                .Take(10);
+                .OrderByDescending(t => t.Relevance)
+                .Take(10)
+                .ToList();
 
             response = titles
                 .Select(t => 
                     new TitleResponse(t.Id, t.Name, t.Description, t.MedianRate, t.TotalRatings) 
                     { 
                         Genres = t.Genres.Select(g => 
-                            new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList() 
+                            new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList()
                     }).ToList();
 
             return response;

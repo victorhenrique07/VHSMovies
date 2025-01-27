@@ -3,8 +3,13 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "vhsmovies.api",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
-        "vhsmovies.api": "StartDebugging"
+        "vhsmovies.api": "StartDebugging",
+        "vhsmovies.website": "StartDebugging",
+        "vhsmovies.database": "StartWithoutDebugging"
       }
     }
   }
