@@ -11,6 +11,7 @@ namespace VHSMovies.Domain.Domain.Repository
     {
         Task<IEnumerable<T>> GetAll();
         Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName);
+        Task<IEnumerable<T>> GetAllByGenreId(int genreId);
         Task<T> GetByIdAsync(int id);
         Task<T> GetByExternalIdAsync(string externalId);
         Task UpdateAsync(List<T> entity);

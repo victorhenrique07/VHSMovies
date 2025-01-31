@@ -15,9 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "VHSMovies.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Test", "VHSMovies.Test\VHSMovies.Test.csproj", "{F924AC1E-4686-437E-93FE-DA861ABBFF8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "VHSMovies.Website\VHSMovies.Website.csproj", "{53D804FA-CB7A-4D63-AD47-A098F69629BB}"
-EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E4251A38-4779-4C97-8FA1-FCCB604BE878}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "VHSMovies.Website\VHSMovies.Website.csproj", "{B50229DB-A77A-4FAD-826B-36C90634EEA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api.Integration", "VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj", "{5C918923-06AF-4EFF-B4DB-1A815574A0E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +51,18 @@ Global
 		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F924AC1E-4686-437E-93FE-DA861ABBFF8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53D804FA-CB7A-4D63-AD47-A098F69629BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53D804FA-CB7A-4D63-AD47-A098F69629BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53D804FA-CB7A-4D63-AD47-A098F69629BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53D804FA-CB7A-4D63-AD47-A098F69629BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

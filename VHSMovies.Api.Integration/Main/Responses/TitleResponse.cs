@@ -1,4 +1,10 @@
-﻿namespace VHSMovies.Application.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace VHSMovies.Api.Integration.Main.Responses
 {
     public class TitleResponse
     {
@@ -17,14 +23,5 @@
         public string PosterImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
-
-        public TitleResponse(int id, string name, string description, decimal averageRating, int totalRatings)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            AverageRating = averageRating;
-            TotalRatings = totalRatings;
-        }
     }
 }

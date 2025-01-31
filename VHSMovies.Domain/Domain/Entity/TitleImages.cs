@@ -10,8 +10,8 @@ namespace VHSMovies.Domain.Domain.Entity
     {
         public TitleImages(string principalImageUrl, string posterImageUrl)
         {
-            this.PrincipalImageUrl = $"https://image.tmdb.org/t/p/w500" + principalImageUrl;
-            this.PosterImageUrl = $"https://image.tmdb.org/t/p/w500" + posterImageUrl;
+            this.PrincipalImageUrl = $"https://image.tmdb.org/t/p/original" + principalImageUrl;
+            this.PosterImageUrl = $"https://image.tmdb.org/t/p/original" + posterImageUrl;
         }
 
         public TitleImages()

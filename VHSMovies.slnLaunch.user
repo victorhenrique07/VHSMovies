@@ -3,7 +3,11 @@
     "Name": "Novo Perfil",
     "Projects": [
       {
-        "Path": "VHSMovies.Test\\VHSMovies.Test.csproj",
+        "Path": "VHSMovies.Api\\VHSMovies.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "VHSMovies.Website\\VHSMovies.Website.csproj",
         "Action": "Start"
       }
     ]

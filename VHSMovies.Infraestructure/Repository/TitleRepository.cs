@@ -38,6 +38,14 @@ namespace VHSMovies.Infraestructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllByGenreId(int genreId)
+        {
+            return await dbContextClass.Set<T>()
+                .Include(g => g.Genres)
+                .Where(t => t.Genres.Any(r => r.GenreId == genreId))
+                .ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.Id == id);

@@ -1,0 +1,40 @@
+﻿@using MudBlazor
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_currentTheme" />
+<MudPopoverProvider />
+
+<NavMenu />
+
+<MudMainContent Class="pt-0">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Gutters="false">
+        @Body
+    </MudContainer>
+</MudMainContent>
+
+
+@code {
+    private readonly MudTheme _currentTheme = new()
+        {
+            PaletteLight = new PaletteLight
+            {
+                Primary = "#190401",
+                Secondary = "#4CAF50",
+                Info = "#64a7e2",
+                Success = "#2ECC40",
+                Warning = "#FFC107",
+                Error = "#FF0000",
+                AppbarBackground = "#212121",
+                TextPrimary = "#0A7BCF",
+                TextSecondary = "#4CAF50",
+            },
+            Typography = new Typography()
+            {
+                Default = new DefaultTypography()
+                {
+                    FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB" }
+                }
+            }
+        };
+}

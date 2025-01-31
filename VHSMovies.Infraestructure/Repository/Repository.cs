@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Repository;
 
-namespace VHSMovies.Domain.Infraestructure
+namespace VHSMovies.Infraestructure.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

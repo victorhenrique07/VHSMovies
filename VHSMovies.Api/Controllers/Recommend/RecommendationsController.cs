@@ -6,7 +6,7 @@ using VHSMovies.Application.Models;
 namespace VHSMovies.Api.Controllers.Recommend
 {
     [ApiController]
-    [Route("recommend")]
+    [Route("api/titles")]
     public class RecommendationsController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -18,7 +18,7 @@ namespace VHSMovies.Api.Controllers.Recommend
             this.configuration = configuration;
         }
 
-        [HttpGet("titles")]
+        [HttpGet("recommend")]
         public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, string? ratingsRange)
         {
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
@@ -28,6 +28,26 @@ namespace VHSMovies.Api.Controllers.Recommend
                 MustInclude = mustInclude != null ? ParseStringIntoIntArray(mustInclude) : null
                 //Ratings = ParseStringIntoDecimalList(ratingsRange)
             };
+
+            IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
+
+            return Ok(response);
+        }
+
+        [HttpGet("most-relevant")]
+        public async Task<IActionResult> GetMostRelevantTitles()
+        {
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery();
+
+            IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
+
+            return Ok(response);
+        }
+
+        [HttpGet("most-relevant/{genreId}")]
+        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId)
+        {
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenreId = genreId };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
 

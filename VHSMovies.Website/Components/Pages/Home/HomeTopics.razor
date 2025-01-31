@@ -1,0 +1,30 @@
+﻿@using VHSMovies.Api.Integration.Main.Responses
+
+<div style="display: inline-block;" class="ml-20 mr-n20 mb-10">
+    <MudText Typo="Typo.h6" Class="most-relevant-titles">@TopicName</MudText>
+    <MudDivider DividerType="DividerType.FullWidth" Style="width: 100%;" />
+</div>
+
+<MudGrid Spacing="6" Justify="Justify.Center" class="align-items-center">
+    @foreach (TitleResponse title in Titles)
+    {
+        <MudItem Class="d-flex">
+            <MudPaper Class="d-flex flex-column rounded-xl" Style="height:150px;width:100px;">
+                <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Primary" Overlap="true">
+                    <MudImage Src="@title.PosterImageUrl" Style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" Class="rounded-lg" />
+                </MudBadge>
+                <MudText Typo="Typo.body2" Class="mt-2 title-name">@title.Name</MudText>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+
+<MudDivider DividerType="DividerType.FullWidth" Style="width: 100%;" />
+
+@code {
+    [Parameter]
+    public IReadOnlyCollection<TitleResponse> Titles { get; set; }
+
+    [Parameter]
+    public string TopicName { get; set; }
+}

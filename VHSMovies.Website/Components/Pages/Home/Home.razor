@@ -1,0 +1,56 @@
+﻿@page "/"
+
+@using MudBlazor
+@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Responses
+
+@inject ITitlesClient titlesClient
+@inject HttpClient httpClient
+
+
+@if (loading)
+{
+    <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+}
+else
+{
+    <div class="movie-image d-flex justify-content-center">
+        <MudImage Src="@blackWidowBackgroundImage" Alt="Mony the dog" Elevation="-1" Width="1449" Height="736" />
+    </div>
+
+    <MudDivider Class="mt-12 mb-12 justify-content-center align-item-center d-flex" DividerType="DividerType.FullWidth"  />
+
+    <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" />
+    <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Titles" />
+    <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Titles" />
+}
+
+<style>
+
+    body {
+    background-color: black;
+    }
+</style>
+
+@code {
+    string blackWidowBackgroundImage = "https://image.tmdb.org/t/p/original/keIxh0wPr2Ymj0Btjh4gW7JJ89e.jpg";
+
+    private IReadOnlyCollection<TitleResponse> mostRelevantTitles;
+    private IReadOnlyCollection<TitleResponse> mostRelevantActionTitles;
+    private IReadOnlyCollection<TitleResponse> mostRelevantSciFiTitles;
+
+    int titleNumber = 0;
+
+    private bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+
+        mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
+        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
+        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(53);
+
+        loading = false;
+    }
+}
