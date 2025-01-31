@@ -31,6 +31,7 @@ namespace VHSMovies.Application.Handlers
             }
 
             return titles
+                .OrderByDescending(t => t.Relevance)
                 .Take(10)
                 .Select(t =>
                     new TitleResponse(t.Id, t.Name, t.Description, t.MedianRate, t.TotalRatings)

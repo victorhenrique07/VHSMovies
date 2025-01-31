@@ -17,18 +17,28 @@ else
     <div class="movie-image d-flex justify-content-center">
         <MudImage Src="@blackWidowBackgroundImage" Alt="Mony the dog" Elevation="-1" Width="1449" Height="736" />
     </div>
+    <div class="custom-line mb-12" style="height:2px;width:100%"></div>
 
-    <MudDivider Class="mt-12 mb-12 justify-content-center align-item-center d-flex" DividerType="DividerType.FullWidth"  />
+    <div style="background-color: #1B0301;">
+        <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant  Titles" />
 
-    <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" />
-    <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Titles" />
-    <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Titles" />
+        <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Sci-Fi Titles" />
+
+        <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Titles" />
+    </div>
 }
 
 <style>
 
     body {
     background-color: black;
+    }
+
+    .custom-line {
+        top: 778px;
+        gap: 0px;
+        opacity: 0px;
+        background-color: #D9D9D9;
     }
 </style>
 
@@ -47,9 +57,9 @@ else
     {
         loading = true;
 
-        mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
         mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
-        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(53);
+        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
+        mostRelevantTitles = await titlesClient.GetMostRelevantTitles(); 
 
         loading = false;
     }
