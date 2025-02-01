@@ -1,0 +1,27 @@
+﻿.black-widow-description {
+    font-family: IBM Plex Sans;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15.6px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+.genres {
+    font-family: IBM Plex Sans;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15.6px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+::deep .mud-chip-content {
+    color: #FFFFFF;
+}
+
+.movie-content {
+    top: 200px;
+}

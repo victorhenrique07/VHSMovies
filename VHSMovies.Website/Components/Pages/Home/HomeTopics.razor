@@ -1,7 +1,7 @@
 ﻿@using VHSMovies.Api.Integration.Main.Responses
 
-<div class="mb-20">
-    <div style="display: inline-block;margin-left:144px;" class="mb-10">
+<div class="pb-20">
+    <div style="display: inline-block;margin-left:144px;" class="mb-6">
         <MudText Typo="Typo.h6" Class="most-relevant-titles" Style="text-align: center;">@TopicName</MudText>
         <div class="custom-line mb-8" style="height:2px;width:100%"></div>
     </div>
@@ -11,7 +11,7 @@
         {
             <MudItem Class="d-flex">
                 <MudPaper Class="d-flex flex-column rounded-xl" Style="height:150px;width:100px;">
-                    <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Primary" Overlap="true">
+                    <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Success" Overlap="true">
                         <MudImage Src="@title.PosterImageUrl" Style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" Class="rounded-lg" />
                     </MudBadge>
                     <MudText Typo="Typo.body2" Class="mt-2 title-name">@title.Name</MudText>
@@ -44,7 +44,6 @@
         text-decoration-skip-ink: none;
         text-align: center;
     }
-
 </style>
 
 @code {

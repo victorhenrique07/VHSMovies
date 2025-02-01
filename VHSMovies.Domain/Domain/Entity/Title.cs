@@ -26,14 +26,14 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Description { get; set; }
 
-        public int TotalRatings {
+        public int TotalReviews {
             get
             {
                 return CalculateTotalRatingsValue();
             }
         }
 
-        public decimal MedianRate { 
+        public decimal AverageRating { 
             get 
             {
                 return CalculateMedianRateValue();
@@ -78,9 +78,9 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public decimal CalculateRelevance()
         {
-            decimal totalRatingsLog = (decimal)Math.Log10(this.TotalRatings);
+            decimal totalRatingsLog = (decimal)Math.Log10(this.TotalReviews);
 
-            return (this.MedianRate * 0.6m) + totalRatingsLog;
+            return (this.AverageRating * 0.6m) + totalRatingsLog;
         }
 
         public override string ToString()

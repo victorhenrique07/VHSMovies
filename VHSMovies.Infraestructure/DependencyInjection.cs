@@ -26,6 +26,7 @@ namespace VHSMovies.Infraestructure
             services.AddScoped<ICastRepository, CastRepository>();
             services.AddScoped<ITitleGenreRepository, TitleGenreRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IRecomendedTitlesRepository, RecommendedTitlesRepository>();
             services.AddScoped<ITitleRepository<Title>, TitleRepository<Title>>();
             services.AddScoped<ITitleRepository<Movie>, TitleRepository<Movie>>();
             services.AddScoped<ITitleRepository<TVShow>, TitleRepository<TVShow>>();

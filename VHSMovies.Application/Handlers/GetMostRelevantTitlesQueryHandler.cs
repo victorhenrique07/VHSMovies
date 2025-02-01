@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Application.Commands;
+using VHSMovies.Application.Factories;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
@@ -14,34 +15,42 @@ namespace VHSMovies.Application.Handlers
 {
     public class GetMostRelevantTitlesQueryHandler : IRequestHandler<GetMostRelevantTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
-        private readonly ITitleRepository<Title> titleRepository;
+        private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
 
-        public GetMostRelevantTitlesQueryHandler(ITitleRepository<Title> titleRepository)
+        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository)
         {
-            this.titleRepository = titleRepository;
+            this.recommendedTitlesRepository = recommendedTitlesRepository;
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
         {
-            IEnumerable<Title> titles = await titleRepository.GetAll();
+            IEnumerable<RecommendedTitle> titles = await recommendedTitlesRepository.GetAllRecommendedTitles();
 
-            if (query.GenreId != null)
+            if (query.GenreName != null)
             {
-                titles = titles
-                .Where(t => t.Genres.Any(g => g.GenreId == query.GenreId));
+                return titles
+                    .Where(t => t.Genres.ToLower().Contains(query.GenreName))
+                    .OrderByDescending(t => t.Relevance)
+                    .Take(10)
+                    .Select(t =>
+                        new TitleResponse(t.Id, t.Name, t.Description, t.AverageRating, t.TotalReviews)
+                        {
+                            PrincipalImageUrl = t.PrincipalImageUrl,
+                            PosterImageUrl = t.PosterImageUrl,
+                            Genres = t.Genres
+                                .Split(new[] { ", " }, StringSplitOptions.None)
+                                .ToList()
+                                .Select(gt => new GenreResponse(gt)).ToList()
+                        })
+                    .ToList();
             }
 
+            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
+
             return titles
-                .OrderByDescending(t => t.Relevance)
-                .Take(10)
-                .Select(t =>
-                    new TitleResponse(t.Id, t.Name, t.Description, t.MedianRate, t.TotalRatings)
-                    {
-                        PrincipalImageUrl = t.PrincipalImageUrl,
-                        PosterImageUrl = t.PosterImageUrl,
-                        Genres = t.Genres.Select(g =>
-                            new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList()
-                    })
-                .ToList();
+                    .OrderByDescending(t => t.Relevance)
+                    .Take(10)
+                    .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
+                    .ToList();
         }
     }
 }

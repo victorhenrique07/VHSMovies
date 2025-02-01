@@ -106,12 +106,12 @@ namespace VHSMovies.Application.Handlers
 
             response = titles
                 .Select(t => 
-                    new TitleResponse(t.Id, t.Name, t.Description, t.MedianRate, t.TotalRatings) 
+                    new TitleResponse(t.Id, t.Name, t.Description, t.AverageRating, t.TotalReviews) 
                     {
                         PosterImageUrl = t.PosterImageUrl,
                         PrincipalImageUrl = t.PrincipalImageUrl,
                         Genres = t.Genres.Select(g => 
-                            new GenreResponse(g.Genre.Id, g.Genre.Name)).ToList()
+                            new GenreResponse(g.Genre.Name)).ToList()
                     }).ToList();
 
             return response;

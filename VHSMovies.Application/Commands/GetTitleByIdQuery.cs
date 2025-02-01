@@ -8,8 +8,8 @@ using VHSMovies.Application.Models;
 
 namespace VHSMovies.Application.Commands
 {
-    public class GetMostRelevantTitlesQuery : IRequest<IReadOnlyCollection<TitleResponse>>
+    public class GetTitleByIdQuery : IRequest<TitleResponse>
     {
-        public string GenreName { get; set; }
+        public int Id { get; set; }
     }
 }

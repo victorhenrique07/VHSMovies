@@ -14,10 +14,13 @@ namespace VHSMovies.Api.Integration.Main.Clients
         [Get("/api/titles/most-relevant")]
         public Task<IReadOnlyCollection<TitleResponse>> GetMostRelevantTitles();
 
-        [Get("/api/titles/most-relevant/{genreId}")]
-        public Task<IReadOnlyCollection<TitleResponse>> GetMostRelevantTitlesByGenre(int genreId);
+        [Get("/api/titles/most-relevant/{genre}")]
+        public Task<IReadOnlyCollection<TitleResponse>> GetMostRelevantTitlesByGenre(string genre);
 
         [Get("/api/titles/recommend")]
         public Task<IReadOnlyCollection<TitleResponse>> GetRecommendationsTitles(GetRecommendedTitlesQuery query);
+
+        [Get("/api/titles/{id}")]
+        public Task<TitleResponse> GetTitleById(int id);
     }
 }

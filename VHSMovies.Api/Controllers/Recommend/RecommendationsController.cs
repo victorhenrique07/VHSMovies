@@ -44,12 +44,22 @@ namespace VHSMovies.Api.Controllers.Recommend
             return Ok(response);
         }
 
-        [HttpGet("most-relevant/{genreId}")]
-        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId)
+        [HttpGet("most-relevant/{genre}")]
+        public async Task<IActionResult> GetMostRelevantTitlesByGenre(string genre)
         {
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenreId = genreId };
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenreName = genre };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTitleById(int id)
+        {
+            GetTitleByIdQuery query = new GetTitleByIdQuery() { Id = id };
+
+            TitleResponse response = await mediator.Send(query);
 
             return Ok(response);
         }

@@ -3,6 +3,7 @@
 @using MudBlazor
 @using VHSMovies.Api.Integration.Main.Clients
 @using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Website.Components.Shared
 
 @inject ITitlesClient titlesClient
 @inject HttpClient httpClient
@@ -10,30 +11,27 @@
 
 @if (loading)
 {
-    <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    <div class="loading-container">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </div>
 }
 else
 {
-    <div class="movie-image d-flex justify-content-center">
-        <MudImage Src="@blackWidowBackgroundImage" Alt="Mony the dog" Elevation="-1" Width="1449" Height="736" />
-    </div>
-    <div class="custom-line mb-12" style="height:2px;width:100%"></div>
+    <MudContainer>
+        <HomeFeaturedMovie Src="@blackWidowBackgroundImage" Title="@blackWidowDetails" />
+    </MudContainer>
+    <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
 
-    <div style="background-color: #1B0301;">
-        <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant  Titles" />
+    <div class="pt-10">
+        <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" />
 
         <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Sci-Fi Titles" />
 
-        <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Titles" />
+        <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Action Titles" />
     </div>
 }
 
 <style>
-
-    body {
-    background-color: black;
-    }
-
     .custom-line {
         top: 778px;
         gap: 0px;
@@ -43,11 +41,13 @@ else
 </style>
 
 @code {
-    string blackWidowBackgroundImage = "https://image.tmdb.org/t/p/original/keIxh0wPr2Ymj0Btjh4gW7JJ89e.jpg";
+    string blackWidowBackgroundImage = "https://s3-alpha-sig.figma.com/img/6115/1284/ab8e0632bc53aad0618e87caa55f64f8?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ST0NtHWROGsrAPp6VMbYFHkp4L7BtQceZH4VIViJAnfuSzq61yrt0yMy8LlJMra-5L-qTQ58JbUQeKNNIk4gQdTw647WxJlkMJLWIqixZhAj7hcpTRm8mzQlvYmWO8WfehYH2n8Qjo8JbK7yl7NwLOsAOXzC6O~jcHcM1hmSSvSwEjcuPq0z1v6FACT0-tb7pfb4ubvG~cXdiVsWRisOJGPsM6PM3cH2hUBH6kF6pt4fVb1YNrCMZHS4-0HWXBMoJdcKNzzk7UwKUbLz5dKrMifzLyB5Gl6TzbwefrGS7dty6JXraFBwQmN7MnDwYpxqYDmBQZaJmrbZRscjgGXkBw__";
 
     private IReadOnlyCollection<TitleResponse> mostRelevantTitles;
     private IReadOnlyCollection<TitleResponse> mostRelevantActionTitles;
     private IReadOnlyCollection<TitleResponse> mostRelevantSciFiTitles;
+
+    private TitleResponse blackWidowDetails = new TitleResponse();
 
     int titleNumber = 0;
 
@@ -57,9 +57,11 @@ else
     {
         loading = true;
 
-        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
-        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
-        mostRelevantTitles = await titlesClient.GetMostRelevantTitles(); 
+        blackWidowDetails = await titlesClient.GetTitleById(497698);
+
+        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre("action");
+        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre("science fiction");
+        mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
 
         loading = false;
     }

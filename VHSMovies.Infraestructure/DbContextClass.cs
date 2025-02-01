@@ -34,6 +34,7 @@ namespace VHSMovies.Infraestructure
         public DbSet<Genre> Genres { get; set; }
         public DbSet<TVShow> TVShows { get; set; }
         public DbSet<TVShowSeason> TVShowSeasons { get; set; }
+        public DbSet<RecommendedTitle> RecommendedTitles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +47,12 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<Person>().ToTable("People");
             modelBuilder.Entity<Review>().ToTable("Reviews");
             modelBuilder.Entity<Genre>().ToTable("Genres");
+
+            modelBuilder.Entity<RecommendedTitle>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("recommended_titles");
+            });
 
             modelBuilder.Entity<Title>()
                 .HasMany(t => t.Ratings)

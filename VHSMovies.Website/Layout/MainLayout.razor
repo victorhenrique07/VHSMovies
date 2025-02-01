@@ -5,14 +5,20 @@
 <MudThemeProvider Theme="_currentTheme" />
 <MudPopoverProvider />
 
-<NavMenu />
 
-<MudMainContent Class="pt-0">
+<MudLayout>
+    <NavMenu />
+    <MudDivider />
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Gutters="false">
         @Body
     </MudContainer>
-</MudMainContent>
+</MudLayout>
 
+<style>
+    body {
+        background-color: black;
+    }
+</style>
 
 @code {
     private readonly MudTheme _currentTheme = new()

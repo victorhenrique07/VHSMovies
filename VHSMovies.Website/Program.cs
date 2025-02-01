@@ -18,4 +18,5 @@ Action<HttpClient> httpClientConfigurator = c =>
 builder.Services.AddRefitClient<ITitlesClient>()
     .ConfigureHttpClient(httpClientConfigurator);
 
+
 await builder.Build().RunAsync();

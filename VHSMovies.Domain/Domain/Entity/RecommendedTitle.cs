@@ -4,24 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VHSMovies.Api.Integration.Main.Responses
+namespace VHSMovies.Domain.Domain.Entity
 {
-    public class TitleResponse
+    public class RecommendedTitle
     {
+        public RecommendedTitle()
+        {
+        }
+
         public int Id { get; set; }
 
         public string Name { get; set; }
 
         public string Description { get; set; }
 
+        public int TotalReviews { get; set; }
+
         public decimal AverageRating { get; set; }
 
-        public int TotalReviews { get; set; }
+        public decimal Relevance { get; set; }
 
         public string PrincipalImageUrl { get; set; }
 
         public string PosterImageUrl { get; set; }
 
-        public IReadOnlyCollection<GenreResponse> Genres { get; set; }
+        public string Genres { get; set; }
     }
 }
