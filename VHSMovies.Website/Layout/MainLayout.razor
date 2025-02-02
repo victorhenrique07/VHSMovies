@@ -7,9 +7,9 @@
 
 
 <MudLayout>
+    <MudContainer MaxWidth="MaxWidth.Large" Gutters="false">
     <NavMenu />
     <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Gutters="false">
         @Body
     </MudContainer>
 </MudLayout>
@@ -17,6 +17,10 @@
 <style>
     body {
         background-color: black;
+    }
+
+    .mud-container-maxwidth-lg {
+        max-width: 1400px !important;
     }
 </style>
 

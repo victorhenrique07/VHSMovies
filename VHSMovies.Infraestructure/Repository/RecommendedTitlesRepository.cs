@@ -21,13 +21,16 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles()
         {
             return await dbContextClass.RecommendedTitles
+                .AsNoTracking()
                 .OrderByDescending(t => t.Relevance)
                 .ToListAsync();
         }
 
         public async Task<RecommendedTitle> GetById(int id)
         {
-            return await dbContextClass.RecommendedTitles.FirstOrDefaultAsync(t => t.Id == id);
+            return await dbContextClass.RecommendedTitles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
     }
 }

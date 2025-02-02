@@ -19,18 +19,21 @@ namespace VHSMovies.Application.Factories
                 Genres = title.Genres
                                 .Split(new[] { ", " }, StringSplitOptions.None)
                                 .ToList()
-                                .Select(gt => new GenreResponse(gt)).ToList()
+                                .Select(gt => new GenreResponse(gt)).ToList(),
             };
         }
         public TitleResponse CreateTitleResponseByTitle(Title title)
         {
+            int rankPosition = 0;
+
             return new TitleResponse(title.Id, title.Name, title.Description, title.AverageRating, title.TotalReviews)
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
                 Genres = title.Genres
                                 .Select(gt => new GenreResponse(gt.Genre.Name))
-                                .ToList()
+                                .ToList(),
+                RankPosition = rankPosition++
             };
         }
     }

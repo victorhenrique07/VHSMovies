@@ -1,10 +1,9 @@
 ﻿.pt-10 {
     position: relative;
-    z-index: 2;
     background-image: url('https://s3-alpha-sig.figma.com/img/6115/1284/ab8e0632bc53aad0618e87caa55f64f8?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ST0NtHWROGsrAPp6VMbYFHkp4L7BtQceZH4VIViJAnfuSzq61yrt0yMy8LlJMra-5L-qTQ58JbUQeKNNIk4gQdTw647WxJlkMJLWIqixZhAj7hcpTRm8mzQlvYmWO8WfehYH2n8Qjo8JbK7yl7NwLOsAOXzC6O~jcHcM1hmSSvSwEjcuPq0z1v6FACT0-tb7pfb4ubvG~cXdiVsWRisOJGPsM6PM3cH2hUBH6kF6pt4fVb1YNrCMZHS4-0HWXBMoJdcKNzzk7UwKUbLz5dKrMifzLyB5Gl6TzbwefrGS7dty6JXraFBwQmN7MnDwYpxqYDmBQZaJmrbZRscjgGXkBw__');
-    background-size: 130%;
-    background-position: 10% center;
-    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .pt-10::before {
@@ -15,7 +14,13 @@
     width: 100%;
     height: 100%;
     background-color: rgba(27, 3, 1, 0.6);
-    z-index: -1;
+    backdrop-filter: blur(15px);
+    z-index: 0;
+}
+
+.pt-10 > * {
+    position: relative;
+    z-index: 1;
 }
 
 .loading-container {

@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,41 +18,49 @@ namespace VHSMovies.Application.Handlers
     public class GetMostRelevantTitlesQueryHandler : IRequestHandler<GetMostRelevantTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
         private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
+        private readonly IMemoryCache _cache;
 
-        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository)
+        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
+            this._cache = _cache;
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
         {
             IEnumerable<RecommendedTitle> titles = await recommendedTitlesRepository.GetAllRecommendedTitles();
 
+            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
+
+            List<TitleResponse> response = new List<TitleResponse>();
+
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            };
+
             if (query.GenreName != null)
             {
-                return titles
+                response = titles
                     .Where(t => t.Genres.ToLower().Contains(query.GenreName))
                     .OrderByDescending(t => t.Relevance)
                     .Take(10)
-                    .Select(t =>
-                        new TitleResponse(t.Id, t.Name, t.Description, t.AverageRating, t.TotalReviews)
-                        {
-                            PrincipalImageUrl = t.PrincipalImageUrl,
-                            PosterImageUrl = t.PosterImageUrl,
-                            Genres = t.Genres
-                                .Split(new[] { ", " }, StringSplitOptions.None)
-                                .ToList()
-                                .Select(gt => new GenreResponse(gt)).ToList()
-                        })
-                    .ToList();
+                    .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
+                .ToList();
+
+                _cache.Set($"movies-by-{query.GenreName}", response, cacheOptions);
+
+                return response;
             }
 
-            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
-
-            return titles
+            response = titles
                     .OrderByDescending(t => t.Relevance)
                     .Take(10)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
                     .ToList();
+
+            _cache.Set("most-relevant-movies", response, cacheOptions);
+
+            return response;
         }
     }
 }

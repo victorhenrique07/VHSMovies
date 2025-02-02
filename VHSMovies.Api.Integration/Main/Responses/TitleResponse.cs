@@ -23,5 +23,7 @@ namespace VHSMovies.Api.Integration.Main.Responses
         public string PosterImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
+
+        public int RankPosition { get; set; }
     }
 }
