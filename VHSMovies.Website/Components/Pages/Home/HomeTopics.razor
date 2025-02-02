@@ -9,10 +9,10 @@
     <MudGrid Spacing="6" Justify="Justify.Center" class="align-items-center" style="width: 100%;">
         @foreach (TitleResponse title in Titles)
         {
-            <MudItem Class="d-flex">
+            <MudItem Class="d-flex mr-3">
                 <MudPaper Class="d-flex flex-column rounded-xl" Style="height:150px;width:100px;">
                     <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Success" Overlap="true">
-                        <MudImage Src="@title.PosterImageUrl" Style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" Class="rounded-lg" />
+                        <img src="@title.PosterImageUrl" style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
                     </MudBadge>
                     <MudText Typo="Typo.body2" Class="mt-2 title-name">@title.Name</MudText>
                 </MudPaper>
@@ -39,10 +39,21 @@
         font-size: 12px;
         font-weight: 400;
         line-height: 11.47px;
-        text-align: left;
         text-underline-position: from-font;
         text-decoration-skip-ink: none;
         text-align: center;
+        margin-top: 6px;
+    }
+
+    .movie-image {
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .movie-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7);
     }
 </style>
 
