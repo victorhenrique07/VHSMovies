@@ -35,68 +35,48 @@ namespace VHSMovies.Application.Handlers
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
-            if (query.IncludeGenres != null)
+            if ((query.IncludeGenres?.Any() == true) || (query.ExcludeGenres?.Any() == true) || (query.MustInclude?.Any() == true))
             {
-                titles = titles.Where(title => title.Genres.Any(genre => query.IncludeGenres.Contains(genre.Genre.Id)));
+                var includeGenres = query.IncludeGenres ?? new HashSet<int>();
+                var excludeGenres = query.ExcludeGenres ?? new HashSet<int>();
+                var mustInclude = query.MustInclude ?? new HashSet<int>();
+
+                titles = titles.Where(title =>
+                    (includeGenres.Count == 0 || title.Genres.Any(genre => includeGenres.Contains(genre.Genre.Id)))
+                    && (excludeGenres.Count == 0 || !title.Genres.Any(genre => excludeGenres.Contains(genre.GenreId)))
+                    && (mustInclude.Count == 0 || mustInclude.All(id => title.Genres.Select(g => g.Genre.Id).Contains(id)))
+                );
             }
 
-            if (query.ExcludeGenres != null)
+            if (query.Actors?.Any() == true || query.Directors?.Any() == true || query.Writers?.Any() == true)
             {
-                titles = titles.Where(title => !title.Genres.Any(genre => query.ExcludeGenres.Contains(genre.GenreId)));
-            }
+                var roles = new List<(PersonRole Role, IReadOnlyCollection<string>? Names)>
+                {
+                    (PersonRole.Actor, query.Actors),
+                    (PersonRole.Director, query.Directors),
+                    (PersonRole.Writer, query.Writers)
+                };
 
-            if (query.MustInclude != null)
-            {
-                titles = titles
-                    .Where(title => query.MustInclude.All(mustId => title.Genres.Any(genre => genre.Genre.Id == mustId)));
-            }
+                var castFilters = roles
+                    .Where(r => r.Names?.Any() == true)
+                    .ToList();
 
-            if (query.Actors != null)
-            {
-                IEnumerable<Cast> actors = await castRepository.GetCastsByPersonRole(PersonRole.Actor);
+                if (castFilters.Any())
+                {
+                    IEnumerable<int> matchingTitleIds = Enumerable.Empty<int>();
 
-                titles = actors.
-                    GroupJoin(
-                        titles,
-                        cast => cast.TitleId,
-                        title => title.Id,
-                        (cast, matchingTitles) => matchingTitles
-                    )
-                    .SelectMany(list => list)
-                    .GroupBy(title => title.Id)
-                    .Select(group => group.First());
-            }
+                    foreach (var (role, names) in castFilters)
+                    {
+                        var castMatches = await castRepository.GetCastsByPersonRole(role);
+                        var matchedTitles = castMatches.Where(c => names.Contains(c.Person.Name))
+                                                       .Select(c => c.TitleId)
+                                                       .Distinct();
 
-            if (query.Directors != null)
-            {
-                IEnumerable<Cast> directors = await castRepository.GetCastsByPersonRole(PersonRole.Director);
+                        matchingTitleIds = matchingTitleIds.Any() ? matchingTitleIds.Intersect(matchedTitles) : matchedTitles;
+                    }
 
-                titles = directors
-                .GroupJoin(
-                    titles,
-                    cast => cast.TitleId,
-                    title => title.Id,
-                    (cast, matchingTitles) => matchingTitles
-                )
-                .SelectMany(list => list)
-                .GroupBy(title => title.Id)
-                .Select(group => group.First());
-            }
-
-            if (query.Writers != null)
-            {
-                IEnumerable<Cast> writers = await castRepository.GetCastsByPersonRole(PersonRole.Writer);
-
-                titles = writers
-                    .GroupJoin(
-                    titles,
-                    cast => cast.TitleId,
-                    title => title.Id,
-                    (cast, matchingTitles) => matchingTitles
-                )
-                .SelectMany(list => list)
-                .GroupBy(title => title.Id)
-                .Select(group => group.First());
+                    titles = titles.Where(title => matchingTitleIds.Contains(title.Id));
+                }
             }
 
             titles = titles

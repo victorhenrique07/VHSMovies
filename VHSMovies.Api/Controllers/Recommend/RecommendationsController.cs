@@ -86,12 +86,12 @@ namespace VHSMovies.Api.Controllers.Recommend
             return Ok(response);
         }
 
-        private int[] ParseStringIntoIntArray(string data)
+        private HashSet<int> ParseStringIntoIntArray(string data)
         {
-            int[] list = data
+            HashSet<int> list = data
                 .Split(",")
                 .Select(s => int.Parse(s.Trim()))
-                .ToArray();
+                .ToHashSet();
 
             return list;
         }

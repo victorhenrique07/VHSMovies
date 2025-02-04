@@ -23,5 +23,9 @@
 }
 
 .movie-content {
+    position: absolute;
     top: 20%;
+    left: 0;
+    padding: 20px;
+    width: 100%;
 }

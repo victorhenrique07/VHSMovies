@@ -1,0 +1,48 @@
+﻿.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    background: linear-gradient(0deg, #1F0301 100%, rgba(31, 3, 1, 0) 100%);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-text {
+    font-family: ABeeZee;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    flex-direction: row;
+    color: #777676;
+}
+
+.vhs-movies {
+    color: #E4E4E4;
+}
+
+.footer-item {
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+}
+
+
+    .footer-item:not(:last-child)::after {
+        content: "•";
+        color: white;
+        margin-left: 8px;
+    }

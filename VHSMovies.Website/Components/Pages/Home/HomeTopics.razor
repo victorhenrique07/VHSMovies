@@ -1,96 +1,39 @@
 ﻿@using VHSMovies.Api.Integration.Main.Responses
 
 <div class="pb-20">
-    <div style="display: inline-block;margin-left:30px;width:95%;" class="mb-10">
-        <MudText Typo="Typo.h6" Class="most-relevant-titles" Style="text-align: left;">@TopicName</MudText>
+    <div style="display: inline-block; width: 95%; position: relative; margin-left: 30px;" class="mb-10">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <MudText Typo="Typo.h6" Class="most-relevant-titles" Style="text-align: left;">@TopicName</MudText>
+            <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
+                <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
+                <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
+            </a>
+        </div>
+
         <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;z-index:4;"></div>
     </div>
 
-    <MudGrid Spacing="13" Justify="Justify.Center" Class="align-items-center" style="width: 100%;">
+    <MudGrid Spacing="13" Justify="Justify.Center" Class="align-items-center d-flex" style="width: 100%;">
 
         @foreach (TitleResponse title in Titles)
         {
-            <MudItem Class="d-flex mr-3 mb-20" xs="12" sm="6" md="2">
-                <MudPaper Class="d-flex flex-column rounded-xl paper-image" Style="height:301px;width:210px;">
+            <MudItem Class="d-flex mr-3" xs="12" sm="6" md="2">
+                <MudPaper Class="d-flex flex-column rounded-xl paper-image" Style="height:430px;width:210px;">
                     <MudBadge Origin="Origin.TopCenter" Content="@title.AverageRating.ToString()" Color="Color.Success" Overlap="true">
                         <img src="@title.PosterImageUrl" style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
                     </MudBadge>
                     <MudBadge Origin="Origin.BottomRight" Content="@title.RankPosition.ToString()" Color="Color.Default" Overlap="true" />
-                    <MudText Typo="Typo.body2"
-                                Class="mt-2 title-name title-name-truncated">@title.Name</MudText>
-                    <MudText Typo="Typo.body2"
-                                Class="mt-2 title-genres">@string.Join(", ", title.Genres.Select(g => g.Name))</MudText>
+                    <div class="">
+                        <MudText Typo="Typo.body2"
+                                    Class="title-name">@title.Name</MudText>
+                        <MudText Typo="Typo.body2"
+                                    Class="mt-2 title-genres">@string.Join(", ", title.Genres.Select(g => g.Name))</MudText>
+                    </div>
                 </MudPaper>
             </MudItem>
         }
     </MudGrid>
 </div>
-
-<style>
-    .most-relevant-titles {
-        font-family: Berlin Sans FB;
-        font-size: 24px;
-        font-weight: 400;
-        line-height: 22px;
-        text-align: left;
-        text-underline-position: from-font;
-        text-decoration-skip-ink: none;
-    }
-
-    .title-name {
-        font-family: Berlin Sans FB;
-        font-size: 24px;
-        font-weight: 400;
-        line-height: 22px;
-        text-underline-position: from-font;
-        text-decoration-skip-ink: none;
-        text-align: left;
-        margin-top: 6px;
-    }
-
-    
-
-    .title-genres {
-        font-family: IBM Plex Sans;
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 15.6px;
-        text-align: left;
-        text-underline-position: from-font;
-        text-decoration-skip-ink: none;
-    }
-
-    .most-relevant-titles, .title-name, .title-genres {
-        position: relative;
-        z-index: 2;
-        color: #D1D0D0;
-    }
-
-    .movie-image {
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .movie-image:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7);
-    }
-
-    .paper-image{
-        background-color: transparent;
-    }
-
-    .carousel-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        filter: blur(10px);
-        z-index: -1;
-    }
-</style>
 
 @code {
     [Parameter]

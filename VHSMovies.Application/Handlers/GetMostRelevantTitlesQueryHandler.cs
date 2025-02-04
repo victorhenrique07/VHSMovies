@@ -40,12 +40,13 @@ namespace VHSMovies.Application.Handlers
 
             if (query.GenreName != null)
             {
+                var genreNameLower = query.GenreName.ToLower();
                 response = titles
-                    .Where(t => t.Genres.ToLower().Contains(query.GenreName))
+                    .Where(t => t.Genres.ToLower().Contains(genreNameLower))
                     .OrderByDescending(t => t.Relevance)
                     .Take(10)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                .ToList();
+                    .ToList();
 
                 _cache.Set($"movies-by-{query.GenreName}", response, cacheOptions);
 
