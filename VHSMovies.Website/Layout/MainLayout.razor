@@ -6,10 +6,10 @@
 <MudPopoverProvider />
 
 
-<MudLayout>
+<MudLayout Class="layout-container">
     <NavMenu />
     <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
-    <MudContainer MaxWidth="MaxWidth.Large" Gutters="false">
+    <MudContainer Class="content-container" MaxWidth="MaxWidth.Large" Gutters="false">
         @Body
     </MudContainer>
     <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
@@ -24,6 +24,18 @@
     .mud-container-maxwidth-lg {
         max-width: 1600px !important;
     }
+
+    .layout-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Faz com que o layout ocupe a tela toda */
+    }
+
+    .content-container {
+        flex-grow: 1; /* Ocupa o espaço restante, mas não empurra o Footer para fora */
+        display: flex;
+        flex-direction: column;
+    }
 </style>
 
 @code {
@@ -32,7 +44,7 @@
             PaletteLight = new PaletteLight
             {
                 Primary = "#190401",
-                Secondary = "#4CAF50",
+                Secondary = "#A70100",
                 Info = "#64a7e2",
                 Success = "#2ECC40",
                 Warning = "#FFC107",
@@ -45,7 +57,7 @@
             {
                 Default = new DefaultTypography()
                 {
-                    FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB" }
+                    FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB", "ABeeZee" }
                 }
             }
         };

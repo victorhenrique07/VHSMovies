@@ -1,20 +1,22 @@
-﻿<MudAppBar Color="Color.Primary" Fixed="false" Style="height: 100%;width:100%" Class="relative d-flex justify-between align-items-center">
-    <div class="d-flex justify-space-between align-items-center w-100 nav-container">
-        <div class="d-flex align-items-center buttons">
-            <MudButton Class="redirect-button mr-3" Href="/">Home</MudButton>
-            <MudButton Class="redirect-button" Href="/movies">Movies</MudButton>
-        </div>
+﻿<header>
+    <MudAppBar Color="Color.Primary" Fixed="false" Style="height: 100%;width:100%" Class="relative d-flex justify-between align-items-center">
+        <div class="d-flex justify-space-between align-items-center w-100 nav-container">
+            <div class="d-flex align-items-center buttons">
+                <MudButton Class="redirect-button mr-3" Href="/">Home</MudButton>
+                <MudButton Class="redirect-button" Href="/movies">Movies</MudButton>
+            </div>
 
-        <div class="d-flex justify-content-center align-items-center logo-image">
-            <MudImage Src="images/vhs-logo.png" Height="78" Width="55" Alt="VHS Movies" Elevation="-1" />
-        </div>
+            <div class="d-flex justify-content-center align-items-center logo-image">
+                <MudImage Src="images/vhs-logo.png" Height="78" Width="55" Alt="VHS Movies" Elevation="-1" />
+            </div>
 
-        <div class="d-flex align-items-center buttons">
-            <MudButton Class="redirect-button mr-3" Href="/genres">Genres</MudButton>
-            <MudButton Class="redirect-button" Href="/recommendations">Assistant</MudButton>
+            <div class="d-flex align-items-center buttons">
+                <MudButton Class="redirect-button mr-3" Href="/genres">Genres</MudButton>
+                <MudButton Class="redirect-button" Href="/recommendations">Assistant</MudButton>
+            </div>
         </div>
-    </div>
-</MudAppBar>
+    </MudAppBar>
+</header>
 
 <style>
     .redirect-button {

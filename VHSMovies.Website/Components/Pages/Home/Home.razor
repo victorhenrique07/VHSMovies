@@ -12,7 +12,7 @@
 @if (loading)
 {
     <div class="loading-container">
-        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
     </div>
 }
 else
@@ -23,7 +23,7 @@ else
     <MudDivider />
 
     <div class="pt-10">
-        <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" />
+        @* <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" /> *@
 
         <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Sci-Fi Titles" />
 
@@ -33,11 +33,11 @@ else
 
 <style>
     .custom-line {
-        height: 2px;
-        width: 100%;
-        background-color: #E4E4E4; /* Ajuste a cor conforme necessário */
-        position: relative;
-        z-index: 10;
+    height: 2px;
+    width: 100%;
+    background-color: #E4E4E4;
+    position: relative;
+    z-index: 10;
     }
 </style>
 
@@ -62,16 +62,16 @@ else
 
         int rankPosition = 1;
 
-
-
         mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre("action");
         mostRelevantActionTitles = InsertTitleResponseRankPosition(mostRelevantActionTitles);
 
         mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre("science fiction");
         mostRelevantSciFiTitles = InsertTitleResponseRankPosition(mostRelevantSciFiTitles);
 
+        /*
         mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
         mostRelevantTitles = InsertTitleResponseRankPosition(mostRelevantTitles);
+        */
 
         loading = false;
     }
