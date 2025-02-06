@@ -1,20 +1,18 @@
-﻿<header>
-    <MudAppBar Color="Color.Primary" Fixed="false" Style="height: 100%;width:100%" Class="relative d-flex justify-between align-items-center">
-        <div class="d-flex justify-space-between align-items-center w-100 nav-container">
-            <div class="d-flex align-items-center buttons">
-                <MudButton Class="redirect-button mr-3" Href="/">Home</MudButton>
-                <MudButton Class="redirect-button" Href="/movies">Movies</MudButton>
-            </div>
+﻿    <header>
+    <MudAppBar Color="Color.Primary" Fixed="false" Style="height: 100%;width:100%" Class="relative d-flex justify-between">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
 
-            <div class="d-flex justify-content-center align-items-center logo-image">
-                <MudImage Src="images/vhs-logo.png" Height="78" Width="55" Alt="VHS Movies" Elevation="-1" />
-            </div>
+        <MudSpacer />
 
-            <div class="d-flex align-items-center buttons">
-                <MudButton Class="redirect-button mr-3" Href="/genres">Genres</MudButton>
-                <MudButton Class="redirect-button" Href="/recommendations">Assistant</MudButton>
-            </div>
-        </div>
+        <MudButton Class="redirect-button mr-3" Href="/">Home</MudButton>
+        <MudButton Class="redirect-button" Href="/movies">Movies</MudButton>
+        <MudImage Src="images/vhs-logo.png" Height="78" Width="55" Alt="VHS Movies" Elevation="-1" />
+        <MudButton Class="redirect-button mr-3" Href="/genres">Genres</MudButton>
+        <MudButton Class="redirect-button" Href="/recommendations">Assistant</MudButton>
+
+        <MudSpacer />
+
+        @ChildContent
     </MudAppBar>
 </header>
 
@@ -25,18 +23,19 @@
         align-items: center;
         justify-content: center;
         height: 25px;
-        color: white;
+        color: var(--mud-palette-text-primary) !important;
         font-weight: bold;
         text-decoration: none;
         background: transparent;
         border: none;
         border-radius: 40px;
         padding: 5px 20px;
-        box-shadow: 0px 5px 5px 0px rgba(255, 56, 74, 0.15);
+        box-shadow: 0px 5px 5px 0px rgba(var(--mud-palette-text-secondary));
         transition: all 0.3s ease-in-out;
         min-width: 120px;
         text-align: center;
     }
+
 
     .redirect-button::before {
         content: '';
@@ -44,7 +43,7 @@
         inset: 0;
         border-radius: 40px;
         padding: 2px;
-        background: linear-gradient(90.25deg, #130303 3.25%, #FF0016 99.77%);
+        background: var(--navmenu-text-gradient);
         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
@@ -52,7 +51,7 @@
 
 
     .redirect-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .mud-button-label   {
@@ -77,3 +76,10 @@
     }
 </style>
 
+@code {
+    [Parameter]
+    public bool isDarkMode { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

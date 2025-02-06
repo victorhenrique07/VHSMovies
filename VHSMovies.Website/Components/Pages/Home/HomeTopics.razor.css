@@ -63,9 +63,13 @@
 ::deep .most-relevant-titles {
     position: relative;
     z-index: 2;
-    color: #D1D0D0;
+    color: var(--mud-palette-text-secondary) !important;
 }
 
 ::deep .mud-paper {
     background-color: transparent;
+}
+
+::deep .mud-badge-overlap {
+    color: var(--mud-palette-text-secondary) !important;
 }

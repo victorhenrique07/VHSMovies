@@ -4,6 +4,7 @@ using MudBlazor.Services;
 using Refit;
 using VHSMovies.Api.Integration.Main.Clients;
 using VHSMovies.Website;
+using VHSMovies.Website.Layout;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -17,6 +18,8 @@ Action<HttpClient> httpClientConfigurator = c =>
 
 builder.Services.AddRefitClient<ITitlesClient>()
     .ConfigureHttpClient(httpClientConfigurator);
+
+builder.Services.AddSingleton<WebsiteDetails>();
 
 
 await builder.Build().RunAsync();

@@ -2,63 +2,119 @@
 
 @inherits LayoutComponentBase
 
-<MudThemeProvider Theme="_currentTheme" />
+<MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="@_currentTheme" />
 <MudPopoverProvider />
 
 
 <MudLayout Class="layout-container">
-    <NavMenu />
-    <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
-    <MudContainer Class="content-container" MaxWidth="MaxWidth.Large" Gutters="false">
-        @Body
-    </MudContainer>
-    <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
-    <Footer />
+    <CascadingValue Value="@websiteDetails">
+        <NavMenu>
+            <MudToggleIconButton Icon="@Icons.Material.Filled.LightMode"
+            ToggledIcon="@Icons.Material.Filled.DarkMode" Size="Size.Medium" Color="Color.Inherit"
+            Disabled="@(!RendererInfo.IsInteractive)" Edge="Edge.End" Toggled="isDarkMode" ToggledChanged="OnToggleChanged" />
+        </NavMenu>
+
+        <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;padding:0px !important;"></div>
+        <MudContainer Class="content-container position-relative mud-container--gutters" Gutters="false" MaxWidth="MaxWidth.Large">
+            @Body
+        </MudContainer>
+        <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;"></div>
+        <Footer />
+    </CascadingValue>
 </MudLayout>
 
 <style>
     body {
-        background-color: black;
+    background-color: var(--mud-palette-background);
     }
 
     .mud-container-maxwidth-lg {
-        max-width: 1600px !important;
+    max-width: 1600px !important;
     }
 
     .layout-container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh; /* Faz com que o layout ocupe a tela toda */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     }
 
     .content-container {
-        flex-grow: 1; /* Ocupa o espaço restante, mas não empurra o Footer para fora */
-        display: flex;
-        flex-direction: column;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 1600px !important;
+    padding:0px !important;
+    }
+
+    .mud-container--gutters {
+    padding: 0px !important;
     }
 </style>
 
 @code {
+    private bool isDarkMode = false;
+
+    static string backgroundImageDarkMode = "https://s3-alpha-sig.figma.com/img/6115/1284/ab8e0632bc53aad0618e87caa55f64f8?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ST0NtHWROGsrAPp6VMbYFHkp4L7BtQceZH4VIViJAnfuSzq61yrt0yMy8LlJMra-5L-qTQ58JbUQeKNNIk4gQdTw647WxJlkMJLWIqixZhAj7hcpTRm8mzQlvYmWO8WfehYH2n8Qjo8JbK7yl7NwLOsAOXzC6O~jcHcM1hmSSvSwEjcuPq0z1v6FACT0-tb7pfb4ubvG~cXdiVsWRisOJGPsM6PM3cH2hUBH6kF6pt4fVb1YNrCMZHS4-0HWXBMoJdcKNzzk7UwKUbLz5dKrMifzLyB5Gl6TzbwefrGS7dty6JXraFBwQmN7MnDwYpxqYDmBQZaJmrbZRscjgGXkBw__";
+    static string backgroundImageLightMode = "https://s3-alpha-sig.figma.com/img/368d/f56e/a289573c21f6fee5b3ecb3e6cf0384d9?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=RQDAbnVtH0Q0USKxBYrW5aRwDI4HFoA9wLtEIt4EaR6jBkkxZAKyIUVfhIK~RRlR4fc3BHq43u3KQBLIoAmbxImOoSBwbtTwwOBAjNKbTKRxPFf0DE4hPOsd~Hm1V6AdTh8HuFxFIctbh9N2oJUmk99bNVcBwtnDYqI30N4jM-JkTgwicv43msXdynPUEn1gT3Ntig-6GukE2JOrNsRRBVBo1G9NMba8NXloD6ofK3pvlvzpT1IcDOOmr05sFX-1U6OvGNHlBTQVrPOayo6ESAaLqYM6EnhRh4yqEGA36Ob9p0829zdfNIOKT1SpsdSGl45KNYuLUdoQiqCVp2dpkA__";
+
+    private WebsiteDetails websiteDetails => new() { IsDarkMode = isDarkMode, BackgroundImage = SetBackgroundImage(), TitleDetailsId = SetTitleId(), TitleLogoImage = SetTitleLogoImage() };
+
+    private int SetTitleId()
+    {
+        return isDarkMode ? 497698 : 529032;
+    }
+
+    private string SetTitleLogoImage()
+    {
+        return isDarkMode ? "images/black-widow-movie-name.png" : "images/mandalorian-logo.png";
+    }
+
+    private string SetBackgroundImage()
+    {
+        return isDarkMode ? backgroundImageDarkMode : backgroundImageLightMode;
+    }
+
+    private void OnToggleChanged(bool value)
+    {
+        isDarkMode = value;
+        websiteDetails.BackgroundImage = SetBackgroundImage();
+        websiteDetails.TitleDetailsId = SetTitleId();
+        websiteDetails.TitleLogoImage = SetTitleLogoImage();
+
+        StateHasChanged();
+    }
+
     private readonly MudTheme _currentTheme = new()
+    {
+        PaletteDark = new PaletteDark
         {
-            PaletteLight = new PaletteLight
+            Primary = "#190401",
+            Secondary = "#A70100",
+            Info = "#64a7e2",
+            Success = "#2ECC40",
+            Warning = "#FFC107",
+            Error = "#FF0000",
+            AppbarBackground = "#212121",
+            TextPrimary = "#FFFFFF",
+            TextSecondary = "#FFFFFF",
+            Background = "#000000"
+        },
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#EDB16F",
+            Secondary = "#3A2B22",
+            TextPrimary = "#000000",
+            TextSecondary = "#FFFFFF",
+            Background = "#EDB16F",
+        },
+        Typography = new Typography()
+        {
+            Default = new DefaultTypography()
             {
-                Primary = "#190401",
-                Secondary = "#A70100",
-                Info = "#64a7e2",
-                Success = "#2ECC40",
-                Warning = "#FFC107",
-                Error = "#FF0000",
-                AppbarBackground = "#212121",
-                TextPrimary = "#0A7BCF",
-                TextSecondary = "#4CAF50",
-            },
-            Typography = new Typography()
-            {
-                Default = new DefaultTypography()
-                {
-                    FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB", "ABeeZee" }
-                }
+                FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB", "ABeeZee" }
             }
-        };
-}
+        }
+    };
+
+    }

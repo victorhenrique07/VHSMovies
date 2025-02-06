@@ -6,49 +6,46 @@
 @using VHSMovies.Website.Components.Shared
 
 @inject ITitlesClient titlesClient
-@inject HttpClient httpClient
-
 
 @if (loading)
 {
-    <div class="loading-container">
-        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-    </div>
+    <LoadingContainer />
 }
 else
 {
     <MudContainer Class="position-relative">
-        <HomeFeaturedMovie Src="@blackWidowBackgroundImage" Title="@blackWidowDetails" />
+        <HomeFeaturedMovie />
     </MudContainer>
     <MudDivider />
 
-    <div class="pt-10">
+    <div class="pt-10 pl-6 pr-6">
         @* <HomeTopics Titles="@mostRelevantTitles" TopicName="Most Relevant Titles" /> *@
 
         <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Sci-Fi Titles" />
 
         <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Action Titles" />
     </div>
+
+    <style>
+        .pt-10 {
+            position: relative;
+            background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 }
 
-<style>
-    .custom-line {
-    height: 2px;
-    width: 100%;
-    background-color: #E4E4E4;
-    position: relative;
-    z-index: 10;
-    }
-</style>
-
 @code {
+    [CascadingParameter]
+    protected WebsiteDetails? websiteDetails { get; set; }
+
     string blackWidowBackgroundImage = "https://s3-alpha-sig.figma.com/img/6115/1284/ab8e0632bc53aad0618e87caa55f64f8?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ST0NtHWROGsrAPp6VMbYFHkp4L7BtQceZH4VIViJAnfuSzq61yrt0yMy8LlJMra-5L-qTQ58JbUQeKNNIk4gQdTw647WxJlkMJLWIqixZhAj7hcpTRm8mzQlvYmWO8WfehYH2n8Qjo8JbK7yl7NwLOsAOXzC6O~jcHcM1hmSSvSwEjcuPq0z1v6FACT0-tb7pfb4ubvG~cXdiVsWRisOJGPsM6PM3cH2hUBH6kF6pt4fVb1YNrCMZHS4-0HWXBMoJdcKNzzk7UwKUbLz5dKrMifzLyB5Gl6TzbwefrGS7dty6JXraFBwQmN7MnDwYpxqYDmBQZaJmrbZRscjgGXkBw__";
 
     private IReadOnlyCollection<TitleResponse> mostRelevantTitles;
     private IReadOnlyCollection<TitleResponse> mostRelevantActionTitles;
     private IReadOnlyCollection<TitleResponse> mostRelevantSciFiTitles;
-
-    private TitleResponse blackWidowDetails = new TitleResponse();
 
     int titleNumber = 0;
 
@@ -58,15 +55,11 @@ else
     {
         loading = true;
 
-        blackWidowDetails = await titlesClient.GetTitleById(497698);
-
         int rankPosition = 1;
 
         mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre("action");
-        mostRelevantActionTitles = InsertTitleResponseRankPosition(mostRelevantActionTitles);
 
         mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre("science fiction");
-        mostRelevantSciFiTitles = InsertTitleResponseRankPosition(mostRelevantSciFiTitles);
 
         /*
         mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
@@ -74,19 +67,5 @@ else
         */
 
         loading = false;
-    }
-
-    private IReadOnlyCollection<TitleResponse> InsertTitleResponseRankPosition(IReadOnlyCollection<TitleResponse> titles)
-    {
-        int rankPosition = 1;
-
-        foreach (TitleResponse title in titles)
-        {
-            title.RankPosition = rankPosition;
-
-            rankPosition++;
-        }
-
-        return titles;
     }
 }

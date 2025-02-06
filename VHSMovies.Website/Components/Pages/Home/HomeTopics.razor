@@ -18,15 +18,13 @@
         @foreach (TitleResponse title in Titles)
         {
             <MudItem Class="d-flex mr-3" xs="12" sm="6" md="2">
-                <MudPaper Class="d-flex flex-column rounded-xl paper-image" Style="height:430px;width:210px;">
+                <MudPaper Class="d-flex flex-column rounded-xl paper-image" Elevation="0" Style="height:430px;width:210px;">
                     <MudBadge Origin="Origin.TopCenter" Content="@title.AverageRating.ToString()" Color="Color.Secondary" Overlap="true">
                         <img src="@title.PosterImageUrl" style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
                     </MudBadge>
                     <div class="">
-                        <MudText Typo="Typo.body2"
-                                    Class="title-name">@title.Name</MudText>
-                        <MudText Typo="Typo.body2"
-                                    Class="mt-2 title-genres">@string.Join(", ", title.Genres.Select(g => g.Name))</MudText>
+                        <MudText Typo="Typo.body2" Class="title-name">@title.Name</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2 title-genres">@string.Join(", ", title.Genres.Select(g => g.Name))</MudText>
                     </div>
                 </MudPaper>
             </MudItem>

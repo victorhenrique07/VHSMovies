@@ -1,35 +1,57 @@
-﻿@using VHSMovies.Api.Integration.Main.Responses
+﻿@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Responses
 @using VHSMovies.Website.Components.Shared
 
-<div class="d-flex justify-content-center ">
-    <MudImage Src="@Src" Alt="Black Widow" Elevation="-1" Width="1449" Height="736" />
+@inject ITitlesClient titlesClient
 
-    <div class="movie-content flex-column align-items-start text-white p-4 ml-4 mb-1 position-absolute d-flex justify-content-center">
-        <MudImage Src="images/black-widow-movie-name.png" Alt="Black Widow" Elevation="-1" Width="605" Height="97" />
+@if (loading)
+{
+    <LoadingContainer />
+}
+else
+{
+    <div class="d-flex justify-content-center ">
 
-        <div class="my-4 ml-4">
-            <TitleRating Size="Size.Medium" RatingValue="@Title.AverageRating" />
+        <MudImage Src="@websiteDetails.BackgroundImage" Alt="Black Widow" Elevation="-1" Width="1600" Height="736" />
+
+        <div class="movie-content flex-column align-items-start text-white p-4 ml-4 mb-1 position-absolute d-flex justify-content-center">
+            <MudImage Src="@websiteDetails.TitleLogoImage" Alt="Black Widow" Elevation="-1" Width="553" Height="131" />
+
+            <div class="my-4 ml-4">
+                <TitleRating Size="Size.Medium" RatingValue="@Title.AverageRating" />
+            </div>
+
+            <div class="d-flex genres">
+                @foreach (GenreResponse genre in Title.Genres)
+                {
+                    <MudChip Color="Color.Default" T="string" Style="background: transparent;">@genre.Name</MudChip>
+
+                    <div class="mt-2 border-start border-light" style="height: 24px;"></div>
+                }
+            </div>
+
+            <p class="mt-3 black-widow-description" style="max-width: 451px;">
+                @Title.Description
+            </p>
         </div>
-
-        <div class="d-flex genres">
-            @foreach (GenreResponse genre in Title.Genres)
-            {
-                <MudChip Color="Color.Default" T="string">@genre.Name</MudChip>
-
-                <div class="mt-2 border-start border-light" style="height: 24px;"></div>
-            }
-        </div>
-
-        <p class="mt-3 black-widow-description" style="max-width: 451px;">
-            @Title.Description
-        </p>
     </div>
-</div>
+}
 
 @code {
-    [Parameter]
-    public string Src { get; set; }
+    [CascadingParameter]
+    protected WebsiteDetails? websiteDetails { get; set; }
 
-    [Parameter]
-    public TitleResponse Title { get; set; }
+    private TitleResponse Title = new TitleResponse();
+
+    bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+
+        Title = await titlesClient.GetTitleById(websiteDetails.TitleDetailsId);
+
+        loading = false;
+        StateHasChanged();
+    }
 }
