@@ -18,6 +18,8 @@ Action<HttpClient> httpClientConfigurator = c =>
 
 builder.Services.AddRefitClient<ITitlesClient>()
     .ConfigureHttpClient(httpClientConfigurator);
+builder.Services.AddRefitClient<IGenresClient>()
+    .ConfigureHttpClient(httpClientConfigurator);
 
 builder.Services.AddSingleton<WebsiteDetails>();
 

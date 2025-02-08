@@ -1,0 +1,27 @@
+﻿<div class="pt-10 d-flex justify-content-center flex-column">
+    @ChildContent
+</div>
+
+<style>
+    .pt-10 {
+        position: relative;
+        background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
+        background-size: 150%;
+        background-position: 20% top;
+        background-attachment: @(Fixed ? "fixed" : "none");
+        object-fit: contain;
+    }
+
+</style>
+
+
+@code {
+    [Parameter]
+    public bool Fixed { get; set; } = true;
+
+    [CascadingParameter]
+    public WebsiteDetails? websiteDetails { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

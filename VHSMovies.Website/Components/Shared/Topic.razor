@@ -1,0 +1,12 @@
+﻿<div style="display: block; width: 95%; position: relative; margin-left: 30px;" class="mb-10">
+    <div class="flex-row" style="display: flex; justify-content: space-between; align-items: center;">
+        <MudText Typo="Typo.h6" Class="most-relevant-titles mr-5" Style="text-align: left;">@TopicName</MudText>
+
+        <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;z-index:4;"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string TopicName { get; set; }
+}

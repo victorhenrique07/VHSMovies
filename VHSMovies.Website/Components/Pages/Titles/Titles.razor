@@ -6,6 +6,7 @@
 @using VHSMovies.Website.Components.Shared
 
 @inject ITitlesClient titlesClient
+@inject IGenresClient genresClient
 
 @if (loading)
 {
@@ -13,58 +14,121 @@
 }
 else
 {
-    <div class="d-flex justify-content-center pt-10" style="height:100vh;">
-        <MudCarousel Class="mud-width-full d-flex justify-content-center z-1" Style="height:475px;width:1034px;" ShowBullets="false" TData="TitleResponse" AutoCycle="false">
-            @foreach (TitleResponse title in mostRelevantTitles)
-            {
-                <MudCarouselItem Transition="Transition.Fade" Class="d-flex flex-column align-items-center justify-content-center text-center">
-                    <div>
-                        <img src="@title.PosterImageUrl" class="rounded-lg movie-image carousel-background" />
-                    </div>
-                    <div>
-                        <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Success" Overlap="true">
-                            <img src="@title.PosterImageUrl" style="height:300px; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
-                        </MudBadge>
-                        <MudText Typo="Typo.body2" Class="mt-2 title-name">@title.Name</MudText>
-                    </div>
-                </MudCarouselItem>
-            }
-        </MudCarousel>
-    </div>
+    <BackgroundStyle>
+        <div class="d-flex justify-content-center align-items-center">
+            <MudCarousel Class="mud-width-full d-flex align-content-center justify-content-center z-1 mb-20" Style="height:475px;width:1034px;" ShowBullets="false" TData="TitleResponse" AutoCycle="false">
+                @foreach (TitleResponse title in mostRelevantTitles)
+                {
+                    <MudCarouselItem Transition="Transition.Fade" Class="d-flex flex-column align-items-center justify-content-center text-center">
+                        <div>
+                            <img src="@title.PosterImageUrl" class="rounded-lg movie-image carousel-background" />
+                        </div>
+                        <div>
+                            <MudBadge Origin="Origin.TopRight" Content="@title.AverageRating.ToString()" Color="Color.Success" Overlap="true">
+                                <img src="@title.PosterImageUrl" style="height:300px; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
+                            </MudBadge>
+                            <MudText Typo="Typo.body2" Class="mt-2 title-name">@title.Name</MudText>
+                        </div>
+                    </MudCarouselItem>
+                }
+            </MudCarousel>
+        </div>
+
+        <div class="pb-20">
+            <Topic TopicName="Genres" />
+
+            <MudPaper Elevation="2" Class="genres d-flex justify-content-center align-items-center" Style="margin: auto; background-color: var(--mud-palette-primary)">
+                <MudGrid Justify="Justify.Center" Spacing="0" Style="max-width: 900px; margin: auto;">
+                    @foreach (GenreResponse genre in allGenres)
+                    {
+                        <MudItem xs="2">
+                            <MudPaper Class="pa-4" Width="100%" Elevation="0" Style="text-align: center;background-color:transparent;">
+                                <MudText Class="genre">@genre.Name</MudText>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudPaper>
+        </div>
+    </BackgroundStyle>
 }
 
 
 <style>
-    .carousel-background {
-        position: absolute;
-        top: 0;
-        left: 0;
+    .genre {
+        font-family: ABeeZee;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 22px;
+        letter-spacing: 0px;
+        color: var(--mud-palette-text-secondary);
+        text-align:left;
         width: 100%;
-        height: 100%;
-        filter: blur(10px);
-        z-index: -1;
+    }
+
+    .pt-10 {
+    position: relative;
+    background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    }
+
+    .pt-10::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(var(--mud-palette-secondary) 60%);
+    backdrop-filter: blur(15px);
+    z-index: 0;
+    }
+
+    .pt-10 > * {
+    position: relative;
+    z-index: 1;
+    }
+
+    .genres {
+    width: 1400px;
+    height: 390px;
+    gap: 0px;
+    border-radius: 40px;
+    opacity: 0px;
+    }
+
+    .carousel-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(10px);
+    z-index: -1;
     }
 
     .title-name {
-        color: #FFFFFF;
-        font-family: Hubballi;
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 11.47px;
-        text-underline-position: from-font;
-        text-decoration-skip-ink: none;
-        text-align: center;
-        margin-top: 6px;
+    color: #FFFFFF;
+    font-family: Hubballi;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 11.47px;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    text-align: center;
+    margin-top: 6px;
     }
 </style>
 
 
 @code {
+    [CascadingParameter]
+    protected WebsiteDetails? websiteDetails { get; set; }
 
-    string blackWidowBackgroundImage = "https://s3-alpha-sig.figma.com/img/6115/1284/ab8e0632bc53aad0618e87caa55f64f8?Expires=1739145600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ST0NtHWROGsrAPp6VMbYFHkp4L7BtQceZH4VIViJAnfuSzq61yrt0yMy8LlJMra-5L-qTQ58JbUQeKNNIk4gQdTw647WxJlkMJLWIqixZhAj7hcpTRm8mzQlvYmWO8WfehYH2n8Qjo8JbK7yl7NwLOsAOXzC6O~jcHcM1hmSSvSwEjcuPq0z1v6FACT0-tb7pfb4ubvG~cXdiVsWRisOJGPsM6PM3cH2hUBH6kF6pt4fVb1YNrCMZHS4-0HWXBMoJdcKNzzk7UwKUbLz5dKrMifzLyB5Gl6TzbwefrGS7dty6JXraFBwQmN7MnDwYpxqYDmBQZaJmrbZRscjgGXkBw__";
-
-    private TitleResponse blackWidowDetails = new TitleResponse();
     private IReadOnlyCollection<TitleResponse> mostRelevantTitles;
+    private IReadOnlyCollection<GenreResponse> allGenres;
 
     private bool loading;
 
@@ -74,7 +138,7 @@ else
 
         mostRelevantTitles = await titlesClient.GetMostRelevantTitles();
 
-        blackWidowDetails = await titlesClient.GetTitleById(497698);
+        allGenres = await genresClient.GetAllGenres();
 
         loading = false;
     }

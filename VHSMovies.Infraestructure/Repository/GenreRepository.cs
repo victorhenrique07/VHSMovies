@@ -19,7 +19,7 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<List<Genre>> GetAll()
+        public async Task<IReadOnlyCollection<Genre>> GetAll()
         {
             return await dbContextClass.Genres.ToListAsync();
         }
