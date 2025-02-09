@@ -1,7 +1,7 @@
 ﻿::deep .most-relevant-titles {
     position: relative;
     z-index: 2;
-    color: var(--mud-palette-text-secondary) !important;
+    color: var(--mud-palette-tertiary-text) !important;
 }
 
 ::deep .see-all {

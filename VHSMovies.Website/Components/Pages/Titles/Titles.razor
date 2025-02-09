@@ -35,19 +35,26 @@ else
         </div>
 
         <div class="pb-20">
-            <Topic TopicName="Genres" />
+            <Topic TopicName="Available Genres" />
 
-            <MudPaper Elevation="2" Class="genres d-flex justify-content-center align-items-center" Style="margin: auto; background-color: var(--mud-palette-primary)">
-                <MudGrid Justify="Justify.Center" Spacing="0" Style="max-width: 900px; margin: auto;">
-                    @foreach (GenreResponse genre in allGenres)
-                    {
-                        <MudItem xs="2">
-                            <MudPaper Class="pa-4" Width="100%" Elevation="0" Style="text-align: center;background-color:transparent;">
-                                <MudText Class="genre">@genre.Name</MudText>
-                            </MudPaper>
-                        </MudItem>
-                    }
-                </MudGrid>
+            <MudPaper Elevation="2" Class="genres d-flex justify-content-center align-items-center flex-column" Style="margin: auto;">
+                <div class="d-block">
+                    <MudGrid Class="d-flex align-items" Justify="Justify.Center" Spacing="1" Style="max-width:700px;">
+                        @foreach (GenreResponse genre in allGenres)
+                        {
+                            <MudItem xs="3" Style="min-width: 80px;max-width:110px;height:35px;" Class="pl-6 mx-7">
+                                <MudPaper Class="py-1 pr-2" Width="100%" Elevation="0" Style="text-align: left;background-color: transparent;">
+                                    <MudText Class="genre" @onclick="() => ToggleSelection(genre)" Color="@(selectedGenres.Contains(genre) ? Color.Primary : Color.Secondary)">
+                                        @genre.Name
+                                    </MudText>
+                                </MudPaper>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </div>
+                <div class="d-flex position-relative justify-content-end mr-20" style="width:100%;top:13%">
+                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Check" OnClick="Apply"/>
+                </div>
             </MudPaper>
         </div>
     </BackgroundStyle>
@@ -61,64 +68,75 @@ else
         font-size: 24px;
         line-height: 22px;
         letter-spacing: 0px;
-        color: var(--mud-palette-text-secondary);
-        text-align:left;
+        color: var(--mud-palette-text-primary);
         width: 100%;
+        transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+        display: inline-block;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+        cursor: pointer;
+    }
+
+    .genre:hover {
+        transform: scale(1.2);
+        color: var(--mud-palette-text-secondary) !important;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
     }
 
     .pt-10 {
-    position: relative;
-    background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+        position: relative;
+        background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
 
     .pt-10::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(var(--mud-palette-secondary) 60%);
-    backdrop-filter: blur(15px);
-    z-index: 0;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(var(--mud-palette-secondary) 60%);
+        backdrop-filter: blur(15px);
+        z-index: 0;
     }
 
     .pt-10 > * {
-    position: relative;
-    z-index: 1;
+        position: relative;
+        z-index: 1;
     }
 
     .genres {
-    width: 1400px;
-    height: 390px;
-    gap: 0px;
-    border-radius: 40px;
-    opacity: 0px;
+        width: 1000px;
+        height: 390px;
+        gap: 0px;
+        border-radius: 40px;
+        opacity: 0px;
+        background-color: var(--mud-palette-tertiary);
     }
 
     .carousel-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    filter: blur(10px);
-    z-index: -1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        filter: blur(10px);
+        z-index: -1;
     }
 
     .title-name {
-    color: #FFFFFF;
-    font-family: Hubballi;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 11.47px;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    text-align: center;
-    margin-top: 6px;
+        color: #FFFFFF;
+        font-family: Hubballi;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 11.47px;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+        text-align: center;
+        margin-top: 6px;
     }
 </style>
 
@@ -132,6 +150,20 @@ else
 
     private bool loading;
 
+    private List<GenreResponse> selectedGenres = new List<GenreResponse>();
+
+    private void ToggleSelection(GenreResponse genre)
+    {
+        if (selectedGenres.Contains(genre))
+        {
+            selectedGenres.Remove(genre);
+        }
+        else
+        {
+            selectedGenres.Add(genre);
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         loading = true;
@@ -140,6 +172,19 @@ else
 
         allGenres = await genresClient.GetAllGenres();
 
+        foreach (var genre in allGenres)
+        {
+            if (genre.Name == "Science Fiction")
+            {
+                genre.Name = "Sci-Fi";
+            }
+        }
+
         loading = false;
+    }
+
+    private void Apply()
+    {
+
     }
 }
