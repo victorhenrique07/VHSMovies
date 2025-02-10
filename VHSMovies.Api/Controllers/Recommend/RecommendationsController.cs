@@ -30,9 +30,9 @@ namespace VHSMovies.Api.Controllers.Recommend
 
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
-                IncludeGenres = includeGenres != null ? ParseStringIntoIntArray(includeGenres) : null,
-                ExcludeGenres = excludeGenres != null ? ParseStringIntoIntArray(excludeGenres) : null,
-                MustInclude = mustInclude != null ? ParseStringIntoIntArray(mustInclude) : null
+                IncludeGenres = includeGenres != null ? ParseStringIntoHashSet(includeGenres) : null,
+                ExcludeGenres = excludeGenres != null ? ParseStringIntoHashSet(excludeGenres) : null,
+                MustInclude = mustInclude != null ? ParseStringIntoHashSet(mustInclude) : null
                 //Ratings = ParseStringIntoDecimalList(ratingsRange)
             };
 
@@ -42,29 +42,37 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("most-relevant")]
-        public async Task<IActionResult> GetMostRelevantTitles()
+        public async Task<IActionResult> GetMostRelevantTitles([FromQuery] string? genresId, int titlesAmount = 10)
         {
-            if (_cache.TryGetValue("most-relevant-movies", out List<TitleResponse> titles))
+            string genres = genresId != null ? genresId.Replace(",", "-").Trim() : "none";
+
+            string cacheKey = $"most-relevant-movies-{genres}-{titlesAmount}";
+
+            if (_cache.TryGetValue(cacheKey, out List<TitleResponse> cachedTitles))
             {
-                return Ok(titles);
+                return Ok(cachedTitles);
             }
 
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery();
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
+            {
+                GenresId = genresId != null ? ParseStringIntoIntArray(genresId) : null,
+                TitlesAmount = titlesAmount
+            };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
 
             return Ok(response);
         }
 
-        [HttpGet("most-relevant/{genre}")]
-        public async Task<IActionResult> GetMostRelevantTitlesByGenre(string genre)
+        [HttpGet("most-relevant/{genreId}")]
+        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId)
         {
-            if (_cache.TryGetValue($"movies-by-{genre}", out List<TitleResponse> titles))
+            if (_cache.TryGetValue($"movies-by-{genreId}", out List<TitleResponse> titles))
             {
                 return Ok(titles);
             }
 
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenreName = genre };
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenresId = [genreId], TitlesAmount = 10 };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
 
@@ -86,12 +94,22 @@ namespace VHSMovies.Api.Controllers.Recommend
             return Ok(response);
         }
 
-        private HashSet<int> ParseStringIntoIntArray(string data)
+        private HashSet<int> ParseStringIntoHashSet(string data)
         {
             HashSet<int> list = data
                 .Split(",")
                 .Select(s => int.Parse(s.Trim()))
                 .ToHashSet();
+
+            return list;
+        }
+
+        private int[] ParseStringIntoIntArray(string data)
+        {
+            int[] list = data
+                .Split(",")
+                .Select(s => int.Parse(s.Trim()))
+                .ToArray();
 
             return list;
         }

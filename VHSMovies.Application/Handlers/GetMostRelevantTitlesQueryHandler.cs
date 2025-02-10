@@ -17,17 +17,19 @@ namespace VHSMovies.Application.Handlers
 {
     public class GetMostRelevantTitlesQueryHandler : IRequestHandler<GetMostRelevantTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
+        private readonly IGenreRepository genreRepository;
         private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
         private readonly IMemoryCache _cache;
 
-        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache)
+        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache, IGenreRepository genreRepository)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
             this._cache = _cache;
+            this.genreRepository = genreRepository;
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
         {
-            IEnumerable<RecommendedTitle> titles = await recommendedTitlesRepository.GetAllRecommendedTitles();
+            IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
 
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
@@ -38,28 +40,34 @@ namespace VHSMovies.Application.Handlers
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
             };
 
-            if (query.GenreName != null)
+            if (query.GenresId != null)
             {
-                var genreNameLower = query.GenreName.ToLower();
-                response = titles
-                    .Where(t => t.Genres.ToLower().Contains(genreNameLower))
+                List<string> genresToQuery = allGenres
+                    .Where(x => query.GenresId.Contains(x.Id))
+                    .Select(x => x.Name.ToLower())
+                    .ToList();
+
+                response = (await recommendedTitlesRepository.GetAllRecommendedTitles())
+                    .Where(t => t.Genres.ToLower().Split(',')
+                        .Select(genre => genre.Trim())
+                        .Any(genre => genresToQuery.Contains(genre)))
                     .OrderByDescending(t => t.Relevance)
-                    .Take(10)
+                    .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
                     .ToList();
 
-                _cache.Set($"movies-by-{query.GenreName}", response, cacheOptions);
+                //_cache.Set($"movies-by-{query.GenreName}", response, cacheOptions);
 
                 return response;
             }
 
-            response = titles
+            response = (await recommendedTitlesRepository.GetAllRecommendedTitles())
                     .OrderByDescending(t => t.Relevance)
-                    .Take(10)
+                    .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
                     .ToList();
 
-            _cache.Set("most-relevant-movies", response, cacheOptions);
+            _cache.Set($"most-relevant-movies-{query.TitlesAmount}", response, cacheOptions);
 
             return response;
         }

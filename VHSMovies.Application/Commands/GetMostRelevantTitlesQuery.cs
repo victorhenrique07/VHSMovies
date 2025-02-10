@@ -10,6 +10,8 @@ namespace VHSMovies.Application.Commands
 {
     public class GetMostRelevantTitlesQuery : IRequest<IReadOnlyCollection<TitleResponse>>
     {
-        public string GenreName { get; set; }
+        public int[]? GenresId { get; set; }
+
+        public int TitlesAmount { get; set; }
     }
 }

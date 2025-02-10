@@ -1,17 +1,10 @@
 ﻿@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Website.Components.Shared
+
 
 <div class="pb-20">
-    <div style="display: inline-block; width: 95%; position: relative; margin-left: 30px;" class="mb-10">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <MudText Typo="Typo.h6" Class="most-relevant-titles" Style="text-align: left;">@TopicName</MudText>
-            <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
-                <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
-                <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
-            </a>
-        </div>
 
-        <div class="custom-line align-content-center justify-content-center" style="height:2px;width:100%;z-index:4;"></div>
-    </div>
+    @ChildContent
 
     <MudGrid Spacing="13" Justify="Justify.Center" Class="align-items-center d-flex" style="width: 100%;">
 
@@ -30,12 +23,33 @@
             </MudItem>
         }
     </MudGrid>
+
 </div>
+
+@* @ChildContent
+
+<MudGrid Spacing="13" Justify="Justify.Center" Class="align-items-center d-flex" style="width: 100%;">
+
+    @foreach (TitleResponse title in Titles)
+    {
+        <MudItem Class="d-flex mr-3" xs="12" sm="6" md="2">
+            <MudPaper Class="d-flex flex-column rounded-xl paper-image" Elevation="0" Style="height:430px;width:210px;">
+                <MudBadge Origin="Origin.TopCenter" Content="@title.AverageRating.ToString()" Color="Color.Secondary" Overlap="true">
+                    <img src="@title.PosterImageUrl" style="height:100%; width:100%; object-fit: cover; padding:0; margin:0; border:none;" class="rounded-lg movie-image" />
+                </MudBadge>
+                <div class="">
+                    <MudText Typo="Typo.body2" Class="title-name">@title.Name</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2 title-genres">@string.Join(", ", title.Genres.Select(g => g.Name))</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid> *@
 
 @code {
     [Parameter]
     public IReadOnlyCollection<TitleResponse> Titles { get; set; }
 
     [Parameter]
-    public string TopicName { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 }

@@ -9,7 +9,7 @@
 
 @if (loading)
 {
-    <LoadingContainer />
+    <LoadingContainer Color="@(websiteDetails.IsDarkMode ? Color.Primary : Color.Secondary)" />
 }
 else
 {
@@ -19,9 +19,24 @@ else
     <MudDivider />
 
     <BackgroundStyle>
-        <HomeTopics Titles="@mostRelevantSciFiTitles" TopicName="Most Relevant Sci-Fi Titles" />
-
-        <HomeTopics Titles="@mostRelevantActionTitles" TopicName="Most Relevant Action Titles" />
+        
+        <HomeTopics Titles="@mostRelevantSciFiTitles">
+            <Topic TopicName="Most Relevant Sci-Fi Titles">
+                <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
+                    <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
+                    <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
+                </a>
+            </Topic>
+        </HomeTopics>
+        
+        <HomeTopics Titles="@mostRelevantActionTitles">
+            <Topic TopicName="Most Relevant Action Titles">
+                <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
+                    <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
+                    <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
+                </a>
+            </Topic>
+        </HomeTopics>
     </BackgroundStyle>
 
     <style>
@@ -52,9 +67,9 @@ else
 
         int rankPosition = 1;
 
-        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre("action");
+        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
 
-        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre("science fiction");
+        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
 
         loading = false;
     }
