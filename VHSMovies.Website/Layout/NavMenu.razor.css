@@ -54,17 +54,17 @@ header {
         font-weight: 700;
     }
 
-nav ul {
+::deep nav ul {
     display: flex;
     gap: 1.5rem;
 }
 
-nav a {
+::deep nav a {
     font-weight: 500;
     padding: 0.5rem;
     transition: var(--transition);
 }
 
-    nav a:hover, nav a.active {
-        color: var(--primary-color);
-    }
+::deep nav a:hover {
+    color: var(--primary-color);
+}

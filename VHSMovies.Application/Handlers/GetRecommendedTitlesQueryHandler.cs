@@ -43,7 +43,7 @@ namespace VHSMovies.Application.Handlers
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
 
-            if (query.IncludeGenres.Any() || query.ExcludeGenres.Any() || query.MustInclude.Any())
+            if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
             {
                 var includeGenres = new List<string>();
                 var excludeGenres = new List<string>();
@@ -104,6 +104,16 @@ namespace VHSMovies.Application.Handlers
                 titles = titles.Where (t => t.AverageRating >= query.MinimumRating);
             }
 
+            if (query.YearsRange != null)
+            {
+                query.YearsRange = BubbleSort(query.YearsRange, query.YearsRange.Length);
+
+                titles = titles.Where(t => 
+                    t.ReleaseDate.HasValue &&
+                    t.ReleaseDate.Value.Year > query.YearsRange[0] &&
+                    t.ReleaseDate.Value.Year < query.YearsRange[1]);
+            }
+
             IReadOnlyCollection<RecommendedTitle> data = titles
                 .AsEnumerable()
                 .OrderByDescending(t => t.Relevance)
@@ -121,6 +131,31 @@ namespace VHSMovies.Application.Handlers
                     }).ToList();
 
             return response;
+        }
+
+        private static int[] BubbleSort(int[] arr, int n)
+        {
+            int i, j, temp;
+            bool swapped;
+            for (i = 0; i < n - 1; i++)
+            {
+                swapped = false;
+                for (j = 0; j < n - i - 1; j++)
+                {
+                    if (arr[j] > arr[j + 1])
+                    {
+                        temp = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = temp;
+                        swapped = true;
+                    }
+                }
+
+                if (swapped == false)
+                    break;
+            }
+
+            return arr;
         }
     }
 }

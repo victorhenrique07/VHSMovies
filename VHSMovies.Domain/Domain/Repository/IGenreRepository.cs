@@ -10,5 +10,7 @@ namespace VHSMovies.Domain.Domain.Repository
     public interface IGenreRepository
     {
         Task<IReadOnlyCollection<Genre>> GetAll();
+
+        IQueryable<Genre> Query();
     }
 }

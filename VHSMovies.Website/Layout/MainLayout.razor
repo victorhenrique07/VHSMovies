@@ -2,13 +2,13 @@
 
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="_currentTheme"/>
 <MudPopoverProvider />
 
 
 <MudLayout Class="layout-container">
     <header>
-        <div class="container">
+        <MudContainer class="container">
             <div class="logo">
                 <i class="fas fa-film"></i>
                 <h1>VHSMovies</h1>
@@ -21,7 +21,7 @@
                     <li><a href="#">About</a></li>
                 </ul>
             </nav>
-        </div>
+        </MudContainer>
     </header>
 
     <MudMainContent Class="ma-0 pa-0">
@@ -41,6 +41,7 @@
         --accent-color: #ffbe0b;
         --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         --transition: all 0.3s ease;
+
     }
 
     * {
@@ -120,7 +121,7 @@
         transition: var(--transition);
     }
 
-    nav a:hover, nav a.active {
+    nav a:hover {
             color: var(--primary-color);
     }
 </style>
@@ -132,7 +133,7 @@
         {
             Primary = "#ff0f1f",
             Secondary = "#ffffff",
-            Tertiary = "#252525",
+            Tertiary = "#e50914",
             TextPrimary = "#e0e0e0",
             TextSecondary = "#A70100",
             TertiaryContrastText = "#FFFFFF",
@@ -143,7 +144,7 @@
         {
             Primary = "#e50914",
             Secondary = "#221f1f",
-            Tertiary = "#8B5E3C",
+            Tertiary = "#e50914",
             TextPrimary = "#333",
             TextSecondary = "#EDB16F",
             TertiaryContrastText = "#FFFFFF",

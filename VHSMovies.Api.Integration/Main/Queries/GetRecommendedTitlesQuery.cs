@@ -14,7 +14,9 @@ namespace VHSMovies.Api.Integration.Main.Queries
 
         public decimal MinimumRating { get; set; }
 
-        public IEnumerable<decimal>? YearsRange { get; set; }
+        public int[]? YearsRange { get; set; }
+
+        public int? TitlesAmount { get; set; }
 
         public IReadOnlyCollection<string>? Directors { get; set; }
 

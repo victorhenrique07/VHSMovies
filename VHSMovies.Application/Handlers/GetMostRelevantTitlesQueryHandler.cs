@@ -30,46 +30,28 @@ namespace VHSMovies.Application.Handlers
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
         {
-            IQueryable<RecommendedTitle> titles = recommendedTitlesRepository.Query();
-
-            IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
-
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
-            List<TitleResponse> response = new List<TitleResponse>();
-
-            var cacheOptions = new MemoryCacheEntryOptions
+            if (query.GenresId != null && query.GenresId.Any())
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            };
+                var genresToQuery = await genreRepository.Query()
+                    .Where(g => query.GenresId.Contains(g.Id))
+                    .Select(g => g.Name.ToLower())
+                    .ToListAsync(cancellationToken);
 
-            if (query.GenresId != null)
-            {
-                List<string> genresToQuery = allGenres
-                    .Where(x => query.GenresId.Contains(x.Id))
-                    .Select(x => x.Name.ToLower())
-                    .ToList();
-
-                response = titles
-                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres, "%" + genre + "%")))
+                return await recommendedTitlesRepository.Query()
+                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres, $"%{genre}%")))
                     .OrderByDescending(t => t.Relevance)
                     .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                    .ToList();
-
-                _cache.Set($"movies-by-{query.GenresId}", response, cacheOptions);
-
-                return response;
+                    .ToListAsync(cancellationToken);
             }
 
-            response = (await recommendedTitlesRepository.GetAllRecommendedTitles(query.TitlesAmount))
-                    .OrderByDescending(t => t.Relevance)
-                    .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                    .ToList();
-
-            _cache.Set($"most-relevant-movies-{query.TitlesAmount}", response, cacheOptions);
-
-            return response;
+            return await recommendedTitlesRepository.Query()
+                .OrderByDescending(t => t.Relevance)
+                .Take(query.TitlesAmount)
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
+                .ToListAsync(cancellationToken);
         }
     }
 }

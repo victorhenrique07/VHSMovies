@@ -16,7 +16,7 @@ namespace VHSMovies.Application.Commands
 
         public decimal? MinimumRating { get; set; }
 
-        public IEnumerable<decimal>? YearsRange { get; set; }
+        public int[]? YearsRange { get; set; }
 
         public IReadOnlyCollection<string>? Directors { get; set; }
 
