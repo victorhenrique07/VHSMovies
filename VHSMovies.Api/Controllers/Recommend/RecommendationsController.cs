@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
 
@@ -21,19 +22,15 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("recommend")]
-        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, string? ratingsRange)
+        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, decimal? minimumRating, string? yearsRange)
         {
-            if (_cache.TryGetValue("movies", out List<TitleResponse> titles))
-            {
-                return Ok(titles);
-            }
-
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
                 IncludeGenres = includeGenres != null ? ParseStringIntoHashSet(includeGenres) : null,
                 ExcludeGenres = excludeGenres != null ? ParseStringIntoHashSet(excludeGenres) : null,
-                MustInclude = mustInclude != null ? ParseStringIntoHashSet(mustInclude) : null
-                //Ratings = ParseStringIntoDecimalList(ratingsRange)
+                MustInclude = mustInclude != null ? ParseStringIntoHashSet(mustInclude) : null,
+                MinimumRating = minimumRating,
+                YearsRange = yearsRange != null ? ParseStringIntoDecimalList(yearsRange) : null
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
@@ -119,6 +116,7 @@ namespace VHSMovies.Api.Controllers.Recommend
             List<decimal> list = data
                 .Split(",")
                 .Select(s => decimal.Parse(s.Trim()))
+                .OrderDescending()
                 .ToList();
 
             return list;

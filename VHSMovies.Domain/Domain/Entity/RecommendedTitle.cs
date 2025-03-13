@@ -16,6 +16,8 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string Name { get; set; }
 
+        public DateOnly ReleaseDate { get; set; }
+
         public string Description { get; set; }
 
         public int TotalReviews { get; set; }

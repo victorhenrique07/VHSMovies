@@ -1,0 +1,21 @@
+﻿@using VHSMovies.Api.Integration.Main.Responses
+
+<div class="movie-grid">
+    @foreach (TitleResponse title in Titles)
+    {
+        <TitleCard Title="@title" />
+    }
+</div>
+
+<style>
+    .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public IReadOnlyCollection<TitleResponse> Titles { get; set; }
+}

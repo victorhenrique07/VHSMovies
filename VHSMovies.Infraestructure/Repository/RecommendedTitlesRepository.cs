@@ -18,9 +18,11 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles()
+        public async Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles(int titlesAmount)
         {
-            return await dbContextClass.RecommendedTitles
+            IQueryable<RecommendedTitle> titles = Query();
+
+            return await titles
                 .AsNoTracking()
                 .OrderByDescending(t => t.Relevance)
                 .ToListAsync();
@@ -31,6 +33,11 @@ namespace VHSMovies.Infraestructure.Repository
             return await dbContextClass.RecommendedTitles
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public IQueryable<RecommendedTitle> Query()
+        {
+            return dbContextClass.RecommendedTitles.AsQueryable();
         }
     }
 }

@@ -268,6 +268,7 @@ namespace VHSMovies.Api.Controllers
                     {
                         { "id", record.id },
                         { "title", record.title },
+                        { "release_date", record.release_date },
                         { "runtime", record.runtime },
                         { "backdrop_path", record.backdrop_path },
                         { "tconst", record.tconst },

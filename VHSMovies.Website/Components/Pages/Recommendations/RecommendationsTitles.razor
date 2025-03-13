@@ -1,0 +1,381 @@
+﻿@page "/recommendations"
+
+@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Api.Integration.Main.Queries
+@using VHSMovies.Website.Components.Pages.Titles
+
+@inject IGenresClient genresClient
+@inject ITitlesClient titlesClient
+
+@if (loading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <section class="hero recommendation-hero">
+        <div class="container">
+            <h2>Get Personalized Movie Recommendations</h2>
+            <p>Tell us what you like, and we'll suggest your next favorite film</p>
+        </div>
+    </section>
+
+    <section class="recommendation-form">
+        <div class="container">
+            <div class="form-container">
+                <h2>Your Movie Preferences</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="min-rating">Minimum Rating</label>
+                        <div class="rating-slider">
+                            <MudSlider id="min-rating" @bind-Value="@minimumRating" T="decimal" Min="1.0m" Max="10m" Step="0.1m" Color="Color.Error" />
+                            <div class="rating-value"><span id="rating-display">@minimumRating</span><i class="fas fa-star"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <MudExpansionPanels Elevation="0">
+                            <MudExpansionPanel Text="Genres To Include" Expanded="false">
+                                <MudGrid Spacing="0" Justify="Justify.Center" Class="ml-10">
+                                    @{
+                                        foreach (GenreResponse genre in Genres)
+                                        {
+                                            if (excludeGenres.Contains(genre.Id))
+                                            {
+                                                <MudItem xs="12" md="3">
+                                                    <div class="checkbox-item">
+                                                        <MudCheckBox T="bool"
+                                                                     Label="@genre.Name"
+                                                                     ValueChanged="@(() => ArrangeIncludeGenres(genre.Id))"
+                                                                     ReadOnly="true" 
+                                                                     Style="opacity:0.5"/>
+                                                    </div>
+                                                </MudItem>
+                                            }
+                                            else
+                                            {
+                                                <MudItem xs="12" md="3">
+                                                    <div class="checkbox-item">
+                                                        <MudCheckBox T="bool"
+                                                                     Label="@genre.Name"
+                                                                     ValueChanged="@(() => ArrangeIncludeGenres(genre.Id))" />
+                                                    </div>
+                                                </MudItem>
+                                            }
+                                        }
+                                    }
+                            </MudGrid>
+                        </MudExpansionPanel>
+                        <MudExpansionPanel Text="Genres To Exclude" Expanded="false">
+                            <MudGrid Spacing="0" Justify="Justify.Center" Class="ml-10">
+                                    @{
+                                        foreach (GenreResponse genre in Genres)
+                                        {
+                                            if (includeGenres.Contains(genre.Id) || mustIncludeGenres.Contains(genre.Id))
+                                            {
+                                                <MudItem xs="12" md="3">
+                                                    <div class="checkbox-item">
+                                                        <MudCheckBox T="bool"
+                                                                     Label="@genre.Name"
+                                                                     ValueChanged="@(() => ArrangeExcludeGenres(genre.Id))"
+                                                                     ReadOnly="true"
+                                                                     Style="opacity:0.5" />
+                                                    </div>
+                                                </MudItem>
+                                            }
+                                            else
+                                            {
+                                                <MudItem xs="12" md="3">
+                                                    <div class="checkbox-item">
+                                                        <MudCheckBox T="bool"
+                                                                     Label="@genre.Name"
+                                                                     ValueChanged="@(() => ArrangeExcludeGenres(genre.Id))" />
+                                                    </div>
+                                                </MudItem>
+                                            }
+                                        }
+                                    }
+                            </MudGrid>
+                        </MudExpansionPanel>
+                        <MudExpansionPanel Text="Must Include Genres" Expanded="false">
+                            <MudGrid Spacing="0" Justify="Justify.Center" Class="ml-10">
+                                @{
+                                    foreach (GenreResponse genre in Genres)
+                                    {
+                                        if (excludeGenres.Contains(genre.Id))
+                                        {
+                                            <MudItem xs="12" md="3">
+                                                <div class="checkbox-item">
+                                                    <MudCheckBox T="bool"
+                                                                 Label="@genre.Name"
+                                                                 ValueChanged="@(() => ArrangeMustIncludeGenres(genre.Id))"
+                                                                 ReadOnly="true"
+                                                                 Style="opacity:0.5" />
+                                                </div>
+                                            </MudItem>
+                                        }
+                                        else 
+                                        {
+                                            <MudItem xs="12" md="3">
+                                                <div class="checkbox-item">
+                                                    <MudCheckBox T="bool"
+                                                                 Label="@genre.Name"
+                                                                 ValueChanged="@(() => ArrangeMustIncludeGenres(genre.Id))"/>
+                                                </div>
+                                            </MudItem>
+                                        }
+                                    }
+                                }
+                            </MudGrid>
+                        </MudExpansionPanel>
+                        </MudExpansionPanels>
+                    </div>
+                    @*
+                    <div class="form-group">
+                        <label for="year-range">Year Range</label>
+                        <div class="year-range-container">
+                            <div class="year-inputs">
+                                <div class="year-input-group">
+                                    <label for="min-year">From</label>
+                                    <input type="number" id="min-year" name="min-year" min="1920" max="2025" value="1990">
+                                </div>
+                                <div class="year-input-group">
+                                    <label for="max-year">To</label>
+                                    <input type="number" id="max-year" name="max-year" min="1920" max="2025" value="2025">
+                                </div>
+                            </div>
+                            <div class="year-presets">
+                                <button type="button" class="year-preset" data-min="1920" data-max="1969">Classic</button>
+                                <button type="button" class="year-preset" data-min="1970" data-max="1999">Retro</button>
+                                <button type="button" class="year-preset" data-min="2000" data-max="2015">2000s</button>
+                                <button type="button" class="year-preset" data-min="2016" data-max="2025">Recent</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Preferences (Optional)</label>
+                        <div class="additional-prefs">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="award-winning" name="award-winning">
+                                <label for="award-winning">Award-winning films</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="indie" name="indie">
+                                <label for="indie">Independent films</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="foreign" name="foreign">
+                                <label for="foreign">Foreign language films</label>
+                            </div>
+                        </div>
+                    </div>
+                    *@
+
+                    <div class="form-group mood-group">
+                        <label>Current Mood</label>
+                        <div class="mood-selector">
+                            <div class="mood-option">
+                                <input type="radio" id="mood-happy" name="mood" value="happy">
+                                <label for="mood-happy"><i class="fas fa-smile"></i> Happy</label>
+                            </div>
+                            <div class="mood-option">
+                                <input type="radio" id="mood-thoughtful" name="mood" value="thoughtful">
+                                <label for="mood-thoughtful"><i class="fas fa-brain"></i> Thoughtful</label>
+                            </div>
+                            <div class="mood-option">
+                                <input type="radio" id="mood-excited" name="mood" value="excited">
+                                <label for="mood-excited"><i class="fas fa-bolt"></i> Excited</label>
+                            </div>
+                            <div class="mood-option">
+                                <input type="radio" id="mood-relaxed" name="mood" value="relaxed">
+                                <label for="mood-relaxed"><i class="fas fa-couch"></i> Relaxed</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <MudButton Class="submit-btn" OnClick="@ApplyRecommendedTitlesFilter">Get Recommendations</MudButton>
+                        <button type="reset" class="reset-btn">Reset Filters</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    @if (loadingMovies)
+    {
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else if (Titles.Count() != 0)
+    {
+        <section class="movies">
+
+            <div class="container">
+                <h2>Recommended Movies</h2>
+
+                <TitleGrid Titles="@Titles" />
+
+            </div>
+        </section>
+    }
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How Our Recommendations Work</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Set Your Preferences</h3>
+                    <p>Tell us what you like by selecting genres, ratings, and years</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Our Algorithm Works</h3>
+                    <p>Our advanced algorithm analyzes thousands of films to find your perfect matches</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3>Discover New Films</h3>
+                    <p>Get personalized recommendations tailored just for you</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .recommendation-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 5rem 0;
+        }
+
+            .hero-section h2 {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+
+            .hero-section p {
+                font-size: 1.2rem;
+                max-width: 700px;
+                margin: 0 auto;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            }
+    </style>
+}
+
+@code {
+    private bool loading;
+    private bool loadingMovies;
+
+    private decimal minimumRating = 0m;
+    private List<int> includeGenres = new List<int>();
+    private List<int> excludeGenres = new List<int>();
+    private List<int> mustIncludeGenres = new List<int>();
+
+    private GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery();
+
+    private IReadOnlyCollection<GenreResponse> Genres = new List<GenreResponse>();
+
+    private IReadOnlyCollection<TitleResponse> Titles = new List<TitleResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+
+        Genres = await genresClient.GetAllGenres();
+
+        loading = false;
+    }
+
+    private void ArrangeIncludeGenres(int genreId)
+    {
+        if (includeGenres.Contains(genreId))
+        {
+            includeGenres.Remove(genreId);
+            return;
+        }
+        else
+        {
+            includeGenres.Add(genreId);
+            return;
+        }
+    }
+
+    private void ArrangeExcludeGenres(int genreId)
+    {
+        if (excludeGenres.Contains(genreId))
+        {
+            excludeGenres.Remove(genreId);
+            return;
+        }
+        else
+        {
+            excludeGenres.Add(genreId);
+            return;
+        }
+    }
+
+    private void ArrangeMustIncludeGenres(int genreId)
+    {
+        if (mustIncludeGenres.Contains(genreId))
+        {
+            mustIncludeGenres.Remove(genreId);
+            return;
+        }
+        else
+        {
+            mustIncludeGenres.Add(genreId);
+            return;
+        }
+    }
+
+    private async Task ApplyRecommendedTitlesFilter()
+    {
+        try
+        {
+            loadingMovies = true;
+
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
+            {
+                IncludeGenres = includeGenres.ToArray(),
+                ExcludeGenres = excludeGenres.ToArray(),
+                MustInclude = mustIncludeGenres.ToArray(),
+                MinimumRating = minimumRating
+            };
+
+            Titles = await titlesClient.GetRecommendationsTitles(query);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loadingMovies = false;
+        }
+    }
+}

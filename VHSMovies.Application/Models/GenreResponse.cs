@@ -21,5 +21,9 @@ namespace VHSMovies.Application.Models
             Id = id;
             Name = name;
         }
+
+        public GenreResponse()
+        {
+        }
     }
 }

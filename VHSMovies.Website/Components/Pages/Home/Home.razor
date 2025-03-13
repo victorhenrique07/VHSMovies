@@ -1,75 +1,77 @@
 ﻿@page "/"
+@page "/home"
 
-@using MudBlazor
 @using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Queries
 @using VHSMovies.Api.Integration.Main.Responses
-@using VHSMovies.Website.Components.Shared
+@using VHSMovies.Website.Components.Pages.Titles
 
 @inject ITitlesClient titlesClient
 
 @if (loading)
 {
-    <LoadingContainer Color="@(websiteDetails.IsDarkMode ? Color.Primary : Color.Secondary)" />
+    <MudProgressCircular Indeterminate="true" />
 }
 else
-{
-    <MudContainer Class="position-relative">
-        <HomeFeaturedMovie />
-    </MudContainer>
-    <MudDivider />
+{    
+    <section class="recommendation-section hero-section">
+        <div class="container">
+            <h2>Get Personalized Movie Recommendations</h2>
+            <p>Tell us what you like, and we'll suggest your next favorite film</p>
+        </div>
+    </section>
 
-    <BackgroundStyle>
-        
-        <HomeTopics Titles="@mostRelevantSciFiTitles">
-            <Topic TopicName="Most Relevant Sci-Fi Titles">
-                <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
-                    <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
-                    <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
-                </a>
-            </Topic>
-        </HomeTopics>
-        
-        <HomeTopics Titles="@mostRelevantActionTitles">
-            <Topic TopicName="Most Relevant Action Titles">
-                <a href="/titles/most-relevant/" class="see-all-link d-flex align-items-center gap-2">
-                    <MudText Typo="Typo.h6" Class="see-all">See All</MudText>
-                    <MudIcon Class="see-all" Icon="@Icons.Material.Filled.ArrowForwardIos" />
-                </a>
-            </Topic>
-        </HomeTopics>
-    </BackgroundStyle>
+    <section class="movies">
+
+        <div class="container">
+            <h2>Recommended Movies</h2>
+
+            <TitleGrid Titles="@Titles" />
+
+        </div>
+    </section>
 
     <style>
-        .pt-10 {
-            position: relative;
-            background-image: url('@(websiteDetails is not null ? websiteDetails.BackgroundImage : string.Empty)');
+        .recommendation-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
-            @* background-attachment: fixed; *@
+            color: white;
+            text-align: center;
+            padding: 5rem 0;
+        }
+
+        .hero-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
     </style>
 }
 
+
+
 @code {
-    [CascadingParameter]
-    protected WebsiteDetails? websiteDetails { get; set; }
-
-    private IReadOnlyCollection<TitleResponse> mostRelevantActionTitles;
-    private IReadOnlyCollection<TitleResponse> mostRelevantSciFiTitles;
-
-    int titleNumber = 0;
-
     private bool loading;
+
+    private IReadOnlyCollection<TitleResponse> Titles;
 
     protected override async Task OnInitializedAsync()
     {
         loading = true;
 
-        int rankPosition = 1;
-
-        mostRelevantActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
-
-        mostRelevantSciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
+        Titles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery() { TitlesAmount = 12 });
 
         loading = false;
     }

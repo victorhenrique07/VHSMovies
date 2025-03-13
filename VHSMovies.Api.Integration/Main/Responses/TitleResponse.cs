@@ -12,6 +12,8 @@ namespace VHSMovies.Api.Integration.Main.Responses
 
         public string Name { get; set; }
 
+        public DateOnly ReleaseDate { get; set; }
+
         public string Description { get; set; }
 
         public decimal AverageRating { get; set; }

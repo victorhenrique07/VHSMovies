@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -29,6 +30,8 @@ namespace VHSMovies.Application.Handlers
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
         {
+            IQueryable<RecommendedTitle> titles = recommendedTitlesRepository.Query();
+
             IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
 
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
@@ -47,23 +50,20 @@ namespace VHSMovies.Application.Handlers
                     .Select(x => x.Name.ToLower())
                     .ToList();
 
-                response = (await recommendedTitlesRepository.GetAllRecommendedTitles())
-                    .Where(t => t.Genres.ToLower().Split(',')
-                        .Select(genre => genre.Trim())
-                        .Any(genre => genresToQuery.Contains(genre)))
+                response = titles
+                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres, "%" + genre + "%")))
                     .OrderByDescending(t => t.Relevance)
                     .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
                     .ToList();
 
-                //_cache.Set($"movies-by-{query.GenreName}", response, cacheOptions);
+                _cache.Set($"movies-by-{query.GenresId}", response, cacheOptions);
 
                 return response;
             }
 
-            response = (await recommendedTitlesRepository.GetAllRecommendedTitles())
+            response = (await recommendedTitlesRepository.GetAllRecommendedTitles(query.TitlesAmount))
                     .OrderByDescending(t => t.Relevance)
-                    .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
                     .ToList();
 

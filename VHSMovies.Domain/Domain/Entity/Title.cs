@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -13,9 +14,12 @@ namespace VHSMovies.Domain.Domain.Entity
         {
         }
 
-        public Title(string name, string description, string principalImageUrl, string posterImageUrl, List<Review> ratings) : base(principalImageUrl, posterImageUrl)
+        public Title(string name, DateOnly? releaseDate, string description, 
+            string principalImageUrl, string posterImageUrl, List<Review> ratings) :
+            base(principalImageUrl, posterImageUrl)
         {
             Name = name;
+            ReleaseDate = releaseDate;
             Description = description;
             Ratings = ratings;
         }
@@ -23,6 +27,8 @@ namespace VHSMovies.Domain.Domain.Entity
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public DateOnly? ReleaseDate { get; set; }
 
         public string Description { get; set; }
 

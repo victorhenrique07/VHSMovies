@@ -12,8 +12,8 @@ namespace VHSMovies.Domain.Domain.Entity
         {
         }
 
-        public TVShow(string name, string description, string principalImageUrl, string posterImageUrl, List<Review> ratings) :
-            base(name, description, principalImageUrl, posterImageUrl, ratings)
+        public TVShow(string name, DateOnly? releaseDate, string description, string principalImageUrl, string posterImageUrl, List<Review> ratings) :
+            base(name, releaseDate, description, principalImageUrl, posterImageUrl, ratings)
         {
         }
 

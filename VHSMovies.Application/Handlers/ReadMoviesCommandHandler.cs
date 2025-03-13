@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using OpenQA.Selenium.DevTools.V129.Audits;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace VHSMovies.Application.Handlers
             {
                 "id",
                 "title",
+                "release_date",
                 "runtime",
                 "backdrop_path",
                 "tconst",
@@ -61,6 +63,7 @@ namespace VHSMovies.Application.Handlers
             {
                 int id = 0;
                 string name = "";
+                DateOnly? releaseDate = new DateOnly();
                 string description = "";
                 string IMDbId = "";
                 int runTime = 0;
@@ -81,6 +84,7 @@ namespace VHSMovies.Application.Handlers
                 {
                     { "id", value => id = ParseInt(value) },
                     { "title", value => name = GetValueOrDefault(value) },
+                    { "release_date", value => releaseDate = GetDateValue(value) },
                     { "runtime", value => runTime = ParseInt(value) },
                     { "backdrop_path", value => backdrop_path = GetValueOrDefault(value) },
                     { "tconst", value => IMDbId = GetValueOrDefault(value) },
@@ -135,7 +139,7 @@ namespace VHSMovies.Application.Handlers
                     TitleId = id
                 };
 
-                Movie movie = new Movie(name, description, backdrop_path, poster_path, new List<Review>() { review }, runTime)
+                Movie movie = new Movie(name, releaseDate, description, backdrop_path, poster_path, new List<Review>() { review }, runTime)
                 {
                     Id = id,
                     Genres = titlesGenres
@@ -162,6 +166,16 @@ namespace VHSMovies.Application.Handlers
         private static decimal ParseDecimal(string value)
         {
             return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : 0.0m;
+        }
+
+        private static DateOnly? GetDateValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            DateOnly.TryParse(value, out var parsedDate);
+
+            return parsedDate;
         }
     }
 }
