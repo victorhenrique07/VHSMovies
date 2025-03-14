@@ -12,7 +12,7 @@ namespace VHSMovies.Application.Factories
     {
         public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title)
         {
-            return new TitleResponse(title.Id, title.Name, title.Description, title.AverageRating, title.TotalReviews)
+            return new TitleResponse(title.Id, title.Name, title.ReleaseDate.Value, title.Description, title.AverageRating, title.TotalReviews)
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
@@ -26,7 +26,7 @@ namespace VHSMovies.Application.Factories
         {
             int rankPosition = 0;
 
-            return new TitleResponse(title.Id, title.Name, title.Description, title.AverageRating, title.TotalReviews)
+            return new TitleResponse(title.Id, title.Name, title.ReleaseDate.Value, title.Description, title.AverageRating, title.TotalReviews)
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,

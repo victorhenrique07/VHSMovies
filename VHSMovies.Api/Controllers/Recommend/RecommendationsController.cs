@@ -44,13 +44,6 @@ namespace VHSMovies.Api.Controllers.Recommend
         {
             string genres = genresId != null ? genresId.Replace(",", "-").Trim() : "none";
 
-            string cacheKey = $"most-relevant-movies-{genres}-{titlesAmount}";
-
-            if (_cache.TryGetValue(cacheKey, out List<TitleResponse> cachedTitles))
-            {
-                return Ok(cachedTitles);
-            }
-
             GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
             {
                 GenresId = genresId != null ? ParseStringIntoIntArray(genresId) : null,

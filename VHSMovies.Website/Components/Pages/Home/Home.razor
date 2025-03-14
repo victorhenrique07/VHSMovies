@@ -5,13 +5,14 @@
 @using VHSMovies.Api.Integration.Main.Queries
 @using VHSMovies.Api.Integration.Main.Responses
 @using VHSMovies.Website.Components.Pages.Titles
+@using VHSMovies.Website.Components.Shared
 
 @inject ITitlesClient titlesClient
 @inject HttpClient httpClient
 
 @if (loading)
 {
-    <MudProgressCircular Indeterminate="true" Color="Color.Tertiary" />
+    <Loading />
 }
 else
 {    
@@ -32,8 +33,6 @@ else
         </MudContainer>
     </section>
 }
-
-
 
 @code {
     private bool loading;

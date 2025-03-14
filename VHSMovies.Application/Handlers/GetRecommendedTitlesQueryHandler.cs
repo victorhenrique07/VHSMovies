@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Application.Commands;
+using VHSMovies.Application.Factories;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
@@ -37,6 +38,8 @@ namespace VHSMovies.Application.Handlers
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetRecommendedTitlesQuery query, CancellationToken cancellationToken)
         {
             IQueryable<RecommendedTitle> titles = recomendedTitlesRepository.Query();
+
+            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
             IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
 
@@ -121,14 +124,7 @@ namespace VHSMovies.Application.Handlers
                 .ToList();
 
             response = data
-                .Select(t => 
-                    new TitleResponse(t.Id, t.Name, t.Description, t.AverageRating, t.TotalReviews) 
-                    {
-                        PosterImageUrl = t.PosterImageUrl,
-                        PrincipalImageUrl = t.PrincipalImageUrl,
-                        Genres = t.Genres.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
-                            .Select(g => new GenreResponse { Name = g.Trim() }).ToList()
-                    }).ToList();
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t)).ToList();
 
             return response;
         }

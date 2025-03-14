@@ -6,13 +6,14 @@
 @using VHSMovies.Api.Integration.Main.Responses
 @using VHSMovies.Api.Integration.Main.Queries
 @using VHSMovies.Website.Components.Pages.Titles
+@using VHSMovies.Website.Components.Shared
 
 @inject IGenresClient genresClient
 @inject ITitlesClient titlesClient
 
 @if (loading)
 {
-    <MudProgressCircular Indeterminate="true" />
+    <Loading />
 }
 else
 {
@@ -197,7 +198,7 @@ else
             <h2>How Our Recommendations Work</h2>
             <div class="steps-container">
                 <div class="step">
-                    <div class="step-icon">
+                    <div class="step-icon d-flex align-items-center justify-content-center">
                         <i class="fas fa-sliders-h"></i>
                     </div>
                     <h3>Set Your Preferences</h3>
@@ -211,7 +212,7 @@ else
                     <p>Our advanced algorithm analyzes thousands of films to find your perfect matches</p>
                 </div>
                 <div class="step">
-                    <div class="step-icon">
+                    <div class="step-icon d-flex align-items-center justify-content-center">
                         <i class="fas fa-film"></i>
                     </div>
                     <h3>Discover New Films</h3>

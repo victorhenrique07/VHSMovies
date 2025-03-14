@@ -6,7 +6,7 @@
 <MudPopoverProvider />
 
 
-<MudLayout Class="layout-container">
+<MudLayout Class="layout-container flex-column d-flex">
     <header>
         <MudContainer class="container">
             <div class="logo">
@@ -24,7 +24,7 @@
         </MudContainer>
     </header>
 
-    <MudMainContent Class="ma-0 pa-0">
+    <MudMainContent Class="ma-0 pa-0 flex-column justify-content-center d-flex">
         @Body
     </MudMainContent>
 
@@ -42,6 +42,10 @@
         --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         --transition: all 0.3s ease;
 
+    }
+
+    .layout-container {
+        min-height: 100vh;
     }
 
     * {
