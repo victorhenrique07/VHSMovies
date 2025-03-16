@@ -1,0 +1,73 @@
+﻿@page "/top-rated"
+
+@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Queries
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Website.Components.Pages.Titles
+@using VHSMovies.Website.Components.Shared
+
+@inject ITitlesClient titlesClient
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <section class="movies">
+
+        <MudContainer class="container">
+            <h2>Recommended Action Movies</h2>
+
+            <TitleGrid Titles="@ActionTitles" />
+
+        </MudContainer>
+    </section>
+    <section class="movies">
+        <MudContainer class="container">
+            <h2>Recommended Sci-Fi Movies</h2>
+
+            <TitleGrid Titles="@SciFiTitles" />
+
+        </MudContainer>
+    </section>
+    <section class="movies">
+
+        <MudContainer class="container">
+            <h2>Recommended Thriller Movies</h2>
+
+            <TitleGrid Titles="@ThrillerTitles" />
+
+        </MudContainer>
+    </section>
+}
+
+@code {
+    private bool loading;
+
+    private IReadOnlyCollection<TitleResponse> ActionTitles = new List<TitleResponse>();
+    private IReadOnlyCollection<TitleResponse> SciFiTitles = new List<TitleResponse>();
+    private IReadOnlyCollection<TitleResponse> ThrillerTitles = new List<TitleResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            StateHasChanged();
+
+            ActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
+            SciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
+            ThrillerTitles = await titlesClient.GetMostRelevantTitlesByGenre(53);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error while loading titles: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

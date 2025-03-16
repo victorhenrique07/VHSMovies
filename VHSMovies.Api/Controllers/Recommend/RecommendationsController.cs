@@ -60,12 +60,7 @@ namespace VHSMovies.Api.Controllers.Recommend
         [HttpGet("most-relevant/{genreId}")]
         public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId)
         {
-            if (_cache.TryGetValue($"movies-by-{genreId}", out List<TitleResponse> titles))
-            {
-                return Ok(titles);
-            }
-
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenresId = [genreId], TitlesAmount = 10 };
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenresId = [genreId], TitlesAmount = 12 };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
 
@@ -75,11 +70,6 @@ namespace VHSMovies.Api.Controllers.Recommend
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTitleById(int id)
         {
-            if (_cache.TryGetValue("single-movie", out TitleResponse title))
-            {
-                return Ok(title);
-            }
-
             GetTitleByIdQuery query = new GetTitleByIdQuery() { Id = id };
 
             TitleResponse response = await mediator.Send(query);

@@ -167,9 +167,8 @@ else
                         </div>
                     </div>
 
-                    <MudAutocomplete T="TitleResponse" Label="Titles to Exclude" SearchFunc="@SearchAsync"
-                    ValueChanged="AddTitleToExclude" AdornmentIcon="@Icons.Material.Filled.Search" 
-                    ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" />
+                    <MudAutocomplete T="TitleResponse" Label="Titles to Exclude" SearchFunc="@SearchAsync" ValueChanged="AddTitleToExclude" 
+                        AdornmentIcon="@Icons.Material.Filled.Search" ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" MenuPosition="static"/>
 
                     @if (selectedItems != null)
                     {
@@ -188,7 +187,7 @@ else
         </MudContainer>
     </section>
 
-    @if (loadingMovies || !loadingMovies)
+    @if (loadingMovies)
     {
         <Loading />
     }

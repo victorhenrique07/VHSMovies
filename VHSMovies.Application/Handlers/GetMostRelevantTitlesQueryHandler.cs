@@ -40,7 +40,7 @@ namespace VHSMovies.Application.Handlers
                     .ToListAsync(cancellationToken);
 
                 return await recommendedTitlesRepository.Query()
-                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres, $"%{genre}%")))
+                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres.ToLower(), "%" + genre + "%")))
                     .OrderByDescending(t => t.Relevance)
                     .Take(query.TitlesAmount)
                     .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
