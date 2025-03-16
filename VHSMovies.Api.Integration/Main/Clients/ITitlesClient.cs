@@ -22,5 +22,8 @@ namespace VHSMovies.Api.Integration.Main.Clients
 
         [Get("/api/titles/{id}")]
         public Task<TitleResponse> GetTitleById(int id);
+
+        [Get("/api/search")]
+        public Task<IReadOnlyCollection<TitleResponse>> GetTitlesBySearch(string query);
     }
 }

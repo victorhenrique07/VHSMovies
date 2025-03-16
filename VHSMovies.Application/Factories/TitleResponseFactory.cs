@@ -12,14 +12,13 @@ namespace VHSMovies.Application.Factories
     {
         public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title)
         {
-            return new TitleResponse(title.Id, title.Name, title.ReleaseDate.Value, title.Description, title.AverageRating, title.TotalReviews)
+            return new TitleResponse(title.Id, title.Name, title.ReleaseDate, title.Description, title.AverageRating, title.TotalReviews)
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
-                Genres = title.Genres
-                                .Split(new[] { ", " }, StringSplitOptions.None)
+                Genres = title.Genres.Split(new[] { ", " }, StringSplitOptions.None)
                                 .ToList()
-                                .Select(gt => new GenreResponse(gt)).ToList(),
+                                .Select(gt => new GenreResponse(gt)).ToList()
             };
         }
         public TitleResponse CreateTitleResponseByTitle(Title title)

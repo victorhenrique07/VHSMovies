@@ -22,7 +22,8 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("recommend")]
-        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, decimal? minimumRating, string? yearsRange, int? titlesAmount)
+        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, 
+            decimal? minimumRating, string? yearsRange, int? titlesAmount, string? titlesToExclude)
         {
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
@@ -31,7 +32,8 @@ namespace VHSMovies.Api.Controllers.Recommend
                 MustInclude = mustInclude != null ? ParseStringIntoHashSet(mustInclude) : null,
                 MinimumRating = minimumRating,
                 YearsRange = yearsRange != null ? ParseStringIntoIntArray(yearsRange) : null,
-                TitlesAmount = titlesAmount != null ? titlesAmount.Value : 10
+                TitlesAmount = titlesAmount != null ? titlesAmount.Value : 10,
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);

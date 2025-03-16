@@ -24,6 +24,8 @@ namespace VHSMovies.Application.Commands
 
         public IReadOnlyCollection<string>? Writers { get; set; }
 
+        public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
+
         public int TitlesAmount { get; set; } = 10;
     }
 }

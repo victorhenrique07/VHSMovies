@@ -23,5 +23,7 @@ namespace VHSMovies.Api.Integration.Main.Queries
         public IReadOnlyCollection<string>? Actors { get; set; }
 
         public IReadOnlyCollection<string>? Writers { get; set; }
+
+        public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
     }
 }

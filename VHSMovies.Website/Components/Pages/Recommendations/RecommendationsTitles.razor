@@ -167,6 +167,18 @@ else
                         </div>
                     </div>
 
+                    <MudAutocomplete T="TitleResponse" Label="Titles to Exclude" SearchFunc="@SearchAsync"
+                    ValueChanged="AddTitleToExclude" AdornmentIcon="@Icons.Material.Filled.Search" 
+                    ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" />
+
+                    @if (selectedItems != null)
+                    {
+                        @foreach (TitleResponse titleName in selectedItems)
+                        {
+                            <MudChip Class="mt-2" T="string" OnClose="@(() => OnCloseChip(titleName))">@(titleName.Name)</MudChip>
+                        }
+                    }
+
                     <div class="form-actions d-flex">
                         <MudButton Class="submit-btn" OnClick="@ApplyRecommendedTitlesFilter">Get Recommendations</MudButton>
                         <button type="reset" class="reset-btn">Reset Filters</button>
@@ -176,9 +188,9 @@ else
         </MudContainer>
     </section>
 
-    @if (loadingMovies)
+    @if (loadingMovies || !loadingMovies)
     {
-        <MudProgressCircular Indeterminate="true" />
+        <Loading />
     }
     else if (Titles.Count() != 0)
     {
@@ -228,12 +240,14 @@ else
     private bool loadingMovies;
 
     private decimal minimumRating = 0m;
-    private int titlesAmount = 10;
+    private int titlesAmount = 12;
     private List<int> includeGenres = new List<int>();
     private List<int> excludeGenres = new List<int>();
     private List<int> mustIncludeGenres = new List<int>();
     private int fromYear = 2015;
     private int toYear = 2025;
+
+    private List<TitleResponse> selectedItems = new List<TitleResponse>();
 
     private GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery();
 
@@ -250,6 +264,48 @@ else
         System.Threading.Thread.Sleep(500);
 
         loading = false;
+    }
+
+    private async Task ApplyRecommendedTitlesFilter()
+    {
+        try
+        {
+            loadingMovies = true;
+
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
+            {
+                IncludeGenres = includeGenres.ToArray(),
+                ExcludeGenres = excludeGenres.ToArray(),
+                MustInclude = mustIncludeGenres.ToArray(),
+                MinimumRating = minimumRating,
+                YearsRange = new int[] { fromYear, toYear },
+                TitlesAmount = titlesAmount,
+                TitlesToExclude = selectedItems.Select(t => t.Id).ToList()
+            };
+
+            Titles = await titlesClient.GetRecommendationsTitles(query);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loadingMovies = false;
+        }
+    }
+
+    private async Task<IEnumerable<TitleResponse>> SearchAsync(string value, CancellationToken cancellationToken)
+    {
+        return await titlesClient.GetTitlesBySearch(value);
     }
 
     private void ArrangeIncludeGenres(int genreId)
@@ -294,39 +350,20 @@ else
         }
     }
 
-    private async Task ApplyRecommendedTitlesFilter()
+    private void OnCloseChip(TitleResponse title)
     {
-        try
-        {
-            loadingMovies = true;
+        selectedItems.Remove(title);
+    }
 
-            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
-            {
-                IncludeGenres = includeGenres.ToArray(),
-                ExcludeGenres = excludeGenres.ToArray(),
-                MustInclude = mustIncludeGenres.ToArray(),
-                MinimumRating = minimumRating,
-                YearsRange = new int[] { fromYear, toYear },
-                TitlesAmount = titlesAmount
-            };
+    private void AddTitleToExclude(TitleResponse title)
+    {
+        if (selectedItems.Contains(title))
+        {
+            selectedItems.Remove(title);
 
-            Titles = await titlesClient.GetRecommendationsTitles(query);
+            return;
         }
-        catch (TaskCanceledException ex)
-        {
-            Console.WriteLine("Timeout: The request took too long and was cancelled.");
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"Request Error: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected Error: {ex.Message}");
-        }
-        finally
-        {
-            loadingMovies = false;
-        }
+
+        selectedItems.AddRange(title);
     }
 }

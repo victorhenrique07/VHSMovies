@@ -8,8 +8,13 @@
     <div class="movie-info">
         <h3>@Title.Name</h3>
         <div class="movie-meta">
-            <span class="year">@Title.ReleaseDate.Year</span>
+            @if (Title.ReleaseDate != null)
+            {
+                <span class="year">@Title.ReleaseDate.Value.Year</span>
+            }
+            @*
             <span class="director">Frank Darabont</span>
+            *@
         </div>
         <div class="movie-genres">
 

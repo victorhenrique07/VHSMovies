@@ -179,7 +179,7 @@
 
 .step h3 {
     margin-bottom: 1rem;
-    color: var(--mud-palette-secondary);
+    color: var(--secondary-color);
 }
 
 .step p {
