@@ -32,6 +32,8 @@ namespace VHSMovies.Application.Handlers
         {
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
+            IQueryable<RecommendedTitle> titles = recommendedTitlesRepository.Query();
+
             if (query.GenresId != null && query.GenresId.Any())
             {
                 var genresToQuery = await genreRepository.Query()
@@ -39,19 +41,18 @@ namespace VHSMovies.Application.Handlers
                     .Select(g => g.Name.ToLower())
                     .ToListAsync(cancellationToken);
 
-                return await recommendedTitlesRepository.Query()
+                titles = titles
+                    .AsEnumerable()
                     .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres.ToLower(), "%" + genre + "%")))
-                    .OrderByDescending(t => t.Relevance)
-                    .Take(query.TitlesAmount)
-                    .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                    .ToListAsync(cancellationToken);
+                    .AsQueryable();
             }
 
-            return await recommendedTitlesRepository.Query()
+            return titles
+                .AsEnumerable()
                 .OrderByDescending(t => t.Relevance)
                 .Take(query.TitlesAmount)
                 .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                .ToListAsync(cancellationToken);
+                .ToList();
         }
     }
 }
