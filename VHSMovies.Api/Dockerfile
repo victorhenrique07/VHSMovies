@@ -14,7 +14,7 @@ WORKDIR /src
 COPY ["VHSMovies.Api/VHSMovies.Api.csproj", "VHSMovies.Api/"]
 COPY ["VHSMovies.Application/VHSMovies.Application.csproj", "VHSMovies.Application/"]
 COPY ["VHSMovies.Domain/VHSMovies.Domain.csproj", "VHSMovies.Domain/"]
-COPY ["VHSMovies.Infraestructure/VHSMovies.Infraestructure.csproj", "VHSMovies.Infraestructure/"]
+COPY ["VHSMovies.Infrastructure/VHSMovies.Infrastructure.csproj", "VHSMovies.Infrastructure/"]
 RUN dotnet restore "./VHSMovies.Api/VHSMovies.Api.csproj"
 COPY . .
 WORKDIR "/src/VHSMovies.Api"

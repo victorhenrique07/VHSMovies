@@ -36,23 +36,18 @@ namespace VHSMovies.Application.Handlers
 
             if (query.GenresId != null && query.GenresId.Any())
             {
-                var genresToQuery = await genreRepository.Query()
+                var genresToQuery = genreRepository.Query()
                     .Where(g => query.GenresId.Contains(g.Id))
-                    .Select(g => g.Name.ToLower())
-                    .ToListAsync(cancellationToken);
+                    .Select(g => g.Name.ToLower());
 
-                titles = titles
-                    .AsEnumerable()
-                    .Where(t => genresToQuery.Any(genre => EF.Functions.Like(t.Genres.ToLower(), "%" + genre + "%")))
-                    .AsQueryable();
+                titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.ToLower().Contains(genre)));
             }
 
-            return titles
-                .AsEnumerable()
+            return await titles
                 .OrderByDescending(t => t.Relevance)
                 .Take(query.TitlesAmount)
                 .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
     }
 }

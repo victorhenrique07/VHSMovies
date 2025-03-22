@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VHSMovies.Application\VHSMovies.Application.csproj" />
-    <ProjectReference Include="..\VHSMovies.Infraestructure\VHSMovies.Infraestructure.csproj" />
+    <ProjectReference Include="..\VHSMovies.Infraestructure\VHSMovies.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

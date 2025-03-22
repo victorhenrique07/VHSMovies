@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Infraestructure", "VHSMovies.Infraestructure\VHSMovies.Infraestructure.csproj", "{B61896AD-D522-450E-AFF0-EE918EF231FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Infrastructure", "VHSMovies.Infraestructure\VHSMovies.Infrastructure.csproj", "{B61896AD-D522-450E-AFF0-EE918EF231FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Domain", "VHSMovies.Domain\VHSMovies.Domain.csproj", "{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Application", "VHSMovies.Application\VHSMovies.Application.csproj", "{E690E3DB-2376-4431-B836-F935F015F732}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.DataReader", "VHSMovies.DataReader\VHSMovies.DataReader.csproj", "{DDF8DC2C-7F3D-4E72-8424-09711EE9DFDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "VHSMovies.Api\VHSMovies.Api.csproj", "{58E28368-1EB1-470D-B60A-69C7B6214D4F}"
 EndProject
@@ -18,6 +16,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "VHSMovies.Website\VHSMovies.Website.csproj", "{B50229DB-A77A-4FAD-826B-36C90634EEA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api.Integration", "VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj", "{5C918923-06AF-4EFF-B4DB-1A815574A0E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3120D3CE-1E64-4B0C-BDA1-21A96A91D2D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "..\VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +41,6 @@ Global
 		{E690E3DB-2376-4431-B836-F935F015F732}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E690E3DB-2376-4431-B836-F935F015F732}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E690E3DB-2376-4431-B836-F935F015F732}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDF8DC2C-7F3D-4E72-8424-09711EE9DFDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDF8DC2C-7F3D-4E72-8424-09711EE9DFDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDF8DC2C-7F3D-4E72-8424-09711EE9DFDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDF8DC2C-7F3D-4E72-8424-09711EE9DFDF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58E28368-1EB1-470D-B60A-69C7B6214D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,9 +57,23 @@ Global
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A84C4914-4359-4A98-82F6-91A004D9E59B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A84C4914-4359-4A98-82F6-91A004D9E59B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A84C4914-4359-4A98-82F6-91A004D9E59B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A84C4914-4359-4A98-82F6-91A004D9E59B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B61896AD-D522-450E-AFF0-EE918EF231FF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{15C2AF12-3B43-4106-9B1E-C76FBDCE125F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E690E3DB-2376-4431-B836-F935F015F732} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{58E28368-1EB1-470D-B60A-69C7B6214D4F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E4251A38-4779-4C97-8FA1-FCCB604BE878} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B50229DB-A77A-4FAD-826B-36C90634EEA3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5C918923-06AF-4EFF-B4DB-1A815574A0E7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A84C4914-4359-4A98-82F6-91A004D9E59B} = {3120D3CE-1E64-4B0C-BDA1-21A96A91D2D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6943FAEA-3A1B-42DA-8525-4D1F19FCE262}
