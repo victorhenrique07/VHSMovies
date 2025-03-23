@@ -64,9 +64,9 @@ namespace VHSMovies.Application.Handlers
                 }
 
                 titles = titles.Where(title =>
-                    (includeGenres.Count == 0 || includeGenres.Any(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
-                    && (excludeGenres.Count == 0 || !excludeGenres.Any(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
-                    && (mustIncludeGenres.Count == 0 || mustIncludeGenres.All(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
+                    (includeGenres.Count == 0 || includeGenres.Any(genre => title.Genres.Contains(genre)))
+                    && (excludeGenres.Count == 0 || !excludeGenres.Any(genre => title.Genres.Contains(genre)))
+                    && (mustIncludeGenres.Count == 0 || mustIncludeGenres.All(genre => title.Genres.Contains(genre)))
                 );
             }
 

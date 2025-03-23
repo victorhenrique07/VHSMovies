@@ -16,9 +16,7 @@ namespace VHSMovies.Application.Factories
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
-                Genres = title.Genres.Split(new[] { ", " }, StringSplitOptions.None)
-                                .ToList()
-                                .Select(gt => new GenreResponse(gt)).ToList()
+                Genres = title.Genres.Select(gt => new GenreResponse(gt)).ToList()
             };
         }
         public TitleResponse CreateTitleResponseByTitle(Title title)
@@ -30,7 +28,7 @@ namespace VHSMovies.Application.Factories
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
                 Genres = title.Genres
-                                .Select(gt => new GenreResponse(gt.Genre.Name))
+                                .Select(gt => new GenreResponse(gt.Genre.Name) { Id = gt.Genre.Id})
                                 .ToList(),
                 RankPosition = rankPosition++
             };

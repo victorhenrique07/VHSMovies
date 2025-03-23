@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Novo Perfil",
+    "Projects": [
+      {
+        "Path": "VHSMovies.Api\\VHSMovies.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "VHSMovies.Website\\VHSMovies.Website.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

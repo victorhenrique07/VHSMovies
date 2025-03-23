@@ -1,0 +1,168 @@
+﻿@using MudBlazor
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_currentTheme"/>
+<MudPopoverProvider />
+
+
+<MudLayout Class="layout-container flex-column d-flex">
+    <header>
+        <MudContainer class="container">
+            <a class="logo" href="/">
+                <i class="fas fa-film"></i>
+                <h1>VHSMovies</h1>
+            </a>
+            <nav>
+                <ul class="mb-0">
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/top-rated">Top Rated</a></li>
+                    <li><a href="/recommendations">Get Recommendations</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul>
+            </nav>
+        </MudContainer>
+    </header>
+
+    <MudMainContent Class="ma-0 pa-0 flex-column justify-content-center d-flex">
+        @Body
+    </MudMainContent>
+
+    <Footer />
+</MudLayout>
+
+<style>
+    :root {
+        --primary-color: #e50914;
+        --secondary-color: #221f1f;
+        --text-color: #333;
+        --light-color: #f4f4f4;
+        --dark-color: #141414;
+        --accent-color: #ffbe0b;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+
+    }
+
+    .layout-container {
+        min-height: 100vh;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: #f9f9f9;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    /* Header Styles */
+    header {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .logo i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+    nav ul {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    nav a {
+        font-weight: 500;
+        padding: 0.5rem;
+        transition: var(--transition);
+    }
+
+    nav a:hover {
+            color: var(--primary-color);
+    }
+</style>
+
+@code {
+    private readonly MudTheme _currentTheme = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#ff0f1f",
+            Secondary = "#ffffff",
+            Tertiary = "#e50914",
+            TextPrimary = "#221f1f",
+            TextSecondary = "#221f1f",
+            TertiaryContrastText = "#FFFFFF",
+            AppbarBackground = "#190401",
+            Background = "#000000"
+        },
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#e50914",
+            Secondary = "#221f1f",
+            Tertiary = "#e50914",
+            TextPrimary = "#221f1f",
+            TextSecondary = "#221f1f",
+            TertiaryContrastText = "#FFFFFF",
+            AppbarBackground = "#EDB16F",
+            Background = "#EDB16F",
+
+        },
+        Typography = new Typography()
+        {
+            Default = new DefaultTypography()
+            {
+                FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif", "Hubballi", "IBM Plex Sans", "Berlin Sans FB", "ABeeZee", "Segoe UI" }
+            }
+        }
+    };
+
+    }

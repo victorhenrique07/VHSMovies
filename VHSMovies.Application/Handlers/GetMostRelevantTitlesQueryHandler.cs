@@ -38,9 +38,9 @@ namespace VHSMovies.Application.Handlers
             {
                 var genresToQuery = genreRepository.Query()
                     .Where(g => query.GenresId.Contains(g.Id))
-                    .Select(g => g.Name.ToLower());
+                    .Select(g => g.Name);
 
-                titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.ToLower().Contains(genre)));
+                titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.Contains(genre)));
             }
 
             return await titles

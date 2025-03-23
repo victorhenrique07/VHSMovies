@@ -1,0 +1,61 @@
+﻿@page "/"
+@page "/home"
+
+@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Queries
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Website.Components.Pages.Titles
+@using VHSMovies.Website.Components.Shared
+
+@inject ITitlesClient titlesClient
+@inject HttpClient httpClient
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{    
+    <section class="recommendation-section hero-section">
+        <MudContainer class="container">
+            <h2>Get Personalized Movie Recommendations</h2>
+            <p>Tell us what you like, and we'll suggest your next favorite film</p>
+        </MudContainer>
+    </section>
+
+    <section class="movies">
+
+        <MudContainer class="container">
+            <h2>Recommended Movies</h2>
+
+            <TitleGrid Titles="@Titles" />
+
+        </MudContainer>
+    </section>
+}
+
+@code {
+    private bool loading;
+
+    private IReadOnlyCollection<TitleResponse> Titles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            StateHasChanged();
+
+            Titles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery() { TitlesAmount = 12 });
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error while loading titles: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

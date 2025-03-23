@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VHSMovies.Domain\VHSMovies.Domain.csproj" />
-    <ProjectReference Include="..\VHSMovies.Infraestructure\VHSMovies.Infrastructure.csproj" />
+    <ProjectReference Include="..\VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
