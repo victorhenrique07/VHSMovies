@@ -13,5 +13,7 @@ namespace VHSMovies.Application.Commands
         public int[]? GenresId { get; set; }
 
         public int TitlesAmount { get; set; }
+
+        public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
     }
 }

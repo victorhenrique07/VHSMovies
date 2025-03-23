@@ -168,11 +168,11 @@ else
                     </div>
 
                     <MudAutocomplete T="TitleResponse" Label="Titles to Exclude" SearchFunc="@SearchAsync" ValueChanged="AddTitleToExclude" 
-                        AdornmentIcon="@Icons.Material.Filled.Search" ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" MenuPosition="static"/>
+                    AdornmentIcon="@Icons.Material.Filled.Search" ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" MenuPosition="static"/>
 
-                    @if (selectedItems != null)
+                    @if (selectedExcludeTitles != null)
                     {
-                        @foreach (TitleResponse titleName in selectedItems)
+                        @foreach (TitleResponse titleName in selectedExcludeTitles)
                         {
                             <MudChip Class="mt-2" T="string" OnClose="@(() => OnCloseChip(titleName))">@(titleName.Name)</MudChip>
                         }
@@ -197,8 +197,16 @@ else
 
             <MudContainer class="container">
                 <h2>Recommended Movies</h2>
-
+                
+                <div class="movie-grid">
+                    @foreach (TitleResponse title in Titles)
+                    {
+                        <TitleCard Title="@title" AsyncMethod="() => ExcludeTitleCard(title)" />
+                    }
+                </div>
+                @*
                 <TitleGrid Titles="@Titles" />
+                *@
 
             </MudContainer>
         </section>
@@ -246,13 +254,13 @@ else
     private int fromYear = 2015;
     private int toYear = 2025;
 
-    private List<TitleResponse> selectedItems = new List<TitleResponse>();
+    private List<TitleResponse> selectedExcludeTitles = new List<TitleResponse>();
 
     private GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery();
 
     private IReadOnlyCollection<GenreResponse> Genres = new List<GenreResponse>();
 
-    private IReadOnlyCollection<TitleResponse> Titles = new List<TitleResponse>();
+    private IList<TitleResponse> Titles = new List<TitleResponse>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -279,7 +287,7 @@ else
                 MinimumRating = minimumRating,
                 YearsRange = new int[] { fromYear, toYear },
                 TitlesAmount = titlesAmount,
-                TitlesToExclude = selectedItems.Select(t => t.Id).ToList()
+                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList()
             };
 
             Titles = await titlesClient.GetRecommendationsTitles(query);
@@ -351,18 +359,26 @@ else
 
     private void OnCloseChip(TitleResponse title)
     {
-        selectedItems.Remove(title);
+        selectedExcludeTitles.Remove(title);
     }
 
     private void AddTitleToExclude(TitleResponse title)
     {
-        if (selectedItems.Contains(title))
+        if (selectedExcludeTitles.Contains(title))
         {
-            selectedItems.Remove(title);
-
-            return;
+            selectedExcludeTitles.Remove(title);
         }
 
-        selectedItems.AddRange(title);
+        selectedExcludeTitles.Add(title);
+    }
+
+    private async Task ExcludeTitleCard(TitleResponse Title)
+    {
+        Titles.Remove(Title);
+        selectedExcludeTitles.Add(Title);
+
+        Titles = Titles.ToList();
+
+        StateHasChanged();
     }
 }
