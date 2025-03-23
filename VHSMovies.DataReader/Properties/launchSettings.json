@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "VHSMovies.DataReader": {
-      "commandName": "Project",
-      "commandLineArgs": "imdb utg"
-    }
-  }
-}
