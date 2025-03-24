@@ -1,11 +1,27 @@
 ﻿@using VHSMovies.Api.Integration.Main.Responses
 
-<div class="movie-grid">
-    @foreach (TitleResponse title in Titles)
-    {
-        <TitleCard Title="@title" />
-    }
-</div>
+
+<section class="movies">
+
+    <MudContainer class="container">
+        <div class="d-flex flex-row justify-content-end align-items-center position-relative mb-2">
+            <h2 class="position-absolute start-50 translate-middle-x m-0">@SectionTitle</h2>
+
+            @if (ChildContent != null)
+            {
+                @ChildContent
+            }
+        </div>
+
+        <div class="movie-grid">
+            @foreach (TitleResponse title in Titles)
+            {
+                <TitleCard @key="@title.Id" Title="@title" AsyncMethod="() => ExcludeTitleCard(title)" />
+            }
+        </div>
+
+    </MudContainer>
+</section>
 
 <style>
     .movie-grid {
@@ -17,5 +33,27 @@
 
 @code {
     [Parameter]
-    public IReadOnlyCollection<TitleResponse> Titles { get; set; }
+    public IList<TitleResponse> Titles { get; set; }
+
+    [Parameter]
+    public string SectionTitle { get; set; }
+
+    [Parameter]
+    public IList<TitleResponse> SelectedExcludeTitles { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private async Task ExcludeTitleCard(TitleResponse Title)
+    {
+        var updatedTitles = Titles.ToList();
+
+        updatedTitles.Remove(Title);
+
+        Titles = updatedTitles;
+
+        SelectedExcludeTitles.Add(Title);
+
+        await InvokeAsync(StateHasChanged);
+    }
 }

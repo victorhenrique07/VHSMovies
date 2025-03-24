@@ -36,6 +36,12 @@ namespace VHSMovies.Application.Handlers
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
+
+            if (query.TitlesToExclude != null)
+            {
+                titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
+            }
+
             if (query.GenresId != null && query.GenresId.Any())
             {
                 var genresToQuery = genreRepository.Query()
@@ -43,11 +49,6 @@ namespace VHSMovies.Application.Handlers
                     .Select(g => g.Name);
 
                 titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.Contains(genre)));
-            }
-
-            if (query.TitlesToExclude != null)
-            {
-                titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
             }
 
             IReadOnlyCollection<RecommendedTitle> data = titles

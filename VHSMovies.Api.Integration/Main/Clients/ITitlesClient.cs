@@ -15,7 +15,7 @@ namespace VHSMovies.Api.Integration.Main.Clients
         public Task<List<TitleResponse>> GetMostRelevantTitles(GetMostRelevantTitlesQuery query);
 
         [Get("/api/titles/most-relevant/{genreId}")]
-        public Task<List<TitleResponse>> GetMostRelevantTitlesByGenre(int genreId);
+        public Task<List<TitleResponse>> GetMostRelevantTitlesByGenre(int genreId, [Query] string? titlesToExclude = null);
 
         [Get("/api/titles/recommend")]
         public Task<List<TitleResponse>> GetRecommendationsTitles(GetRecommendedTitlesQuery query);

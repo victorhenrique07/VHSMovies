@@ -197,17 +197,8 @@ else
 
             <MudContainer class="container">
                 <h2>Recommended Movies</h2>
-                
-                <div class="movie-grid">
-                    @foreach (TitleResponse title in Titles)
-                    {
-                        <TitleCard Title="@title" AsyncMethod="() => ExcludeTitleCard(title)" />
-                    }
-                </div>
-                @*
-                <TitleGrid Titles="@Titles" />
-                *@
 
+                <TitleGrid Titles="Titles" SelectedExcludeTitles="selectedExcludeTitles" />
             </MudContainer>
         </section>
     }
