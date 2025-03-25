@@ -19,13 +19,11 @@ namespace VHSMovies.Application.Handlers
     public class GetMostRelevantTitlesQueryHandler : IRequestHandler<GetMostRelevantTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
         private readonly IGenreRepository genreRepository;
-        private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
-        private readonly IMemoryCache _cache;
+        private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
 
-        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache, IGenreRepository genreRepository)
+        public GetMostRelevantTitlesQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IGenreRepository genreRepository)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
-            this._cache = _cache;
             this.genreRepository = genreRepository;
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
@@ -36,6 +34,7 @@ namespace VHSMovies.Application.Handlers
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
+            IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
 
             if (query.TitlesToExclude != null)
             {
@@ -44,7 +43,7 @@ namespace VHSMovies.Application.Handlers
 
             if (query.GenresId != null && query.GenresId.Any())
             {
-                var genresToQuery = genreRepository.Query()
+                var genresToQuery = allGenres
                     .Where(g => query.GenresId.Contains(g.Id))
                     .Select(g => g.Name);
 
@@ -58,7 +57,7 @@ namespace VHSMovies.Application.Handlers
                 .ToList();
 
             response = data
-                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t)).ToList();
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t, allGenres)).ToList();
 
             return response;
         }

@@ -15,9 +15,9 @@ namespace VHSMovies.Application.Handlers
 {
     class GetTitlesBySearchQueryHandler : IRequestHandler<GetTitlesBySearchQuery, IReadOnlyCollection<TitleResponse>>
     {
-        private readonly IRecomendedTitlesRepository titleRepository;
+        private readonly IRecommendedTitlesRepository titleRepository;
 
-        public GetTitlesBySearchQueryHandler(IRecomendedTitlesRepository titleRepository)
+        public GetTitlesBySearchQueryHandler(IRecommendedTitlesRepository titleRepository)
         {
             this.titleRepository = titleRepository;
         }

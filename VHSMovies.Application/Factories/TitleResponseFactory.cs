@@ -10,15 +10,28 @@ namespace VHSMovies.Application.Factories
 {
     public class TitleResponseFactory
     {
-        public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title)
+        public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title, IReadOnlyCollection<Genre> genres = null)
         {
+            List<GenreResponse> titlesGenres = new List<GenreResponse>();
+
+            if (genres != null)
+            {
+                foreach (var titleGenre in title.Genres)
+                {
+                    Genre genre = genres.Where(g => g.Name.ToLower() == titleGenre.ToLower()).FirstOrDefault();
+
+                    titlesGenres.Add(new GenreResponse(genre.Id, genre.Name));
+                }
+            }
+
             return new TitleResponse(title.Id, title.Name, title.ReleaseDate, title.Description, title.AverageRating, title.TotalReviews)
             {
                 PrincipalImageUrl = title.PrincipalImageUrl,
                 PosterImageUrl = title.PosterImageUrl,
-                Genres = title.Genres.Select(gt => new GenreResponse(gt)).ToList()
+                Genres = titlesGenres
             };
         }
+
         public TitleResponse CreateTitleResponseByTitle(Title title)
         {
             int rankPosition = 0;

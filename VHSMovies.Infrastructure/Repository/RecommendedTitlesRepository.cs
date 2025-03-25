@@ -9,7 +9,7 @@ using VHSMovies.Domain.Domain.Repository;
 
 namespace VHSMovies.Infraestructure.Repository
 {
-    public class RecommendedTitlesRepository : IRecomendedTitlesRepository
+    public class RecommendedTitlesRepository : IRecommendedTitlesRepository
     {
         private readonly DbContextClass dbContextClass;
 

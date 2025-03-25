@@ -7,7 +7,7 @@ using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Domain.Domain.Repository
 {
-    public interface IRecomendedTitlesRepository
+    public interface IRecommendedTitlesRepository
     {
         Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles(int titlesAmount);
 

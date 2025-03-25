@@ -17,14 +17,14 @@ namespace VHSMovies.Application.Handlers
 {
     public class GetRecommendedTitlesQueryHandler : IRequestHandler<GetRecommendedTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
-        private readonly IRecomendedTitlesRepository recomendedTitlesRepository;
+        private readonly IRecommendedTitlesRepository recomendedTitlesRepository;
         private readonly ICastRepository castRepository;
         private readonly ITitleGenreRepository titleGenreRepository;
         private readonly IGenreRepository genreRepository;
         private readonly ILogger<GetRecommendedTitlesQueryHandler> logger;
 
         public GetRecommendedTitlesQueryHandler(
-            IRecomendedTitlesRepository recomendedTitlesRepository, 
+            IRecommendedTitlesRepository recomendedTitlesRepository, 
             ICastRepository castRepository,
             ITitleGenreRepository titleGenreRepository,
             IGenreRepository genreRepository)
@@ -128,7 +128,7 @@ namespace VHSMovies.Application.Handlers
                 .ToList();
 
             response = data
-                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t)).ToList();
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t, allGenres)).ToList();
 
             return response;
         }
