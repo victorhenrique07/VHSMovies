@@ -46,11 +46,11 @@ namespace VHSMovies.Api.Controllers.Recommend
         {
             string genres = genresId != null ? genresId.Replace(",", "-").Trim() : "none";
 
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
-                GenresId = genresId != null ? ParseStringIntoIntArray(genresId) : null,
-                TitlesAmount = titlesAmount,
-                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null
+                IncludeGenres = genresId != null ? ParseStringIntoHashSet(genresId) : null,
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
+                TitlesAmount = titlesAmount
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);

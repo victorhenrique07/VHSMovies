@@ -19,19 +19,16 @@ namespace VHSMovies.Application.Handlers
     {
         private readonly IRecommendedTitlesRepository recomendedTitlesRepository;
         private readonly ICastRepository castRepository;
-        private readonly ITitleGenreRepository titleGenreRepository;
         private readonly IGenreRepository genreRepository;
         private readonly ILogger<GetRecommendedTitlesQueryHandler> logger;
 
         public GetRecommendedTitlesQueryHandler(
             IRecommendedTitlesRepository recomendedTitlesRepository, 
             ICastRepository castRepository,
-            ITitleGenreRepository titleGenreRepository,
             IGenreRepository genreRepository)
         {
             this.recomendedTitlesRepository = recomendedTitlesRepository;
             this.castRepository = castRepository;
-            this.titleGenreRepository = titleGenreRepository;
             this.genreRepository = genreRepository;
         }
 
@@ -50,7 +47,7 @@ namespace VHSMovies.Application.Handlers
                 titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
             }
 
-            if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
+            if (query.IncludeGenres.Count() != 0 || query.ExcludeGenres.Count() != 0 || query.MustInclude.Count() != 0)
             {
                 var includeGenres = new List<string>();
                 var excludeGenres = new List<string>();

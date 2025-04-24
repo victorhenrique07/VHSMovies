@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3120D3CE-1E64-4B0C-BDA1-21A96A91D2D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "..\VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
