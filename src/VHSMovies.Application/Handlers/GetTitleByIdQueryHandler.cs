@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using VHSMovies.Mediator;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -10,15 +10,16 @@ using VHSMovies.Application.Factories;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers
 {
     public class GetTitleByIdQueryHandler : IRequestHandler<GetTitleByIdQuery, TitleResponse>
     {
-        private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
+        private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
         private readonly IMemoryCache _cache;
 
-        public GetTitleByIdQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache)
+        public GetTitleByIdQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
             this._cache = _cache;

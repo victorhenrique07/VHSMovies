@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using VHSMovies.Mediator;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using VHSMovies.Application.Commands;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Mediator.Implementation;
 
 namespace VHSMovies.Application.Handlers
 {

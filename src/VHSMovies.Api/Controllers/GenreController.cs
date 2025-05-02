@@ -1,7 +1,8 @@
-﻿using MediatR;
+﻿using VHSMovies.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers
 {

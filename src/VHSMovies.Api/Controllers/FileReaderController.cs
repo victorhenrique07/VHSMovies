@@ -2,7 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 using OfficeOpenXml;
-using MediatR;
+using VHSMovies.Mediator;
 using VHSMovies.Application.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using VHSMovies.Application.Commands;
@@ -12,6 +12,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers
 {

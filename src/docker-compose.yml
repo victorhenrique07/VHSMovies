@@ -21,8 +21,6 @@ services:
       dockerfile: VHSMovies.Api/Dockerfile
     ports:
       - "5000:5000"
-    depends_on:
-      - vhsmovies.database
     networks:
       - vhsmovies_network
 

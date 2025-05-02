@@ -19,9 +19,14 @@ namespace VHSMovies.Infraestructure
         {
             if (!options.IsConfigured)
             {
-                options.UseMySql(
-                    Configuration.GetConnectionString("DefaultConnection"),
-                    ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection")));
+                string DATABASE_HOST = Environment.GetEnvironmentVariable("DATABASE_HOST");
+                string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
+                string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
+                string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
+
+                string conectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
+
+                options.UseMySql(conectionString, ServerVersion.AutoDetect(conectionString));
                 options.EnableSensitiveDataLogging();
             }
         }

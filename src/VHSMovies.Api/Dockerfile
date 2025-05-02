@@ -6,7 +6,6 @@ USER $APP_UID
 WORKDIR /app
 EXPOSE 5000
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -15,6 +14,7 @@ COPY ["VHSMovies.Api/VHSMovies.Api.csproj", "VHSMovies.Api/"]
 COPY ["VHSMovies.Application/VHSMovies.Application.csproj", "VHSMovies.Application/"]
 COPY ["VHSMovies.Domain/VHSMovies.Domain.csproj", "VHSMovies.Domain/"]
 COPY ["VHSMovies.Infrastructure/VHSMovies.Infrastructure.csproj", "VHSMovies.Infrastructure/"]
+COPY ["VHSMovies.Mediator/VHSMovies.Mediator.csproj", "VHSMovies.Mediator/"]
 RUN dotnet restore "./VHSMovies.Api/VHSMovies.Api.csproj"
 COPY . .
 WORKDIR "/src/VHSMovies.Api"

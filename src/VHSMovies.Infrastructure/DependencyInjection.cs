@@ -16,11 +16,17 @@ namespace VHSMovies.Infraestructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            string DATABASE_HOST = Environment.GetEnvironmentVariable("DATABASE_HOST");
+            string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
+            string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
+            string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
+
+            string conectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
+
             services.AddDbContext<DbContextClass>(options =>
-                options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
-                  ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")))
-                .EnableSensitiveDataLogging()
-                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
+                options.UseMySql(conectionString, ServerVersion.AutoDetect(conectionString))
+                    .EnableSensitiveDataLogging()
+                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();

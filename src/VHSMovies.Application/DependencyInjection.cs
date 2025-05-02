@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using VHSMovies.Mediator;
+using VHSMovies.Mediator.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace VHSMovies.Application
         {
             services.AddAutoMapper(typeof(PersonMapper));
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.AddSimpleMediator();
 
             return services;
         }

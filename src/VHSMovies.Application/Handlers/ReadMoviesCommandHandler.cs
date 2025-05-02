@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using VHSMovies.Mediator;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using OpenQA.Selenium.DevTools.V129.Audits;
@@ -12,6 +12,8 @@ using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Mediator.Implementation;
 
 namespace VHSMovies.Application.Handlers
 {
