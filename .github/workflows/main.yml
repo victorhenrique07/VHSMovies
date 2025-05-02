@@ -19,4 +19,6 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.RAILWAY_PROJECT_ID_API }}
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
-        run: railway up --service=${{ env.API_TOKEN }} 
+        run: |
+            export RAILWAY_TOKEN=${RAILWAY_TOKEN}
+            railway up --service=${API_TOKEN}
