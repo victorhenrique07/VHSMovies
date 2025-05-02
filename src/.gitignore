@@ -6,10 +6,11 @@ src/VHSMovies.Api/obj
 src/VHSMovies.Application/obj
 src/VHSMovies.Api/bin/Debug/net8.0/selenium-manager
 src/VHSMovies.Application/bin/Debug/net9.0
+tests/VHSMovies.Tests/bin/Debug/net9.0
 bin
 obj
 packages
 *.pdb
 *.dll
 /.containers/vhsmovies-db
-/.vs
+**/.vs/
