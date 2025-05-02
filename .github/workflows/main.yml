@@ -24,7 +24,7 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
         run: |
-          railway init --project ${{ secrets.RAILWAY_PROJECT_ID_API }} --yes
+          railway link ${{ secrets.RAILWAY_PROJECT_ID_API }} --yes
           railway up --service api-service --detach
 
       # Deploy Website
@@ -33,5 +33,5 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
         run: |
-          railway init --project ${{ secrets.RAILWAY_PROJECT_ID_WEB }} --yes
+          railway link ${{ secrets.RAILWAY_PROJECT_ID_WEB }} --yes
           railway up --service web-service --detach
