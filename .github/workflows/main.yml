@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
 
     steps:
