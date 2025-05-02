@@ -9,16 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      # Deploy API
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Deploy VHSMovies.Api
-        working-directory: src/VHSMovies.Api
-        env:
-          API_TOKEN: ${{ secrets.RAILWAY_PROJECT_ID_API }}
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
+      - uses: actions/checkout@v3
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
         run: |
-            export RAILWAY_TOKEN=${RAILWAY_TOKEN}
-            railway up --service=${API_TOKEN}
+          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/vhsmovies-api:latest
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
