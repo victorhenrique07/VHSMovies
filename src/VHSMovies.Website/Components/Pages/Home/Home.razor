@@ -23,34 +23,53 @@ else
         </MudContainer>
     </section>
 
-    <section class="movies">
-
-        <MudContainer class="container">
-            <h2>Recommended Movies</h2>
-
-            <TitleGrid Titles="@Titles" />
-
-        </MudContainer>
-    </section>
+    <TitleGrid Titles="Titles" SelectedExcludeTitles="selectedExcludeTitles" SectionTitle="Recommended Movies">
+        <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+            Color="Color.Default"
+            ClickPropagation="true"
+            Edge="Edge.End" 
+            Style="right:10px"
+            OnClick="LoadTitles" />
+    </TitleGrid>
 }
 
 @code {
     private bool loading;
 
-    private IReadOnlyCollection<TitleResponse> Titles;
+    private List<TitleResponse> Titles = new List<TitleResponse>();
+
+    private List<TitleResponse> selectedExcludeTitles = new List<TitleResponse>();
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadTitles();
+    }
+
+    private async Task LoadTitles()
     {
         try
         {
             loading = true;
-            StateHasChanged();
 
-            Titles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery() { TitlesAmount = 12 });
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
+            {
+                TitlesAmount = 12,
+                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList()
+            };
+
+            Titles = await titlesClient.GetMostRelevantTitles(query);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error while loading titles: {ex.Message}");
+            Console.WriteLine($"Unexpected Error: {ex.Message}");
         }
         finally
         {

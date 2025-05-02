@@ -19,13 +19,11 @@ namespace VHSMovies.Application.Handlers
     public class GetMostRelevantTitlesQueryHandler : IRequestHandler<GetMostRelevantTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
         private readonly IGenreRepository genreRepository;
-        private readonly IRecomendedTitlesRepository recommendedTitlesRepository;
-        private readonly IMemoryCache _cache;
+        private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
 
-        public GetMostRelevantTitlesQueryHandler(IRecomendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache, IGenreRepository genreRepository)
+        public GetMostRelevantTitlesQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IGenreRepository genreRepository)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
-            this._cache = _cache;
             this.genreRepository = genreRepository;
         }
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetMostRelevantTitlesQuery query, CancellationToken cancellationToken)
@@ -34,20 +32,34 @@ namespace VHSMovies.Application.Handlers
 
             IQueryable<RecommendedTitle> titles = recommendedTitlesRepository.Query();
 
-            if (query.GenresId != null && query.GenresId.Any())
-            {
-                var genresToQuery = genreRepository.Query()
-                    .Where(g => query.GenresId.Contains(g.Id))
-                    .Select(g => g.Name.ToLower());
+            IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
-                titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.ToLower().Contains(genre)));
+            IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
+
+            if (query.TitlesToExclude != null)
+            {
+                titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
             }
 
-            return await titles
+            if (query.GenresId != null && query.GenresId.Any())
+            {
+                var genresToQuery = allGenres
+                    .Where(g => query.GenresId.Contains(g.Id))
+                    .Select(g => g.Name);
+
+                titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.Contains(genre)));
+            }
+
+            IReadOnlyCollection<RecommendedTitle> data = titles
+                .AsEnumerable()
                 .OrderByDescending(t => t.Relevance)
                 .Take(query.TitlesAmount)
-                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t))
-                .ToListAsync(cancellationToken);
+                .ToList();
+
+            response = data
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t, allGenres)).ToList();
+
+            return response;
         }
     }
 }

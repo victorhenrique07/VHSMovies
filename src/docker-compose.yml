@@ -4,7 +4,7 @@ services:
     container_name: vhsmovies.website
     build:
       context: .
-      dockerfile: VHSMovies.Website/Dockerfile
+      dockerfile: ./Dockerfile
     environment:
        - ApiUrl__DefaultApi=http://vhsmovies.api:5000
     ports:

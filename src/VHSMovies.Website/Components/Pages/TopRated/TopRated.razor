@@ -14,40 +14,70 @@
 }
 else
 {
-    <section class="movies">
+    if (loadingAction)
+    {
+        <Loading />
+    }
+    else
+    {
+        <TitleGrid Titles="@ActionTitles" SelectedExcludeTitles="selectedExcludeActionTitles" SectionTitle="Recommended Actions">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                           Color="Color.Default"
+                           ClickPropagation="true"
+                           Edge="Edge.End"
+                           Style="right:10px"
+                           OnClick="LoadActionTitles" />
+        </TitleGrid>
+        <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+    }
 
-        <MudContainer class="container">
-            <h2>Recommended Action Movies</h2>
+    if (loadingSciFi)
+    {
+        <Loading />
+    }
+    else
+    {
+        <TitleGrid Titles="@SciFiTitles" SelectedExcludeTitles="selectedExcludeSciFiTitles" SectionTitle="Recommended Sci-Fi's">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                           Color="Color.Default"
+                           ClickPropagation="true"
+                           Edge="Edge.End"
+                           Style="right:10px"
+                           OnClick="LoadSciFiTitles" />
+        </TitleGrid>
+        <MudDivider DividerType="DividerType.Middle" Class="my-6" />
+    }
 
-            <TitleGrid Titles="@ActionTitles" />
-
-        </MudContainer>
-    </section>
-    <section class="movies">
-        <MudContainer class="container">
-            <h2>Recommended Sci-Fi Movies</h2>
-
-            <TitleGrid Titles="@SciFiTitles" />
-
-        </MudContainer>
-    </section>
-    <section class="movies">
-
-        <MudContainer class="container">
-            <h2>Recommended Thriller Movies</h2>
-
-            <TitleGrid Titles="@ThrillerTitles" />
-
-        </MudContainer>
-    </section>
+    if (loadingThriller)
+    {
+        <Loading />
+    }
+    else
+    {
+        <TitleGrid Titles="@ThrillerTitles" SelectedExcludeTitles="selectedExcludeThrillerTitles" SectionTitle="Recommended Thrillers">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                           Color="Color.Default"
+                           ClickPropagation="true"
+                           Edge="Edge.End"
+                           Style="right:10px"
+                           OnClick="LoadThrillerTitles" />
+        </TitleGrid>
+    }
 }
 
 @code {
     private bool loading;
+    private bool loadingAction;
+    private bool loadingSciFi;
+    private bool loadingThriller;
 
-    private IReadOnlyCollection<TitleResponse> ActionTitles = new List<TitleResponse>();
-    private IReadOnlyCollection<TitleResponse> SciFiTitles = new List<TitleResponse>();
-    private IReadOnlyCollection<TitleResponse> ThrillerTitles = new List<TitleResponse>();
+    private IList<TitleResponse> ActionTitles = new List<TitleResponse>();
+    private IList<TitleResponse> SciFiTitles = new List<TitleResponse>();
+    private IList<TitleResponse> ThrillerTitles = new List<TitleResponse>();
+
+    private List<TitleResponse> selectedExcludeActionTitles = new List<TitleResponse>();
+    private List<TitleResponse> selectedExcludeSciFiTitles = new List<TitleResponse>();
+    private List<TitleResponse> selectedExcludeThrillerTitles = new List<TitleResponse>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,6 +97,93 @@ else
         finally
         {
             loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadActionTitles()
+    {
+        try
+        {
+            loadingAction = true;
+
+            string titlesToExclude = string.Join(", ", selectedExcludeActionTitles.Select(t => t.Id));
+
+            ActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28, titlesToExclude);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("[Action Movies] - Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"[Action Movies] - Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Action Movies] - Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loadingAction = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadSciFiTitles()
+    {
+        try
+        {
+            loadingSciFi = true;
+
+            string titlesToExclude = string.Join(", ", selectedExcludeSciFiTitles.Select(t => t.Id));
+
+            SciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878, titlesToExclude);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("[Sci-Fi Movies] - Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"[Sci-Fi Movies] - Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Sci-Fi Movies] - Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loadingSciFi = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadThrillerTitles()
+    {
+        try
+        {
+            loadingThriller = true;
+
+            string titlesToExclude = string.Join(", ", selectedExcludeThrillerTitles.Select(t => t.Id));
+
+            ThrillerTitles = await titlesClient.GetMostRelevantTitlesByGenre(53, titlesToExclude);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine("[Thriller Movies] - Timeout: The request took too long and was cancelled.");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"[Thriller Movies] - Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Thriller Movies] - Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loadingThriller = false;
             StateHasChanged();
         }
     }

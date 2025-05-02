@@ -42,13 +42,14 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("most-relevant")]
-        public async Task<IActionResult> GetMostRelevantTitles([FromQuery] string? genresId, int titlesAmount = 10)
+        public async Task<IActionResult> GetMostRelevantTitles([FromQuery] string? genresId, string? titlesToExclude, int titlesAmount = 10)
         {
             string genres = genresId != null ? genresId.Replace(",", "-").Trim() : "none";
 
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
-                GenresId = genresId != null ? ParseStringIntoIntArray(genresId) : null,
+                IncludeGenres = genresId != null ? ParseStringIntoHashSet(genresId) : null,
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
                 TitlesAmount = titlesAmount
             };
 
@@ -58,9 +59,14 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("most-relevant/{genreId}")]
-        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId)
+        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId, string? titlesToExclude)
         {
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() { GenresId = [genreId], TitlesAmount = 12 };
+            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() 
+            { 
+                GenresId = [genreId], 
+                TitlesAmount = 12,
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null
+            };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
 

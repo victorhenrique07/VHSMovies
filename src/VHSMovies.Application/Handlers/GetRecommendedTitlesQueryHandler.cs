@@ -17,21 +17,18 @@ namespace VHSMovies.Application.Handlers
 {
     public class GetRecommendedTitlesQueryHandler : IRequestHandler<GetRecommendedTitlesQuery, IReadOnlyCollection<TitleResponse>>
     {
-        private readonly IRecomendedTitlesRepository recomendedTitlesRepository;
+        private readonly IRecommendedTitlesRepository recomendedTitlesRepository;
         private readonly ICastRepository castRepository;
-        private readonly ITitleGenreRepository titleGenreRepository;
         private readonly IGenreRepository genreRepository;
         private readonly ILogger<GetRecommendedTitlesQueryHandler> logger;
 
         public GetRecommendedTitlesQueryHandler(
-            IRecomendedTitlesRepository recomendedTitlesRepository, 
+            IRecommendedTitlesRepository recomendedTitlesRepository, 
             ICastRepository castRepository,
-            ITitleGenreRepository titleGenreRepository,
             IGenreRepository genreRepository)
         {
             this.recomendedTitlesRepository = recomendedTitlesRepository;
             this.castRepository = castRepository;
-            this.titleGenreRepository = titleGenreRepository;
             this.genreRepository = genreRepository;
         }
 
@@ -45,7 +42,12 @@ namespace VHSMovies.Application.Handlers
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
-            if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
+            if (query.TitlesToExclude != null)
+            {
+                titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
+            }
+
+            if (query.IncludeGenres.Count() != 0 || query.ExcludeGenres.Count() != 0 || query.MustInclude.Count() != 0)
             {
                 var includeGenres = new List<string>();
                 var excludeGenres = new List<string>();
@@ -64,9 +66,9 @@ namespace VHSMovies.Application.Handlers
                 }
 
                 titles = titles.Where(title =>
-                    (includeGenres.Count == 0 || includeGenres.Any(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
-                    && (excludeGenres.Count == 0 || !excludeGenres.Any(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
-                    && (mustIncludeGenres.Count == 0 || mustIncludeGenres.All(genre => EF.Functions.Like(title.Genres, "%" + genre + "%")))
+                    (includeGenres.Count == 0 || includeGenres.Any(genre => title.Genres.Contains(genre)))
+                    && (excludeGenres.Count == 0 || !excludeGenres.Any(genre => title.Genres.Contains(genre)))
+                    && (mustIncludeGenres.Count == 0 || mustIncludeGenres.All(genre => title.Genres.Contains(genre)))
                 );
             }
 
@@ -116,11 +118,6 @@ namespace VHSMovies.Application.Handlers
                     t.ReleaseDate.Value.Year < query.YearsRange[1]);
             }
 
-            if (query.TitlesToExclude != null)
-            {
-                titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
-            }
-
             IReadOnlyCollection<RecommendedTitle> data = titles
                 .AsEnumerable()
                 .OrderByDescending(t => t.Relevance)
@@ -128,7 +125,7 @@ namespace VHSMovies.Application.Handlers
                 .ToList();
 
             response = data
-                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t)).ToList();
+                .Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t, allGenres)).ToList();
 
             return response;
         }
@@ -156,6 +153,6 @@ namespace VHSMovies.Application.Handlers
             }
 
             return arr;
-        }
+        }       
     }
 }

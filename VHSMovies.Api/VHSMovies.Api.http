@@ -1,6 +1,0 @@
-@VHSMovies.Api_HostAddress = http://localhost:5098
-
-GET {{VHSMovies.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,12 +1,24 @@
 ﻿@using VHSMovies.Api.Integration.Main.Responses
 
-<div class="movie-card">
-    <div class="movie-poster">
-        <img src="@Title.PosterImageUrl" alt="@Title.Name">
-        <div class="movie-score">@Title.AverageRating</div>
-    </div>
-    <div class="movie-info">
-        <h3>@Title.Name</h3>
+<MudCard class="movie-card">
+    <MudCardHeader Class="pa-0">
+        <CardHeaderContent>
+            <div class="movie-poster">
+                <img src="@Title.PosterImageUrl" alt="@Title.Name">
+                <div class="movie-score">@Title.AverageRating</div>
+                <MudPaper Class="exclude-button-paper" Elevation="0">
+                    <MudIconButton 
+                        Class="exclude-button" 
+                        Icon="@Icons.Material.Filled.Close" 
+                        Color="Color.Primary"
+                        OnClick="ExcludeTitle"
+                        ClickPropagation="true" />
+                </MudPaper>
+            </div>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent class="movie-info">
+        <MudText Typo="Typo.h3">@Title.Name</MudText>
         <div class="movie-meta">
             @if (Title.ReleaseDate != null)
             {
@@ -24,8 +36,8 @@
             }
         </div>
         <p class="movie-desc">@Title.Description</p>
-    </div>
-</div>
+    </MudCardContent>
+</MudCard>
 
 <style>
     .movies {
@@ -40,91 +52,118 @@
     }
 
     .movie-card {
-        background-color: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: var(--card-shadow);
-        transition: var(--transition);
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
     }
 
     .movie-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
     .movie-poster {
-        position: relative;
-        height: 200px;
-        overflow: hidden;
+    position: relative;
+    height: 200px;
+    overflow: hidden;
     }
 
     .movie-poster img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
     }
 
     .movie-card:hover .movie-poster img {
-        transform: scale(1.05);
+    transform: scale(1.05);
     }
 
     .movie-score {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: var(--accent-color);
-        color: var(--dark-color);
-        font-weight: bold;
-        padding: 0.3rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+    font-weight: bold;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    }
+
+    .exclude-button-paper {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 0 5px;
     }
 
     .movie-info {
-        padding: 1.5rem;
+    padding: 1.5rem;
     }
 
     .movie-info h3 {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
     }
 
     .movie-meta {
-        display: flex;
-        gap: 1rem;
-        font-size: 0.85rem;
-        color: #666;
-        margin-bottom: 0.5rem;
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
     }
 
     .movie-genres {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
     }
 
     .movie-genres .genre {
-        font-size: 0.8rem;
-        background-color: #f0f0f0;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
+    font-size: 0.8rem;
+    background-color: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
     }
 
     .movie-desc {
-        font-size: 0.9rem;
-        color: #555;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+    font-size: 0.9rem;
+    color: #555;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     }
 </style>
 
 @code {
     [Parameter]
     public TitleResponse Title { get; set; }
+
+    [Parameter] public Func<Task> AsyncMethod { get; set; }
+
+    private async Task ExcludeTitle()
+    {
+        if (AsyncMethod != null)
+        {
+            await AsyncMethod.Invoke();
+        }
+    }
 }

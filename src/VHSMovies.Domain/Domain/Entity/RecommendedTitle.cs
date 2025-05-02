@@ -30,6 +30,6 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public string PosterImageUrl { get; set; }
 
-        public string Genres { get; set; }
+        public string[] Genres { get; set; }
     }
 }

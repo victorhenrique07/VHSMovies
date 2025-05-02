@@ -3,25 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Infrastructure", "VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj", "{B61896AD-D522-450E-AFF0-EE918EF231FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Infrastructure", "src\VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj", "{B61896AD-D522-450E-AFF0-EE918EF231FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Domain", "VHSMovies.Domain\VHSMovies.Domain.csproj", "{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}"
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Domain", "src\VHSMovies.Domain\VHSMovies.Domain.csproj", "{15C2AF12-3B43-4106-9B1E-C76FBDCE125F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Application", "VHSMovies.Application\VHSMovies.Application.csproj", "{E690E3DB-2376-4431-B836-F935F015F732}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Application", "src\VHSMovies.Application\VHSMovies.Application.csproj", "{E690E3DB-2376-4431-B836-F935F015F732}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "VHSMovies.Api\VHSMovies.Api.csproj", "{58E28368-1EB1-470D-B60A-69C7B6214D4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "src\VHSMovies.Api\VHSMovies.Api.csproj", "{58E28368-1EB1-470D-B60A-69C7B6214D4F}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E4251A38-4779-4C97-8FA1-FCCB604BE878}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose.dcproj", "{E4251A38-4779-4C97-8FA1-FCCB604BE878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "VHSMovies.Website\VHSMovies.Website.csproj", "{B50229DB-A77A-4FAD-826B-36C90634EEA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "src\VHSMovies.Website\VHSMovies.Website.csproj", "{B50229DB-A77A-4FAD-826B-36C90634EEA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api.Integration", "VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj", "{5C918923-06AF-4EFF-B4DB-1A815574A0E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api.Integration", "src\VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj", "{5C918923-06AF-4EFF-B4DB-1A815574A0E7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3120D3CE-1E64-4B0C-BDA1-21A96A91D2D8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "tests\VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
