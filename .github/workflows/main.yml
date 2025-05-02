@@ -25,5 +25,5 @@ jobs:
           file: ./src/VHSMovies.Api/Dockerfile
           push: true
           tags: |
-            victorhenrique07/vhsmovies-api:v1
-            victorhenrique07/vhsmovies-api:latest
+            ${{ secrets.DOCKER_USER }}/vhsmovies-api:v1
+            ${{ secrets.DOCKER_USER }}/vhsmovies-api:latest
