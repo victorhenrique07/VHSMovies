@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VHSMovies.Application\VHSMovies.Application.csproj" />
+    <ProjectReference Include="..\..\src\VHSMovies.Application\VHSMovies.Application.csproj" />
+    <ProjectReference Include="..\..\src\VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
