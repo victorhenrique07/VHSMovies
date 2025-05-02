@@ -6,19 +6,18 @@ USER $APP_UID
 WORKDIR /app
 EXPOSE 5000
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/VHSMovies.Api/VHSMovies.Api.csproj", "src/VHSMovies.Api/"]
-COPY ["src/VHSMovies.Application/VHSMovies.Application.csproj", "src/VHSMovies.Application/"]
-COPY ["src/VHSMovies.Domain/VHSMovies.Domain.csproj", "src/VHSMovies.Domain/"]
-COPY ["src/VHSMovies.Infrastructure/VHSMovies.Infrastructure.csproj", "src/VHSMovies.Infrastructure/"]
-COPY ["src/VHSMovies.Mediator/VHSMovies.Mediator.csproj", "src/VHSMovies.Mediator/"]
-RUN dotnet restore "./src/VHSMovies.Api/VHSMovies.Api.csproj"
+COPY ["VHSMovies.Api/VHSMovies.Api.csproj", "VHSMovies.Api/"]
+COPY ["VHSMovies.Application/VHSMovies.Application.csproj", "VHSMovies.Application/"]
+COPY ["VHSMovies.Domain/VHSMovies.Domain.csproj", "VHSMovies.Domain/"]
+COPY ["VHSMovies.Infrastructure/VHSMovies.Infrastructure.csproj", "VHSMovies.Infrastructure/"]
+COPY ["VHSMovies.Mediator/VHSMovies.Mediator.csproj", "VHSMovies.Mediator/"]
+RUN dotnet restore "./VHSMovies.Api/VHSMovies.Api.csproj"
 COPY . .
-WORKDIR "/src/src/VHSMovies.Api"
+WORKDIR "/src/VHSMovies.Api"
 RUN dotnet build "./VHSMovies.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
