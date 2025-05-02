@@ -7,31 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Install Railway CLI
-        run: curl -fsSL https://railway.app/install.sh | sh
-
       # Deploy API
       - name: Deploy VHSMovies.Api
         working-directory: src/VHSMovies.Api
         env:
+          API_TOKEN: ${{ secrets.RAILWAY_PROJECT_ID_API }}
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
-        run: |
-          railway link ${{ secrets.RAILWAY_PROJECT_ID_API }} --yes
-          railway up --service api-service --detach
-
-      # Deploy Website
-      - name: Deploy VHSMovies.Website
-        working-directory: src/VHSMovies.Website
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
-        run: |
-          railway link ${{ secrets.RAILWAY_PROJECT_ID_WEB }} --yes
-          railway up --service web-service --detach
+        run: railway up --service=${{ env.API_TOKEN }} 
