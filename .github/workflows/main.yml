@@ -11,6 +11,9 @@ jobs:
 
     steps:
       # Deploy API
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
       - name: Deploy VHSMovies.Api
         working-directory: src/VHSMovies.Api
         env:
