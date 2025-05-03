@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"https://*:{port}");
+builder.WebHost.UseUrls($"http://*:{port}");
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -74,8 +74,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ApplyMigrations();
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
