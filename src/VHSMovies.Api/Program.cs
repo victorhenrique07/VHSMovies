@@ -34,7 +34,8 @@ builder.Services.AddCors(options =>
                 Configuration.FrontendUrl
             )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -62,8 +63,11 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseRouting();
+
 app.UseCors(Configuration.CorsPolicyName);
 
+app.UseAuthorization();
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -77,8 +81,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ApplyMigrations();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
