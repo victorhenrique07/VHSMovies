@@ -9,7 +9,7 @@ COPY ["src/VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj", "src/VHS
 RUN dotnet restore "src/VHSMovies.Website/VHSMovies.Website.csproj"
 
 COPY . .
-WORKDIR "src/src/VHSMovies.Website"
+WORKDIR "/src/src/VHSMovies.Website"
 RUN dotnet build "VHSMovies.Website.csproj" -c Release -o /app/build
 
 FROM build AS publish
