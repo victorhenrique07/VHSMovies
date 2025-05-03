@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VHSMovies.Infraestructure;
 
-namespace VHSMovies.Api
+namespace VHSMovies.Api.Settings
 {
     public static class MigrationExtensions
     {

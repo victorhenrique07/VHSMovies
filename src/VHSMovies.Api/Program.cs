@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using System.IO.Compression;
-using VHSMovies.Api;
+using VHSMovies.Api.Settings;
 using VHSMovies.Application;
 using VHSMovies.Infraestructure;
 using VHSMovies.Mediator.Extensions;
@@ -27,9 +27,12 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(Configuration.CorsPolicyName, policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins([
+            Configuration.BackendUrl, 
+            Configuration.FrontendUrl
+            ])
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -59,7 +62,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
+app.UseCors(Configuration.CorsPolicyName);
 
 app.UseStaticFiles();
 

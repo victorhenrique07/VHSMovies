@@ -1,8 +1,11 @@
-name: Deploy to Railway - API and Website
+name: Deploy to DockerHub - Website
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/VHSMovies.Api.Integration/**'
+      - 'src/VHSMovies.Website/**'
 
 jobs:
   deploy:
@@ -22,8 +25,8 @@ jobs:
         uses: docker/build-push-action@v3.2.0
         with:
           context: .
-          file: ./src/VHSMovies.Api/Dockerfile
+          file: ./src/VHSMovies.Website/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USER }}/vhsmovies-api:v1
-            ${{ secrets.DOCKER_USER }}/vhsmovies-api:latest
+            ${{ secrets.DOCKER_USER }}/vhsmovies-website:v1
+            ${{ secrets.DOCKER_USER }}/vhsmovies-website:latest
