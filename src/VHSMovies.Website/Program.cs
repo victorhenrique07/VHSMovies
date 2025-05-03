@@ -14,24 +14,16 @@ builder.Services.AddMudServices();
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddHttpClient(
-    Configuration.HttpClientName,
-    client =>
-    {
-        client.BaseAddress = new Uri(Configuration.BackendUrl);
-    });
+Action<HttpClient> httpClientConfigurator = c =>
+{
+    c.BaseAddress = new Uri("https://api.vhsmovies.com.br");
+    //c.DefaultRequestHeaders.Add("ngrok-skip-browser-warning", "true");
+};
 
 builder.Services.AddRefitClient<ITitlesClient>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri(Configuration.BackendUrl);
-    });
-
+    .ConfigureHttpClient(httpClientConfigurator);
 builder.Services.AddRefitClient<IGenresClient>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri(Configuration.BackendUrl);
-    });
+    .ConfigureHttpClient(httpClientConfigurator);
 
 builder.Services.AddSingleton<WebsiteDetails>();
 
