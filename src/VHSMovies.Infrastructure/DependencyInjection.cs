@@ -21,8 +21,9 @@ namespace VHSMovies.Infraestructure
             string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
             string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
             string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
+            string DATABASE_PORT = Environment.GetEnvironmentVariable("DATABASE_PORT");
 
-            string connectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
+            string connectionString = $"Server={DATABASE_HOST};Port={DATABASE_PORT};Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 
             services.AddDbContext<DbContextClass>(options =>
                 options.UseNpgsql(connectionString)
