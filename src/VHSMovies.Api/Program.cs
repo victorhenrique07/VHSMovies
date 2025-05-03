@@ -29,10 +29,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(Configuration.CorsPolicyName, policy =>
     {
-        policy.WithOrigins([
-            Configuration.BackendUrl, 
-            Configuration.FrontendUrl
-            ])
+        policy.WithOrigins(
+                Configuration.BackendUrl, 
+                Configuration.FrontendUrl
+            )
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
