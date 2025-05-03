@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\.github\\workflows\\deploy.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.github\\workflows\\deploy.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|c:\\users\\henri\\source\\repos\\victorhenrique07\\vhsmovies\\src\\vhsmovies.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|solutionrelative:src\\vhsmovies.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|c:\\users\\henri\\source\\repos\\victorhenrique07\\vhsmovies\\src\\vhsmovies.api\\vhsmovies.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|solutionrelative:src\\vhsmovies.api\\vhsmovies.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|c:\\users\\henri\\source\\repos\\victorhenrique07\\vhsmovies\\src\\vhsmovies.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{58E28368-1EB1-470D-B60A-69C7B6214D4F}|src\\VHSMovies.Api\\VHSMovies.Api.csproj|solutionrelative:src\\vhsmovies.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B61896AD-D522-450E-AFF0-EE918EF231FF}|src\\VHSMovies.Infrastructure\\VHSMovies.Infrastructure.csproj|c:\\users\\henri\\source\\repos\\victorhenrique07\\vhsmovies\\src\\vhsmovies.infrastructure\\dbcontextclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B61896AD-D522-450E-AFF0-EE918EF231FF}|src\\VHSMovies.Infrastructure\\VHSMovies.Infrastructure.csproj|solutionrelative:src\\vhsmovies.infrastructure\\dbcontextclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -21,19 +25,6 @@
           "SelectedChildIndex": 3,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "VHSMovies.Api",
-              "DocumentMoniker": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\VHSMovies.Api.csproj",
-              "RelativeDocumentMoniker": "src\\VHSMovies.Api\\VHSMovies.Api.csproj",
-              "ToolTip": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\VHSMovies.Api.csproj",
-              "RelativeToolTip": "src\\VHSMovies.Api\\VHSMovies.Api.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-05-02T16:15:25.008Z",
-              "EditorCaption": ""
-            },
-            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
@@ -43,15 +34,41 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "src\\VHSMovies.Api\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\Properties\\launchSettings.json",
+              "RelativeToolTip": "src\\VHSMovies.Api\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-02T22:36:52.543Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "deploy.yml",
-              "DocumentMoniker": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\.github\\workflows\\deploy.yml",
-              "RelativeDocumentMoniker": ".github\\workflows\\deploy.yml",
-              "ToolTip": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\.github\\workflows\\deploy.yml",
-              "RelativeToolTip": ".github\\workflows\\deploy.yml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
-              "WhenOpened": "2025-05-02T08:10:21.664Z",
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\Dockerfile",
+              "RelativeDocumentMoniker": "src\\VHSMovies.Api\\Dockerfile",
+              "ToolTip": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api\\Dockerfile",
+              "RelativeToolTip": "src\\VHSMovies.Api\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAkwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-05-02T22:35:20.636Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DbContextClass.cs",
+              "DocumentMoniker": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Infrastructure\\DbContextClass.cs",
+              "RelativeDocumentMoniker": "src\\VHSMovies.Infrastructure\\DbContextClass.cs",
+              "ToolTip": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Infrastructure\\DbContextClass.cs",
+              "RelativeToolTip": "src\\VHSMovies.Infrastructure\\DbContextClass.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-02T22:31:09.543Z",
               "EditorCaption": ""
             }
           ]
