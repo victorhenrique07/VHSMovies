@@ -20,8 +20,10 @@ namespace VHSMovies.Mediator.Implementation
 
         public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
         {
+            using var scope = _provider.CreateScope();
+
             var handlerType = typeof(IRequestHandler<,>).MakeGenericType(request.GetType(), typeof(TResponse));
-            dynamic handler = _provider.GetService(handlerType);
+            dynamic handler = scope.ServiceProvider.GetService(handlerType);
 
             if (handler == null)
             {

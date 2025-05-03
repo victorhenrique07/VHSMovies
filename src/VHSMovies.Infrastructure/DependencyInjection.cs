@@ -17,11 +17,11 @@ namespace VHSMovies.Infraestructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            string DATABASE_HOST = Environment.GetEnvironmentVariable("DATABASE_HOST");
-            string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
-            string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
-            string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
-            string DATABASE_PORT = Environment.GetEnvironmentVariable("DATABASE_PORT");
+            string DATABASE_HOST = Environment.GetEnvironmentVariable("DATABASE_HOST", EnvironmentVariableTarget.Machine);
+            string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME", EnvironmentVariableTarget.Machine);
+            string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD", EnvironmentVariableTarget.Machine);
+            string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME", EnvironmentVariableTarget.Machine);
+            string DATABASE_PORT = Environment.GetEnvironmentVariable("DATABASE_PORT", EnvironmentVariableTarget.Machine);
 
             string connectionString = $"Server={DATABASE_HOST};Port={DATABASE_PORT};Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 

@@ -48,7 +48,7 @@ namespace VHSMovies.Application.Handlers
                 titles = titles.AsEnumerable().ExceptBy(query.TitlesToExclude, t => t.Id).AsQueryable();
             }
 
-            if (query.IncludeGenres.Count() != 0 || query.ExcludeGenres.Count() != 0 || query.MustInclude.Count() != 0)
+            if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
             {
                 var includeGenres = new List<string>();
                 var excludeGenres = new List<string>();
