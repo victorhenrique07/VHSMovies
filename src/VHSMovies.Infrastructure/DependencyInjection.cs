@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,12 @@ namespace VHSMovies.Infraestructure
             string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
             string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
 
-            string conectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
+            string connectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 
             services.AddDbContext<DbContextClass>(options =>
-                options.UseMySql(conectionString, ServerVersion.AutoDetect(conectionString))
-                    .EnableSensitiveDataLogging()
-                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
+                options.UseNpgsql(connectionString)
+                   .EnableSensitiveDataLogging()
+                   .LogTo(Console.WriteLine, LogLevel.Information));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();

@@ -13,6 +13,7 @@ namespace VHSMovies.Infraestructure
             : base(options)
         {
             Configuration = configuration;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -24,9 +25,9 @@ namespace VHSMovies.Infraestructure
                 string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
                 string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
 
-                string conectionString = $"Server={DATABASE_HOST};Port=20859;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
+                string conectionString = $"Server={DATABASE_HOST};Port=57284;Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 
-                options.UseMySql(conectionString, ServerVersion.AutoDetect(conectionString));
+                options.UseNpgsql(conectionString);
                 options.EnableSensitiveDataLogging();
             }
         }
