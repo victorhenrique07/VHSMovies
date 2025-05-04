@@ -1,4 +1,6 @@
 ﻿@page "/about"
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Website.Components.Pages.Titles
 
 <div class="about-container">
     <div class="about-content">
@@ -51,7 +53,7 @@
             <h2>
                 <MudIcon Icon="@Icons.Material.Filled.TipsAndUpdates"/>
                 Tip: Exclude with One Click
-                </h2>
+            </h2>
             <p>
                 If you see a movie you don’t like in your recommendations, just click the red ❌ icon in the top-right corner of the card. <br />
                 This will automatically add the title to the <strong>Titles to Exclude</strong> filter and remove it from the list.
@@ -61,6 +63,85 @@
     </div>
 </div>
 
-@code {
+<TitleGrid Titles="title" />
 
+@code {
+    List<TitleResponse> title = new List<TitleResponse>()
+    {
+        new TitleResponse
+        {   
+            Id = 1,
+            Name = "The Shawshank Redemption",
+            ReleaseDate = new DateOnly(1994, 9, 23),
+            Description = "kkkkkkkkkkkkkkkkkk",
+            AverageRating = 9.3m,
+            TotalReviews = 1000,
+            PosterImageUrl = "https://image.tmdb.org/t/p/w500/9O7kP8d5Zl0j2e4v1f3g6b3c4h4.jpg",
+            Genres = new List<GenreResponse>
+            {
+                new GenreResponse { Id = 1, Name = "Drama" },
+                new GenreResponse { Id = 2, Name = "Crime" }
+            }
+        },
+        new TitleResponse
+        {
+            Id = 2,
+            Name = "The Shawshank Redemption",
+            ReleaseDate = new DateOnly(1994, 9, 23),
+            Description = "kkkkkkkkkkkkkkkkkk",
+            AverageRating = 9.3m,
+            TotalReviews = 1000,
+            PosterImageUrl = "https://image.tmdb.org/t/p/w500/9O7kP8d5Zl0j2e4v1f3g6b3c4h4.jpg",
+            Genres = new List<GenreResponse>
+            {
+                new GenreResponse { Id = 1, Name = "Drama" },
+                new GenreResponse { Id = 2, Name = "Crime" }
+            }
+        },
+        new TitleResponse
+        {
+            Id = 3,
+            Name = "The Shawshank Redemption",
+            ReleaseDate = new DateOnly(1994, 9, 23),
+            Description = "kkkkkkkkkkkkkkkkkk",
+            AverageRating = 9.3m,
+            TotalReviews = 1000,
+            PosterImageUrl = "https://image.tmdb.org/t/p/w500/9O7kP8d5Zl0j2e4v1f3g6b3c4h4.jpg",
+            Genres = new List<GenreResponse>
+            {
+                new GenreResponse { Id = 1, Name = "Drama" },
+                new GenreResponse { Id = 2, Name = "Crime" }
+            }
+        },
+        new TitleResponse
+        {
+            Id = 4,
+            Name = "The Shawshank Redemption",
+            ReleaseDate = new DateOnly(1994, 9, 23),
+            Description = "kkkkkkkkkkkkkkkkkk",
+            AverageRating = 9.3m,
+            TotalReviews = 1000,
+            PosterImageUrl = "https://image.tmdb.org/t/p/w500/9O7kP8d5Zl0j2e4v1f3g6b3c4h4.jpg",
+            Genres = new List<GenreResponse>
+            {
+                new GenreResponse { Id = 1, Name = "Drama" },
+                new GenreResponse { Id = 2, Name = "Crime" }
+            }
+        },
+        new TitleResponse
+        {
+            Id = 5,
+            Name = "The Shawshank Redemption",
+            ReleaseDate = new DateOnly(1994, 9, 23),
+            Description = "kkkkkkkkkkkkkkkkkk",
+            AverageRating = 9.3m,
+            TotalReviews = 1000,
+            PosterImageUrl = "https://image.tmdb.org/t/p/w500/9O7kP8d5Zl0j2e4v1f3g6b3c4h4.jpg",
+            Genres = new List<GenreResponse>
+            {
+                new GenreResponse { Id = 1, Name = "Drama" },
+                new GenreResponse { Id = 2, Name = "Crime" }
+            }
+        },
+    };
 }
