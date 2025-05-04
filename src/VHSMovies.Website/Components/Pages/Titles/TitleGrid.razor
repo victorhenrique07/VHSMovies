@@ -13,7 +13,7 @@
             }
         </div>
 
-        <div class="movie-grid">
+        <div class="movie-grid d-grid">
             @foreach (TitleResponse title in Titles)
             {
                 <TitleCard @key="@title.Id" Title="@title" AsyncMethod="() => ExcludeTitleCard(title)" />
@@ -22,14 +22,6 @@
 
     </MudContainer>
 </section>
-
-<style>
-    .movie-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-</style>
 
 @code {
     [Parameter]

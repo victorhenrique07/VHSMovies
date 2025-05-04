@@ -1,0 +1,43 @@
+﻿.error-page {
+    height: 80vh;
+    width: 100vw;
+    background-color: #f4f4f4;
+}
+
+::deep .error-content {
+    width: 500px;
+    height: 500px;
+    text-align: center;
+    background-color: #fff;
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-code {
+    color: var(--primary-color, #007bff);
+    font-size: 6rem;
+    margin: 0;
+    line-height: 1;
+}
+
+.error-title {
+    color: #1d1d1f;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.error-content p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+    .error-content {
+        padding: 2rem;
+    }
+
+    .status-code {
+        font-size: 4rem;
+    }
+}
