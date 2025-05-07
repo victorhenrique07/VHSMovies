@@ -31,36 +31,22 @@ namespace VHSMovies.Application.Factories
                 }
             }
 
-            TitleDetailsTMDB titleDetails = FindTitleDetails(title.IMDB_Id).Result;
+            var titleDetails = FindTitleDetails(title.IMDB_Id);
 
-            if (titleDetails.Movie_Results.Count == 0 && titleDetails.Tv_Results.Count == 0 && titleDetails.Tv_Season_Results.Count == 0)
-                return new TitleResponse(title.Id, title.Name, title.ReleaseDate, "", title.AverageRating, title.TotalReviews)
-                {
-                    PosterImageUrl = "",
-                    Genres = titlesGenres
-                };
+            TitleDetailsResult result = titleDetails.Movie_Results.FirstOrDefault()
+                                      ?? titleDetails.Tv_Results.FirstOrDefault()
+                                      ?? titleDetails.Tv_Season_Results.FirstOrDefault()
+                                      ?? new();
 
-            if (title.Type == (int)TitleType.Movie || title.Type == (int)TitleType.TvMovie)
+            DateOnly? release_date = result?.release_date ?? result?.first_air_date;
+            var overview = result?.overview ?? string.Empty;
+            var posterUrl = string.IsNullOrEmpty(result?.poster_path)
+                ? string.Empty
+                : "https://image.tmdb.org/t/p/original" + result.poster_path;
+
+            return new TitleResponse(title.Id, title.Name, release_date, overview, title.AverageRating, title.TotalReviews)
             {
-                TitleDetailsResult movieResult = titleDetails.Movie_Results.FirstOrDefault();
-
-                return new TitleResponse(title.Id, title.Name, title.ReleaseDate, movieResult.overview, title.AverageRating, title.TotalReviews)
-                {
-                    PosterImageUrl = "https://image.tmdb.org/t/p/original" + movieResult.poster_path,
-                    Genres = titlesGenres
-                };
-            }
-
-            TitleDetailsResult tvResult = titleDetails.Tv_Results.FirstOrDefault();
-
-            if (tvResult == null)
-            {
-                tvResult = titleDetails.Tv_Season_Results.FirstOrDefault();
-            }
-
-            return new TitleResponse(title.Id, title.Name, title.ReleaseDate, tvResult.overview, title.AverageRating, title.TotalReviews)
-            {
-                PosterImageUrl = "https://image.tmdb.org/t/p/original" + tvResult.poster_path ,
+                PosterImageUrl = posterUrl,
                 Genres = titlesGenres
             };
         }
@@ -69,7 +55,7 @@ namespace VHSMovies.Application.Factories
         {
             string imageUrl = "";
 
-            return new TitleResponse(title.Id, title.Name, title.ReleaseDate, "title.Description", title.AverageRating, title.TotalReviews)
+            return new TitleResponse(title.Id, title.Name, new DateOnly(title.ReleaseDate.Value, 1, 1), "title.Description", title.AverageRating, title.TotalReviews)
             {
                 PosterImageUrl = imageUrl,
                 Genres = title.Genres
@@ -78,7 +64,7 @@ namespace VHSMovies.Application.Factories
             };
         }
 
-        private async Task<TitleDetailsTMDB> FindTitleDetails(string imdb_id)
+        private TitleDetailsTMDB FindTitleDetails(string imdb_id)
         {
             var options = new RestClientOptions($"https://api.themoviedb.org/3/find/{imdb_id}?external_source=imdb_id");
 
@@ -86,7 +72,7 @@ namespace VHSMovies.Application.Factories
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDVlNTg2ZWNkODdmY2I2YjFkNmU2Mzg5ZDg0NTUxYiIsIm5iZiI6MTczNDgwMTUwMS42MzMsInN1YiI6IjY3NjZmODVkMzMwYmNlNmVjOTkxMGQ2MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.SDtBev6hlNPFb-k_N7zSa1U_7S6FM2l7tqnATPGUNH0");
-            var response = await client.GetAsync(request);
+            var response = client.GetAsync(request).Result;
 
             var t = JsonSerializer.Deserialize<TitleDetailsTMDB>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 

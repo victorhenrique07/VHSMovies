@@ -11,5 +11,7 @@ namespace VHSMovies.Application.Factories
         public int id { get; set; }
         public string overview { get; set; }
         public string poster_path { get; set; }
+        public DateOnly? release_date { get; set; }
+        public DateOnly? first_air_date { get; set; }
     }
 }

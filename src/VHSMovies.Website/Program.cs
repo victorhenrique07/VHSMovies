@@ -17,7 +17,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 Action<HttpClient> httpClientConfigurator = c =>
 {
     c.BaseAddress = new Uri("https://api.vhsmovies.com.br");
-    //c.DefaultRequestHeaders.Add("ngrok-skip-browser-warning", "true");
 };
 
 builder.Services.AddRefitClient<ITitlesClient>()
