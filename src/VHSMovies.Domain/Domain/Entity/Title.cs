@@ -8,29 +8,31 @@ using System.Threading.Tasks;
 
 namespace VHSMovies.Domain.Domain.Entity
 {
-    public class Title : TitleImages
+    public class Title
     {
         public Title()
         {
         }
 
-        public Title(string name, DateOnly? releaseDate, string description, 
-            string principalImageUrl, string posterImageUrl, List<Review> ratings) :
-            base(principalImageUrl, posterImageUrl)
+        public Title(string name, TitleType type, int? releaseDate, string imdbId)
         {
             Name = name;
+            Type = type;
             ReleaseDate = releaseDate;
-            Description = description;
-            Ratings = ratings;
+            IMDB_Id = imdbId;
         }
 
         public int Id { get; set; }
 
+        public string IMDB_Id { get; set; }
+
+        public TitleType Type { get; set; }
+
         public string Name { get; set; }
 
-        public DateOnly? ReleaseDate { get; set; }
+        public int Runtime { get; set; }
 
-        public string Description { get; set; }
+        public int? ReleaseDate { get; set; }
 
         public int TotalReviews {
             get
@@ -46,13 +48,7 @@ namespace VHSMovies.Domain.Domain.Entity
             } 
         }
 
-        public decimal Relevance
-        {
-            get
-            {
-                return CalculateRelevance();
-            }
-        }
+        public decimal Relevance { get; set; } = 0m;
 
         public List<Review> Ratings { get; set; } = new List<Review>();
 
@@ -82,11 +78,16 @@ namespace VHSMovies.Domain.Domain.Entity
             return medianRate / Ratings.Count();
         }
 
-        public decimal CalculateRelevance()
+        public decimal SetRelevance()
         {
-            decimal totalRatingsLog = (decimal)Math.Log10(this.TotalReviews);
+            decimal totalRatingsLog = this.TotalReviews > 0
+                ? (decimal)Math.Log10(this.TotalReviews)
+                : 0m;
 
-            return (this.AverageRating * 0.6m) + totalRatingsLog;
+            decimal averageWeight = 0.5m;
+            decimal reviewsWeight = 1.0m;
+
+            return (this.AverageRating * averageWeight) + (totalRatingsLog * reviewsWeight);
         }
 
         public override string ToString()

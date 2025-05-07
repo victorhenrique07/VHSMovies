@@ -14,21 +14,19 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public int Id { get; set; }
 
+        public int Type { get; set; }
+
+        public string IMDB_Id { get; set; }
+
         public string Name { get; set; }
 
-        public DateOnly? ReleaseDate { get; set; }
-
-        public string Description { get; set; }
+        public int? ReleaseDate { get; set; }
 
         public int TotalReviews { get; set; }
 
         public decimal AverageRating { get; set; }
 
         public decimal Relevance { get; set; }
-
-        public string PrincipalImageUrl { get; set; }
-
-        public string PosterImageUrl { get; set; }
 
         public string[] Genres { get; set; }
     }

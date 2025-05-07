@@ -6,14 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Application.Models;
 using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Application.Commands
 {
     public class GetRecommendedTitlesQuery : IRequest<IReadOnlyCollection<TitleResponse>>
     {
-        public HashSet<int> MustInclude { get; set; } = new HashSet<int>();
-        public HashSet<int> IncludeGenres { get; set; } = new HashSet<int>();
-        public HashSet<int> ExcludeGenres { get; set; } = new HashSet<int>();
+        public HashSet<int>? MustInclude { get; set; }
+        public HashSet<int>? IncludeGenres { get; set; }
+        public HashSet<int>? ExcludeGenres { get; set; }
 
         public decimal? MinimumRating { get; set; }
 
@@ -26,6 +27,8 @@ namespace VHSMovies.Application.Commands
         public IReadOnlyCollection<string>? Writers { get; set; }
 
         public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
+
+        public int[]? Types { get; set; }
 
         public int TitlesAmount { get; set; } = 10;
     }

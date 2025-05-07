@@ -20,7 +20,7 @@ builder.Services.AddSimpleMediator();
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 400 * 1024 * 1024;
+    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024;
 });
 
 builder.Services.AddMemoryCache();
@@ -78,9 +78,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "VHS Movies API V1");
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
-}
 
-app.ApplyMigrations();
+    app.ApplyMigrations();
+}
 
 app.MapControllers();
 

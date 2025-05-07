@@ -5,6 +5,7 @@ using System.Linq;
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
 using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Api.Controllers.Recommend
 {
@@ -24,7 +25,7 @@ namespace VHSMovies.Api.Controllers.Recommend
 
         [HttpGet("recommend")]
         public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, 
-            decimal? minimumRating, string? yearsRange, int? titlesAmount, string? titlesToExclude)
+            decimal? minimumRating, string? yearsRange, int? titlesAmount, string? titlesToExclude, string? types)
         {
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
@@ -34,7 +35,8 @@ namespace VHSMovies.Api.Controllers.Recommend
                 MinimumRating = minimumRating,
                 YearsRange = yearsRange != null ? ParseStringIntoIntArray(yearsRange) : null,
                 TitlesAmount = titlesAmount != null ? titlesAmount.Value : 10,
-                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
+                Types = types != null ? ParseStringIntoIntArray(types) : null
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
@@ -43,30 +45,14 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("most-relevant")]
-        public async Task<IActionResult> GetMostRelevantTitles([FromQuery] string? genresId, string? titlesToExclude, int titlesAmount = 10)
-        {
-            string genres = genresId != null ? genresId.Replace(",", "-").Trim() : "none";
-
-            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
-            {
-                IncludeGenres = genresId != null ? ParseStringIntoHashSet(genresId) : null,
-                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
-                TitlesAmount = titlesAmount
-            };
-
-            IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
-
-            return Ok(response);
-        }
-
-        [HttpGet("most-relevant/{genreId}")]
-        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int genreId, string? titlesToExclude)
+        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int? genreId, string? titlesToExclude, string? types)
         {
             GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() 
             { 
-                GenresId = [genreId], 
+                GenresId = genreId.HasValue ? [genreId.Value] : null, 
                 TitlesAmount = 12,
-                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null
+                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
+                Types = types != null ? ParseStringIntoIntArray(types) : null
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);

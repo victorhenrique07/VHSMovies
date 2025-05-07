@@ -17,10 +17,10 @@ namespace VHSMovies.Application.Handlers
     public class ReadTitlesGenresCommandHandler : IRequestHandler<ReadTitlesGenresCommand, Unit>
     {
         private readonly ITitleGenreRepository titleGenreRepository;
-        private readonly ITitleRepository<Title> titleRepository;
+        private readonly ITitleRepository titleRepository;
         private readonly ILogger<ReadTitlesGenresCommandHandler> _logger;
 
-        public ReadTitlesGenresCommandHandler(ILogger<ReadTitlesGenresCommandHandler> _logger, ITitleGenreRepository titleGenreRepository, ITitleRepository<Title> titleRepository)
+        public ReadTitlesGenresCommandHandler(ILogger<ReadTitlesGenresCommandHandler> _logger, ITitleGenreRepository titleGenreRepository, ITitleRepository titleRepository)
         {
             this._logger = _logger;
             this.titleGenreRepository = titleGenreRepository;

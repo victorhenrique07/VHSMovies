@@ -13,5 +13,7 @@ namespace VHSMovies.Api.Integration.Main.Queries
         public int? TitlesAmount { get; set; }
 
         public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
+
+        public int[]? Types { get; set; }
     }
 }

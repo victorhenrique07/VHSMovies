@@ -11,7 +11,7 @@ using VHSMovies.Domain.Domain.Repository;
 
 namespace VHSMovies.Infraestructure.Repository
 {
-    public class TitleRepository<T> : ITitleRepository<T> where T : Title
+    public class TitleRepository : ITitleRepository
     {
         private readonly DbContextClass dbContextClass;
 
@@ -20,47 +20,46 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<Title>> GetAll()
         {
-            return await dbContextClass.Set<T>()
+            return await dbContextClass.Set<Title>()
                 .Include(t => t.Genres)
                 .ThenInclude(tg => tg.Genre)
                 .Include(t => t.Ratings)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName)
+        public async Task<IEnumerable<Title>> GetAllByReviewerName(string reviewerName)
         {
-            return await dbContextClass.Set<T>()
+            return await dbContextClass.Set<Title>()
                 .Include(t => t.Ratings)
                 .Where(t => t.Ratings.Any(r => r.Reviewer == reviewerName))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllByGenreId(int genreId)
+        public async Task<IEnumerable<Title>> GetAllByGenreId(int genreId)
         {
-            return await dbContextClass.Set<T>()
+            return await dbContextClass.Set<Title>()
                 .Include(g => g.Genres)
                 .Where(t => t.Genres.Any(r => r.GenreId == genreId))
                 .ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<Title> GetByIdAsync(int id)
         {
-            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+            return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<T> GetByExternalIdAsync(string externalId)
+        public async Task<Title> GetByExternalIdAsync(string externalId)
         {
-            return await dbContextClass.Set<T>().FirstOrDefaultAsync(x => x.Ratings.Any(e => e.TitleExternalId == externalId));
+            return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.Ratings.Any(e => e.TitleExternalId == externalId));
         }
 
-        public async Task UpdateAsync(List<T> titles)
+        public async Task UpdateAsync(List<Title> titles)
         {
             try
             {
-                dbContextClass.Set<T>().UpdateRange(titles);
-                await dbContextClass.SaveChangesAsync();
+                dbContextClass.Set<Title>().UpdateRange(titles);
             }
             catch (Exception ex)
             {
@@ -69,15 +68,13 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task RegisterAsync(T entity)
+        public async Task RegisterAsync(Title entity)
         {
             try
             {
-                await dbContextClass.Set<T>().AddAsync(entity);
+                await dbContextClass.Set<Title>().AddAsync(entity);
 
                 Console.WriteLine($"Adding: {entity.ToString()}");
-
-                await dbContextClass.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -86,12 +83,11 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task RegisterListAsync(List<T> entity)
+        public async Task RegisterListAsync(List<Title> entity)
         {
             try
             {
-                await dbContextClass.Set<T>().AddRangeAsync(entity);
-                await dbContextClass.SaveChangesAsync();
+                await dbContextClass.Set<Title>().AddRangeAsync(entity);
             }
             catch (Exception ex)
             {
@@ -100,7 +96,12 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task SaveChanges()
+        public IQueryable<Title> Query()
+        {
+            return dbContextClass.Titles.AsQueryable();
+        }
+
+        public async Task SaveChangesAsync()
         {
             await dbContextClass.SaveChangesAsync();
         }

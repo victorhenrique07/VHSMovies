@@ -14,13 +14,13 @@
 
         public int TotalRatings { get; set; }
 
-        public string PrincipalImageUrl { get; set; }
-
         public string PosterImageUrl { get; set; }
 
-        public int RankPosition { get; set; }
-
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
+
+        public TitleResponse()
+        {
+        }
 
         public TitleResponse(int id, string name, DateOnly? releaseDate, string description, decimal averageRating, int totalRatings)
         {

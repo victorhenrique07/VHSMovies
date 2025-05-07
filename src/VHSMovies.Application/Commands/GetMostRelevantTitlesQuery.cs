@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VHSMovies.Application.Models;
 using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Application.Commands
 {
@@ -14,6 +15,8 @@ namespace VHSMovies.Application.Commands
         public int[]? GenresId { get; set; }
 
         public int TitlesAmount { get; set; }
+
+        public int[]? Types { get; set; }
 
         public IReadOnlyCollection<int>? TitlesToExclude { get; set; }
     }

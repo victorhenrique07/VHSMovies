@@ -73,6 +73,11 @@ namespace VHSMovies.Application.Handlers
                 );
             }
 
+            if (query.Types != null)
+            {
+                titles = titles.Where(title => query.Types.Any(titleType => title.Type == (int)titleType));
+            }
+
             if (query.Actors?.Any() == true || query.Directors?.Any() == true || query.Writers?.Any() == true)
             {
                 var roles = new List<(PersonRole Role, IReadOnlyCollection<string>? Names)>
@@ -115,8 +120,8 @@ namespace VHSMovies.Application.Handlers
 
                 titles = titles.Where(t => 
                     t.ReleaseDate.HasValue &&
-                    t.ReleaseDate.Value.Year > query.YearsRange[0] &&
-                    t.ReleaseDate.Value.Year < query.YearsRange[1]);
+                    t.ReleaseDate > query.YearsRange[0] &&
+                    t.ReleaseDate < query.YearsRange[1]);
             }
 
             IReadOnlyCollection<RecommendedTitle> data = titles

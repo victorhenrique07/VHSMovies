@@ -19,7 +19,8 @@ namespace VHSMovies.Application.Handlers
         private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
         private readonly IMemoryCache _cache;
 
-        public GetTitleByIdQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IMemoryCache _cache)
+        public GetTitleByIdQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, 
+            IMemoryCache _cache)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
             this._cache = _cache;
