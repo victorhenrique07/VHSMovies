@@ -54,7 +54,8 @@ else
             GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
             {
                 TitlesAmount = 12,
-                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList()
+                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList(),
+                Types = [1]
             };
 
             Titles = await titlesClient.GetMostRelevantTitles(query);
