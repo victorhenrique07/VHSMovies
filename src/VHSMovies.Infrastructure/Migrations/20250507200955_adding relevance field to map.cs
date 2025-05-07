@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VHSMovies.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addingrelevancefieldtodatabase : Migration
+    public partial class addingrelevancefieldtomap : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,7 @@ namespace VHSMovies.Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Runtime = table.Column<int>(type: "integer", nullable: false),
                     ReleaseDate = table.Column<int>(type: "integer", nullable: true),
-                    Relevance = table.Column<decimal>(type: "numeric", nullable: false)
+                    Relevance = table.Column<decimal>(type: "numeric(5,2)", nullable: false)
                 },
                 constraints: table =>
                 {

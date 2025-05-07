@@ -176,7 +176,7 @@ namespace VHSMovies.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Relevance")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)");
 
                     b.Property<int>("Runtime")
                         .HasColumnType("integer");

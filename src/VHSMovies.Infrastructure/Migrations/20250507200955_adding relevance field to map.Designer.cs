@@ -11,7 +11,7 @@ using VHSMovies.Infraestructure;
 namespace VHSMovies.Infrastructure.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20250507165905_adding relevance field to map")]
+    [Migration("20250507200955_adding relevance field to map")]
     partial class addingrelevancefieldtomap
     {
         /// <inheritdoc />
@@ -179,7 +179,7 @@ namespace VHSMovies.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Relevance")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("numeric(5,2)");
 
                     b.Property<int>("Runtime")
                         .HasColumnType("integer");
