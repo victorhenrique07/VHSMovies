@@ -34,27 +34,21 @@ namespace VHSMovies.Infraestructure
         }
 
         public DbSet<Cast> Casts { get; set; }
-        public DbSet<Movie> Movies { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Title> Titles { get; set; }
         public DbSet<TitleGenre> TitlesGenres { get; set; }
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<TVShow> TVShows { get; set; }
-        public DbSet<TVShowSeason> TVShowSeasons { get; set; }
         public DbSet<RecommendedTitle> RecommendedTitles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Title>().ToTable("Titles");
-            modelBuilder.Entity<TitleGenre>().ToTable("TitlesGenres");
-            modelBuilder.Entity<Movie>().ToTable("Movies");
-            modelBuilder.Entity<TVShow>().ToTable("TVShows");
-            modelBuilder.Entity<TVShowSeason>().ToTable("TVShowSeasons");
-            modelBuilder.Entity<Cast>().ToTable("Casts");
-            modelBuilder.Entity<Person>().ToTable("People");
-            modelBuilder.Entity<Review>().ToTable("Reviews");
-            modelBuilder.Entity<Genre>().ToTable("Genres");
+            modelBuilder.Entity<Title>().ToTable("titles");
+            modelBuilder.Entity<TitleGenre>().ToTable("titles_genres");
+            modelBuilder.Entity<Cast>().ToTable("casts");
+            modelBuilder.Entity<Person>().ToTable("people");
+            modelBuilder.Entity<Review>().ToTable("reviews");
+            modelBuilder.Entity<Genre>().ToTable("genres");
 
             modelBuilder.Entity<RecommendedTitle>(entity =>
             {
@@ -68,17 +62,16 @@ namespace VHSMovies.Infraestructure
                 .HasForeignKey(r => r.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Title>()
+                .Property(t => t.Relevance)
+                .HasColumnType("numeric(5,2)");
+
             modelBuilder.Entity<TitleGenre>()
                 .Property(tg => tg.Id)
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Cast>()
                 .HasKey(tp => tp.Id);
-
-            /*modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Title)
-                .WithMany(t => t.Cast)
-                .HasForeignKey(tp => tp.TitleId);*/
 
             modelBuilder.Entity<Cast>()
                 .HasOne(tp => tp.Person)

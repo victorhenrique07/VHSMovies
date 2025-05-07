@@ -15,5 +15,7 @@ namespace VHSMovies.Application.Commands
         public List<Dictionary<string, string>> ReviewsRows { get; set; }
 
         public bool isCsv { get; set; }
+
+        public string Source { get; set; }
     }
 }

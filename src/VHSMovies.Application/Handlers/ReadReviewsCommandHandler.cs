@@ -10,16 +10,18 @@ using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Mediator.Interfaces;
 using VHSMovies.Mediator.Implementation;
+using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 
 namespace VHSMovies.Application.Handlers
 {
     public class ReadReviewsCommandHandler : IRequestHandler<ReadReviewsCommand, Unit>
     {
         private readonly IReviewRepository reviewRepository;
-        private readonly ITitleRepository<Title> titleRepository;
+        private readonly ITitleRepository titleRepository;
         private readonly ILogger<ReadReviewsCommandHandler> _logger;
 
-        public ReadReviewsCommandHandler(ILogger<ReadReviewsCommandHandler> _logger, IReviewRepository reviewRepository, ITitleRepository<Title> titleRepository)
+        public ReadReviewsCommandHandler(ILogger<ReadReviewsCommandHandler> _logger, IReviewRepository reviewRepository, ITitleRepository titleRepository)
         {
             this._logger = _logger;
             this.reviewRepository = reviewRepository;
@@ -28,38 +30,76 @@ namespace VHSMovies.Application.Handlers
 
         public async Task<Unit> Handle(ReadReviewsCommand command, CancellationToken cancellationToken)
         {
-            IEnumerable<Title> titles = await titleRepository.GetAll();
+            var reviews = new List<Review>();
 
-            List<Review> reviewsToUpdate = new List<Review>();
-
-            foreach (var rows in command.ReviewsRows)
+            var validHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                int titleId = 0;
-                decimal rating = 0;
+                "tconst", "averageRating", "numVotes"
+            };
 
-                foreach (var row in rows)
+            var tconsts = command.ReviewsRows
+                .SelectMany(r => r)
+                .Where(p => p.Key.Equals("tconst", StringComparison.OrdinalIgnoreCase))
+                .Select(p => p.Value?.Trim())
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .ToHashSet();
+
+            var titleList = await titleRepository.Query()
+                .Where(t => tconsts.Contains(t.IMDB_Id))
+                .ToListAsync(cancellationToken);
+
+            var titleMap = titleList.ToDictionary(t => t.IMDB_Id);
+
+            foreach (var rowSet in command.ReviewsRows)
+            {
+                var normalizedKeys = rowSet.Select(r => r.Key.Trim().ToLower()).ToHashSet();
+
+                if (!validHeaders.IsSubsetOf(normalizedKeys))
+                    throw new KeyNotFoundException("Headers do not match.");
+
+                var values = rowSet.ToDictionary(
+                    kv => kv.Key.Trim().ToLower(),
+                    kv => kv.Value?.Trim() ?? string.Empty
+                );
+
+                string tconst = GetValueOrDefault(values["tconst"]);
+                decimal rating = ParseDecimal(values.GetValueOrDefault("averagerating"));
+                int numVotes = ParseInt(values.GetValueOrDefault("numvotes"));
+
+                if (!titleMap.TryGetValue(tconst, out var title))
                 {
-                    if (row.Key.ToLower() == "filmid")
-                        titleId = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-                    if (row.Key.ToLower() == "vote_average")
-                        rating = !string.IsNullOrEmpty(row.Value) ? Convert.ToDecimal(row.Value) : 0m;
+                    _logger.LogWarning($"Title with tconst {tconst} not found.");
+                    continue;
                 }
 
-                Title title = titles.Where(r => r.Id == titleId).FirstOrDefault();
+                _logger.LogInformation($"Processing review to: {tconst} - {title.Name} - {rating}");
 
-                Review review = title.Ratings.Where(r => r.Reviewer.ToLower() == "imdb").FirstOrDefault();
-
-                if (review != null && review.Rating != rating)
+                Review review = new Review(command.Source, rating, numVotes)
                 {
-                    review.Rating = rating;
+                    TitleExternalId = tconst,
+                    TitleId = title.Id
+                };
 
-                    reviewsToUpdate.Add(review);
-                }
+                reviews.Add(review);
+
+                title.Ratings.Add(review);
+                title.Relevance = title.SetRelevance();
             }
 
-            await reviewRepository.UpdateReviews(reviewsToUpdate);
+            await reviewRepository.AddReviews(reviews);
+            await reviewRepository.SaveChangesAsync();
+            await titleRepository.SaveChangesAsync();
 
             return Unit.Value;
         }
+
+        private static string GetValueOrDefault(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+        private static decimal ParseDecimal(string value) =>
+            decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : 0.0m;
+
+        private static int ParseInt(string value) =>
+            int.TryParse(value, out var result) ? result : 0;
     }
 }

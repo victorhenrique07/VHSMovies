@@ -15,5 +15,8 @@ namespace VHSMovies.Application.Commands
         public List<Dictionary<string, string>> TitlesRows { get; set; }
 
         public bool isCsv { get; set; }
+        public bool isAlternativeCsv { get; set; }
+
+        public string Source { get; set; }
     }
 }

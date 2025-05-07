@@ -7,15 +7,18 @@ using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Domain.Domain.Repository
 {
-    public interface ITitleRepository<T> : IRepository<T> where T : Title
+    public interface ITitleRepository
     {
-        Task<IEnumerable<T>> GetAll();
-        Task<IEnumerable<T>> GetAllByReviewerName(string reviewerName);
-        Task<IEnumerable<T>> GetAllByGenreId(int genreId);
-        Task<T> GetByIdAsync(int id);
-        Task<T> GetByExternalIdAsync(string externalId);
-        Task UpdateAsync(List<T> entity);
-        Task RegisterAsync(T entity);
-        Task RegisterListAsync(List<T> entity);
+        Task<IEnumerable<Title>> GetAll();
+        Task<IEnumerable<Title>> GetAllByReviewerName(string reviewerName);
+        Task<IEnumerable<Title>> GetAllByGenreId(int genreId);
+        Task<Title> GetByIdAsync(int id);
+        Task<Title> GetByExternalIdAsync(string externalId);
+        Task UpdateAsync(List<Title> entity);
+        Task RegisterAsync(Title entity);
+        Task RegisterListAsync(List<Title> entity);
+
+        IQueryable<Title> Query();
+        Task SaveChangesAsync();
     }
 }

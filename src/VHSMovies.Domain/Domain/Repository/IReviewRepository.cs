@@ -15,6 +15,8 @@ namespace VHSMovies.Domain.Domain.Repository
 
         Task<List<Review>> GetByReviewerName(string reviewerName);
 
-        Task UpdateReviews(List<Review> reviews);
+        Task AddReviews(List<Review> reviews);
+
+        Task SaveChangesAsync();
     }
 }

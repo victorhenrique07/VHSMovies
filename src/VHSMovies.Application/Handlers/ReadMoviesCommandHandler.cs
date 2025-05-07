@@ -19,13 +19,13 @@ namespace VHSMovies.Application.Handlers
 {
     public class ReadMoviesCommandHandler : IRequestHandler<ReadMoviesCommand, Unit>
     {
-        private readonly ITitleRepository<Title> titleRepository;
+        private readonly ITitleRepository titleRepository;
         private readonly IGenreRepository genreRepository;
         private readonly ILogger<ReadMoviesCommandHandler> _logger;
 
 
 
-        public ReadMoviesCommandHandler(ITitleRepository<Title> titleRepository,
+        public ReadMoviesCommandHandler(ITitleRepository titleRepository,
             IGenreRepository genreRepository,
             ILogger<ReadMoviesCommandHandler> _logger)
         {
@@ -36,148 +36,88 @@ namespace VHSMovies.Application.Handlers
 
         public async Task<Unit> Handle(ReadMoviesCommand command, CancellationToken cancellationToken)
         {
-            List<Title> titles = new List<Title>();
+            var titles = new List<Title>();
+            var genres = await genreRepository.GetAll();
 
-            List<TitleImages> images = new List<TitleImages>();
+            var genreLookup = genres.ToDictionary(
+                g => g.Name.Trim().ToLower(), g => g, StringComparer.OrdinalIgnoreCase
+            );
 
-            var teste = await titleRepository.GetAllByReviewerName("imdb");
+            var existingIds = new HashSet<string>(
+                titleRepository.Query().Select(x => x.IMDB_Id),
+                StringComparer.OrdinalIgnoreCase
+            );
 
-            IEnumerable<Genre> genres = await genreRepository.GetAll();
-
-            var existingIds = new HashSet<int>((await titleRepository.GetAll()).Select(x => x.Id));
-
-            List<string> validHeaders = new List<string>()
+            var validHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "id",
-                "title",
-                "release_date",
-                "runtime",
-                "backdrop_path",
-                "tconst",
-                "overview",
-                "poster_path",
-                "genres",
-                "averageRating",
-                "numVotes"
+                "tconst", "titleType", "primaryTitle", "startYear", "runtimeMinutes", "genres",
             };
+
+            var processedIds = new HashSet<string>();
 
             foreach (var rows in command.TitlesRows)
             {
-                int id = 0;
-                string name = "";
-                DateOnly? releaseDate = new DateOnly();
-                string description = "";
-                string IMDbId = "";
-                int runTime = 0;
-                string poster_path = "";
-                string backdrop_path = "";
-                decimal ratingAverage = 0.0m;
-                int ratingsCount = 0;
-                List<string> titleGenres = new List<string>();
-
-                bool matchKeys = validHeaders.All(header =>
-                    rows.Any(r => r.Key.Trim().ToLower() == header.Trim().ToLower())
+                var values = rows.ToDictionary(
+                    kv => kv.Key.Trim().ToLower(),
+                    kv => kv.Value?.Trim() ?? string.Empty
                 );
 
-                if (!matchKeys)
-                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
+                if (!validHeaders.IsSubsetOf(values.Keys))
+                    throw new KeyNotFoundException("Headers do not match.");
 
-                Dictionary<string, Action<string>> headerToPropertyMap = new Dictionary<string, Action<string>>
+                string tconst = values["tconst"];
+                if (!processedIds.Add(tconst) || existingIds.Contains(tconst))
                 {
-                    { "id", value => id = ParseInt(value) },
-                    { "title", value => name = GetValueOrDefault(value) },
-                    { "release_date", value => releaseDate = GetDateValue(value) },
-                    { "runtime", value => runTime = ParseInt(value) },
-                    { "backdrop_path", value => backdrop_path = GetValueOrDefault(value) },
-                    { "tconst", value => IMDbId = GetValueOrDefault(value) },
-                    { "overview", value => description = GetValueOrDefault(value) },
-                    { "poster_path", value => poster_path = GetValueOrDefault(value) },
-                    { "genres", value => titleGenres = !string.IsNullOrEmpty(value) ? value.Split(",").Select(g => g.Trim()).ToList() : new List<string>() },
-                    { "averagerating", value => ratingAverage = ParseDecimal(value) },
-                    { "numvotes", value => ratingsCount = ParseInt(value) },
-                };
-
-                foreach (var row in rows)
-                {
-                    var key = row.Key.Trim().ToLower();
-                    if (headerToPropertyMap.ContainsKey(key))
-                    {
-                        headerToPropertyMap[key](row.Value);
-                    }
-                }
-
-                _logger.LogInformation($"Processando filme: {id} - {name}");
-
-                bool titleExists = existingIds.Contains(id);
-
-                if (titleExists)
-                {
-                    _logger.LogInformation($"Filme {id} - {name} já existe.");
-
+                    _logger.LogInformation($"Title {tconst} already exists.");
                     continue;
                 }
 
-                List<TitleGenre> titlesGenres = new List<TitleGenre>();
+                string primaryTitle = values["primarytitle"];
+                TitleType titleType = GetTitleType(values["titletype"]);
+                int startYear = ParseInt(values["startyear"]);
+                int runtimeMinutes = ParseInt(values["runtimeminutes"]);
 
-                foreach (string genre in titleGenres)
-                {
-                    Genre genreExists = genres.FirstOrDefault(g => string.Equals(g.Name.Trim(), genre, StringComparison.OrdinalIgnoreCase));
-
-                    if (genreExists == null)
-                        continue;
-
-                    TitleGenre titleGenre = new TitleGenre()
+                var titleGenres = values["genres"]
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Where(g => genreLookup.ContainsKey(g.ToLower()))
+                    .Select(g => new TitleGenre
                     {
-                        Genre = genreExists,
-                        GenreId = genreExists.Id
-                    };
+                        Genre = genreLookup[g.ToLower()],
+                        GenreId = genreLookup[g.ToLower()].Id
+                    })
+                    .ToList();
 
-                    titlesGenres.Add(titleGenre);
-                }
-
-                Review review = new Review("IMDb", ratingAverage, ratingsCount)
+                var title = new Title(primaryTitle, titleType, startYear, tconst)
                 {
-                    TitleExternalId = IMDbId,
-                    TitleId = id
+                    Runtime = runtimeMinutes,
+                    Genres = titleGenres
                 };
 
-                Movie movie = new Movie(name, releaseDate, description, backdrop_path, poster_path, new List<Review>() { review }, runTime)
-                {
-                    Id = id,
-                    Genres = titlesGenres
-                };
-
-                titles.Add(movie);
+                titles.Add(title);
+                _logger.LogInformation($"Processing title: {tconst} - {primaryTitle}");
             }
 
-            titles = titles.DistinctBy(t => t.Id).ToList();
-
             await titleRepository.RegisterListAsync(titles);
+            await titleRepository.SaveChangesAsync();
 
             return Unit.Value;
         }
 
-        private static string GetValueOrDefault(string value, string defaultValue = "")
-        {
-            return !string.IsNullOrEmpty(value) ? value : defaultValue;
-        }
-        private static int ParseInt(string value)
-        {
-            return int.TryParse(value, out var result) ? result : 0;
-        }
-        private static decimal ParseDecimal(string value)
-        {
-            return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result) ? result : 0.0m;
-        }
 
-        private static DateOnly? GetDateValue(string value)
+        private static TitleType GetTitleType(string titleType)
         {
-            if (string.IsNullOrEmpty(value))
-                return null;
-
-            DateOnly.TryParse(value, out var parsedDate);
-
-            return parsedDate;
+            return titleType.ToLower() switch
+            {
+                "movie" => TitleType.Movie,
+                "tvseries" => TitleType.TvSeries,
+                "tvmovie" => TitleType.TvMovie,
+                "tvminiseries" => TitleType.TvMiniSeries
+            };
         }
+        private static string GetValueOrDefault(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+        private static int ParseInt(string value) =>
+            int.TryParse(value, out var result) ? result : 0;
     }
 }

@@ -16,14 +16,14 @@ namespace VHSMovies.Application.Handlers
     public class ReadPeopleCommandHandler : IRequestHandler<ReadPeopleCommand, Unit>
     {
         private readonly IPersonRepository personRepository;
-        private readonly ITitleRepository<Title> titleRepository;
+        private readonly ITitleRepository titleRepository;
         private readonly ICastRepository castRepository;
 
         private readonly ILogger<ReadPeopleCommandHandler> _logger;
 
         public ReadPeopleCommandHandler(IPersonRepository personRepository,
             ILogger<ReadPeopleCommandHandler> _logger,
-            ITitleRepository<Title> titleRepository,
+            ITitleRepository titleRepository,
             ICastRepository castRepository)
         {
             this.personRepository = personRepository;

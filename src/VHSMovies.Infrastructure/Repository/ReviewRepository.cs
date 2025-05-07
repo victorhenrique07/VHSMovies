@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.BiDi.Modules.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,43 +12,47 @@ namespace VHSMovies.Infraestructure.Repository
 {
     public class ReviewRepository : IReviewRepository
     {
-        private readonly DbContextClass _dbContext;
+        private readonly DbContextClass dbContextClass;
 
-        public ReviewRepository(DbContextClass dbContext)
+        public ReviewRepository(DbContextClass dbContextClass)
         {
-            _dbContext = dbContext;
+            this.dbContextClass = dbContextClass;
         }
 
         public async Task<List<Review>> GetAll()
         {
-            return await _dbContext.Reviews.ToListAsync();
+            return await dbContextClass.Reviews.ToListAsync();
         }
 
         public async Task<List<Review>> GetByReviewerName(string reviewerName)
         {
-            return await _dbContext.Reviews
+            return await dbContextClass.Reviews
                 .Where(r => r.Reviewer.ToLower() == reviewerName)
                 .ToListAsync();
         }
 
         public async Task<Review> GetByTitleExternalId(string titleExternalId)
         {
-            return await _dbContext.Reviews
+            return await dbContextClass.Reviews
                 .FirstOrDefaultAsync(r => r.TitleExternalId == titleExternalId);
         }
 
-        public async Task UpdateReviews(List<Review> reviews)
+        public async Task AddReviews(List<Review> reviews)
         {
             try
             {
-                _dbContext.Reviews.UpdateRange(reviews);
-                await _dbContext.SaveChangesAsync();
+                await dbContextClass.Reviews.AddRangeAsync(reviews);
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                Console.WriteLine($"Erro ao atualizar dados: {ex.Message}");
-                throw;
+                throw new DbUpdateException($"Error while adding reviews: {ex.Message}");
+                
             }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await dbContextClass.SaveChangesAsync();
         }
     }
 }

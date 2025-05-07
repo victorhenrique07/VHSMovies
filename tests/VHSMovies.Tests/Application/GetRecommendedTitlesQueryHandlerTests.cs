@@ -21,6 +21,7 @@ namespace VHSMovies.Tests.Application
         private readonly Mock<IRecommendedTitlesRepository> _recommendedRepoMock = new();
         private readonly Mock<IGenreRepository> _genreRepoMock = new();
         private readonly Mock<ICastRepository> _castRepoMock = new();
+        private readonly Mock<HttpClient> _httpClientMock = new();
 
         private readonly GetRecommendedTitlesQueryHandler _handler;
 
@@ -136,8 +137,8 @@ namespace VHSMovies.Tests.Application
         {
             var titles = new List<RecommendedTitle>
             {
-                new() { Id = 1, ReleaseDate = new DateOnly(2010, 1, 1), Relevance = 1, Genres = Array.Empty<string>() },
-                new() { Id = 2, ReleaseDate = new DateOnly(2022, 1, 1), Relevance = 2, Genres = Array.Empty<string>() },
+                new() { Id = 1, ReleaseDate = 2010, Relevance = 1, Genres = Array.Empty<string>() },
+                new() { Id = 2, ReleaseDate = 2022, Relevance = 2, Genres = Array.Empty<string>() },
             }.AsQueryable();
 
             _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
@@ -338,8 +339,8 @@ namespace VHSMovies.Tests.Application
         {
             var titles = new List<RecommendedTitle>
             {
-                new() { Id = 1, ReleaseDate = new DateOnly(2000, 1, 1), Relevance = 2.0m },
-                new() { Id = 2, ReleaseDate = new DateOnly(2005, 1, 1), Relevance = 2.5m }
+                new() { Id = 1, ReleaseDate = 2000, Relevance = 2.0m },
+                new() { Id = 2, ReleaseDate = 2005, Relevance = 2.5m }
             }.AsQueryable();
 
             _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
@@ -384,8 +385,8 @@ namespace VHSMovies.Tests.Application
         {
             var titles = new List<RecommendedTitle>
             {
-                new() { Id = 1, AverageRating = 4.5m, ReleaseDate = new DateOnly(2020, 1, 1), Relevance = 4.5m, Genres = new[] { "Drama", "Action" } },
-                new() { Id = 2, AverageRating = 3.5m, ReleaseDate = new DateOnly(2018, 1, 1), Relevance = 3.0m, Genres = new[] { "Horror" } }
+                new() { Id = 1, AverageRating = 4.5m, ReleaseDate = 2020, Relevance = 4.5m, Genres = new[] { "Drama", "Action" } },
+                new() { Id = 2, AverageRating = 3.5m, ReleaseDate = 2018, Relevance = 3.0m, Genres = new[] { "Horror" } }
             }.AsQueryable();
 
             var cast = new List<Cast>

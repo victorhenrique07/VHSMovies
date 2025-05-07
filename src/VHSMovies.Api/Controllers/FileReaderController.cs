@@ -13,12 +13,13 @@ using CsvHelper.Configuration;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using VHSMovies.Mediator.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace VHSMovies.Api.Controllers
 {
     [ApiController]
     [Route("api")]
-    [RequestSizeLimit(100 * 1024 * 4096)]
+    [RequestSizeLimit(2L * 1024 * 1024 * 1024)]
     public class FileReaderController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -59,11 +60,11 @@ namespace VHSMovies.Api.Controllers
         public async Task<IActionResult> ReadTitlesCsv(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("Nenhum arquivo enviado ou arquivo vazio.");
+                return BadRequest("None file sent or file is empty.");
 
             var stopwatch = Stopwatch.StartNew();
 
-            List<Dictionary<string, string>> rows = await ReadCsvFile(file);
+            List<Dictionary<string, string>> rows = await ReadTitleCsvFile(file);
 
             ReadMoviesCommand command = new ReadMoviesCommand()
             {
@@ -165,7 +166,7 @@ namespace VHSMovies.Api.Controllers
         }
 
         [HttpPatch("update/reviews")]
-        public async Task<IActionResult> ReadReviews(IFormFile file, bool isCsv)
+        public async Task<IActionResult> ReadReviews(IFormFile file, bool isCsv, string source)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("None file sent or file is empty.");
@@ -176,17 +177,14 @@ namespace VHSMovies.Api.Controllers
 
             if (isCsv)
             {
-                rows = await ReadCsvFile(file);
-            }
-            else
-            {
-                rows = await ReadAllRows(file);
+                rows = await ReadReviewCsvFile(file);
             }
 
             ReadReviewsCommand command = new ReadReviewsCommand()
             {
                 ReviewsRows = rows,
-                isCsv = isCsv
+                isCsv = isCsv,
+                Source = source
             };
 
             await mediator.Send(command);
@@ -242,51 +240,83 @@ namespace VHSMovies.Api.Controllers
             return rows;
         }
 
-        private async Task<List<Dictionary<string, string>>> ReadCsvFile(IFormFile file)
+        private async Task<List<Dictionary<string, string>>> ReadTitleCsvFile(IFormFile titlesFile)
         {
             var allData = new List<Dictionary<string, string>>();
 
-            try
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                using var stream = file.OpenReadStream();
-                using var reader = new StreamReader(stream);
-                using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                Delimiter = "\t",
+                HasHeaderRecord = true,
+                HeaderValidated = null,
+                BadDataFound = null,
+                MissingFieldFound = null,
+                TrimOptions = TrimOptions.Trim,
+                PrepareHeaderForMatch = args => args.Header.Trim()
+            };
+
+            using var stream = titlesFile.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            using var csv = new CsvReader(reader, config);
+
+            await foreach (var record in csv.GetRecordsAsync<CsvMovie>())
+            {
+                if (record == null) continue;
+
+                if ((record.titleType.ToLower() != "tvseries" && 
+                    record.titleType.ToLower() != "movie" &&
+                    record.titleType.ToLower() != "tvmovie" &&
+                    record.titleType.ToLower() != "tvminiseries") ||
+                    record.tconst.IsNullOrEmpty())
+                    continue;
+
+                var processedRecord = new Dictionary<string, string>
                 {
-                    HasHeaderRecord = true,
-                    HeaderValidated = null,
-                    Mode = CsvMode.RFC4180,
-                    TrimOptions = TrimOptions.Trim,
-                    Delimiter = ",",
-                    PrepareHeaderForMatch = args => args.Header.Trim()
-                });
+                    { "tconst", record.tconst },
+                    { "titleType", record.titleType },
+                    { "primaryTitle", record.primaryTitle },
+                    { "startYear", record.startYear },
+                    { "runtimeMinutes", record.runtimeMinutes },
+                    { "genres", record.genres },
+                };
 
-                var records = new List<CsvMovie>();
-                await foreach (var record in csv.GetRecordsAsync<CsvMovie>())
-                {
-                    if (record == null) continue;
-
-                    var processedRecord = new Dictionary<string, string>
-                    {
-                        { "id", record.id },
-                        { "title", record.title },
-                        { "release_date", record.release_date },
-                        { "runtime", record.runtime },
-                        { "backdrop_path", record.backdrop_path },
-                        { "tconst", record.tconst },
-                        { "overview", record.overview },
-                        { "poster_path", record.poster_path },
-                        { "genres", record.genres },
-                        { "averageRating", record.averageRating },
-                        { "numVotes", record.numVotes }
-                    };
-
-                    allData.Add(processedRecord);
-                }
+                allData.Add(processedRecord);
             }
-            catch (Exception ex)
+
+            return allData;
+        }
+
+        private async Task<List<Dictionary<string, string>>> ReadReviewCsvFile(IFormFile file)
+        {
+            var allData = new List<Dictionary<string, string>>();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                Console.WriteLine($"Erro ao processar o CSV: {ex.Message}");
-                throw;
+                Delimiter = "\t",
+                HasHeaderRecord = true,
+                HeaderValidated = null,
+                BadDataFound = null,
+                MissingFieldFound = null,
+                TrimOptions = TrimOptions.Trim,
+                PrepareHeaderForMatch = args => args.Header.Trim()
+            };
+
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            using var csv = new CsvReader(reader, config);
+
+            await foreach (var record in csv.GetRecordsAsync<CsvReview>())
+            {
+                if (record == null || record.tconst.IsNullOrEmpty()) continue;
+
+                var processedRecord = new Dictionary<string, string>
+                {
+                    { "tconst", record.tconst },
+                    { "averageRating", record.averageRating },
+                    { "numVotes", record.numVotes },
+                };
+
+                allData.Add(processedRecord);
             }
 
             return allData;

@@ -22,7 +22,8 @@ namespace VHSMovies.Application.Handlers
         private readonly IGenreRepository genreRepository;
         private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
 
-        public GetMostRelevantTitlesQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IGenreRepository genreRepository)
+        public GetMostRelevantTitlesQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, 
+            IGenreRepository genreRepository)
         {
             this.recommendedTitlesRepository = recommendedTitlesRepository;
             this.genreRepository = genreRepository;
@@ -49,6 +50,11 @@ namespace VHSMovies.Application.Handlers
                     .Select(g => g.Name);
 
                 titles = titles.Where(t => genresToQuery.Any(genre => t.Genres.Contains(genre)));
+            }
+
+            if (query.Types != null)
+            {
+                titles = titles.Where(title => query.Types.Any(titleType => title.Type == (int)titleType));
             }
 
             IReadOnlyCollection<RecommendedTitle> data = titles
