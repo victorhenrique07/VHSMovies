@@ -10,6 +10,7 @@
 
 @inject IGenresClient genresClient
 @inject ITitlesClient titlesClient
+@inject IJSRuntime JSRuntime
 
 @if (loading)
 {
@@ -193,10 +194,9 @@ else
     }
     else if (Titles.Count() != 0)
     {
-        <section class="movies">
-
-            <MudContainer class="container">
-                <h2>Recommended Movies</h2>
+        <section class="movies" @ref="moviesSectionRef">
+            <MudContainer Class="container">
+                <h2>Recommended Titles</h2>
 
                 <TitleGrid Titles="Titles" SelectedExcludeTitles="selectedExcludeTitles" />
             </MudContainer>
@@ -244,6 +244,8 @@ else
     private List<int> mustIncludeGenres = new List<int>();
     private int fromYear = 2015;
     private int toYear = 2025;
+
+    private ElementReference moviesSectionRef;
 
     private List<TitleResponse> selectedExcludeTitles = new List<TitleResponse>();
 
@@ -299,6 +301,11 @@ else
         {
             loadingMovies = false;
         }
+    }
+
+    private async Task ScrollToMoviesSectionAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToElement", moviesSectionRef);
     }
 
     private async Task<IEnumerable<TitleResponse>> SearchAsync(string value, CancellationToken cancellationToken)
