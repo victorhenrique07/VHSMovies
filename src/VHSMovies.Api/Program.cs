@@ -68,6 +68,7 @@ app.UseRouting();
 app.UseCors(Configuration.CorsPolicyName);
 
 app.UseAuthorization();
+
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
