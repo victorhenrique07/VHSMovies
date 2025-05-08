@@ -6,7 +6,7 @@ on:
     paths:
       - 'src/VHSMovies.Api/**'
       - 'src/VHSMovies.Application/**'
-      - 'src/VHSMovies.Infraestructure/**'
+      - 'src/VHSMovies.Infrastructure/**'
       - 'src/VHSMovies.Mediator/**'
       - 'src/VHSMovies.Application/**'
       - 'src/VHSMovies.Domain/**'
