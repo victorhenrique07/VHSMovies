@@ -36,12 +36,12 @@ else
                                 <div class="d-flex gap-3">
                                     <label for="min-rating">Minimum Rating</label>
                                     <div class="rating-value">
-                                        <span id="rating-display">@minimumRating</span>
+                                        <span id="rating-display">@rating</span>
                                         <i class="fas fa-star"></i>
                                     </div>
                                 </div>
                                 <div class="rating-slider d-flex align-items-center">
-                                    <MudSlider Class="--mud-palette-tertiary" @bind-Value="@minimumRating" T="decimal" Min="1.0m" Max="10m" Step="0.1m" />
+                                    <MudSlider Class="--mud-palette-tertiary" @bind-Value="@rating" T="decimal" Min="1.0m" Max="10m" Step="0.1m" />
                                 </div>
                             </MudItem>
                             <MudItem xs="6">
@@ -151,6 +151,44 @@ else
                                     }
                                 </MudGrid>
                             </MudExpansionPanel>
+                            <MudExpansionPanel Text="Title Types" Expanded="false">
+                                <MudGrid Spacing="0" Justify="Justify.Center" Class="ml-10">
+                                    @{
+                                        <MudItem xs="12" md="3">
+                                            <div class="checkbox-item">
+                                                <MudCheckBox T="bool"
+                                                            Label="Movie"
+                                                            ValueChanged="@(() => ArrangeTitlesTypes(1))"
+                                                            ReadOnly="false" />
+                                            </div>
+                                        </MudItem>
+                                        <MudItem xs="12" md="3">
+                                            <div class="checkbox-item">
+                                                <MudCheckBox T="bool"
+                                                            Label="Tv Shows"
+                                                            ValueChanged="@(() => ArrangeTitlesTypes(2))"
+                                                            ReadOnly="false"/>
+                                            </div>
+                                        </MudItem>
+                                        <MudItem xs="12" md="3">
+                                            <div class="checkbox-item">
+                                                <MudCheckBox T="bool"
+                                                            Label="Tv Movie"
+                                                            ValueChanged="@(() => ArrangeTitlesTypes(3))"
+                                                            ReadOnly="false" />
+                                            </div>
+                                        </MudItem>
+                                        <MudItem xs="12" md="3">
+                                            <div class="checkbox-item">
+                                                <MudCheckBox T="bool"
+                                                            Label="Mini Series"
+                                                            ValueChanged="@(() => ArrangeTitlesTypes(4))"
+                                                            ReadOnly="false" />
+                                            </div>
+                                        </MudItem>
+                                    }
+                                </MudGrid>
+                            </MudExpansionPanel>
                         </MudExpansionPanels>
                     </div>
 
@@ -190,11 +228,13 @@ else
 
     @if (loadingMovies)
     {
-        <Loading />
+        <section id="movies" class="movies" @ref="moviesSectionRef">
+            <Loading />
+        </section>
     }
     else if (Titles.Count() != 0)
     {
-        <section class="movies" @ref="moviesSectionRef">
+        <section id="movies" class="movies" @ref="moviesSectionRef">
             <MudContainer Class="container">
                 <h2>Recommended Titles</h2>
 
@@ -237,11 +277,12 @@ else
     private bool loading;
     private bool loadingMovies;
 
-    private decimal minimumRating = 0m;
+    private decimal rating = 7m;
     private int titlesAmount = 12;
     private List<int> includeGenres = new List<int>();
     private List<int> excludeGenres = new List<int>();
     private List<int> mustIncludeGenres = new List<int>();
+    private List<int> titlesTypes = new List<int>();
     private int fromYear = 2015;
     private int toYear = 2025;
 
@@ -272,15 +313,18 @@ else
         {
             loadingMovies = true;
 
+            await JSRuntime.InvokeVoidAsync("scrollToSection", moviesSectionRef, 80);
+
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
                 IncludeGenres = includeGenres.ToArray(),
                 ExcludeGenres = excludeGenres.ToArray(),
                 MustInclude = mustIncludeGenres.ToArray(),
-                MinimumRating = minimumRating,
+                MinimumRating = rating,
                 YearsRange = new int[] { fromYear, toYear },
                 TitlesAmount = titlesAmount,
-                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList()
+                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList(),
+                Types = titlesTypes.ToArray()
             };
 
             Titles = await titlesClient.GetRecommendationsTitles(query);
@@ -300,17 +344,28 @@ else
         finally
         {
             loadingMovies = false;
-        }
-    }
 
-    private async Task ScrollToMoviesSectionAsync()
-    {
-        await JSRuntime.InvokeVoidAsync("scrollToElement", moviesSectionRef);
+            await JSRuntime.InvokeVoidAsync("scrollToSection", moviesSectionRef, 80);
+        }
     }
 
     private async Task<IEnumerable<TitleResponse>> SearchAsync(string value, CancellationToken cancellationToken)
     {
         return await titlesClient.GetTitlesBySearch(value);
+    }
+
+    private void ArrangeTitlesTypes(int typeId)
+    {
+        if (titlesTypes.Contains(typeId))
+        {
+            titlesTypes.Remove(typeId);
+            return;
+        }
+        else
+        {
+            titlesTypes.Add(typeId);
+            return;
+        }
     }
 
     private void ArrangeIncludeGenres(int genreId)
