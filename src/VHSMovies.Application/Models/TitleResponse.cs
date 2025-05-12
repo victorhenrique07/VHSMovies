@@ -15,6 +15,7 @@
         public int TotalRatings { get; set; }
 
         public string PosterImageUrl { get; set; }
+        public string BackdropImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
 

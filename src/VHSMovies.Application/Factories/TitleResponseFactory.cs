@@ -43,10 +43,14 @@ namespace VHSMovies.Application.Factories
             var posterUrl = string.IsNullOrEmpty(result?.poster_path)
                 ? string.Empty
                 : "https://image.tmdb.org/t/p/original" + result.poster_path;
+            var backdropUrl = string.IsNullOrEmpty(result?.backdrop_path)
+                ? string.Empty
+                : "https://image.tmdb.org/t/p/original" + result.backdrop_path;
 
             return new TitleResponse(title.Id, title.Name, release_date, overview, title.AverageRating, title.TotalReviews)
             {
                 PosterImageUrl = posterUrl,
+                BackdropImageUrl = backdropUrl,
                 Genres = titlesGenres
             };
         }

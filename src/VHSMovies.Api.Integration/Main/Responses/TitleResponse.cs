@@ -23,6 +23,7 @@ namespace VHSMovies.Api.Integration.Main.Responses
         public string PrincipalImageUrl { get; set; }
 
         public string PosterImageUrl { get; set; }
+        public string BackdropImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
     }

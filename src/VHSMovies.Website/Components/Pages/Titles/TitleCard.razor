@@ -4,7 +4,7 @@
     <MudCardHeader Class="pa-0">
         <CardHeaderContent>
             <div class="movie-poster">
-                <img src="@Title.PosterImageUrl" alt="@Title.Name">
+                <img src="@Title.BackdropImageUrl" alt="@Title.Name">
                 <div class="movie-score">@Title.AverageRating</div>
                 <MudPaper Class="exclude-button-paper justify-content-center align-items-center position-absolute" Elevation="0">
                     <MudIconButton 
@@ -32,7 +32,7 @@
 
             @foreach (GenreResponse genre in Title.Genres)
             {
-                <span class="genre">@genre.Name</span>
+                <MudChip Class="genre" T="string">@genre.Name</MudChip>
             }
         </div>
         <p class="movie-desc">@Title.Description</p>

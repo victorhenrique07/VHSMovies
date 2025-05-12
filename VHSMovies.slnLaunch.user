@@ -1,6 +1,6 @@
 [
   {
-    "Name": "Novo Perfil",
+    "Name": "Api/Website",
     "Projects": [
       {
         "Path": "src\\VHSMovies.Api\\VHSMovies.Api.csproj",

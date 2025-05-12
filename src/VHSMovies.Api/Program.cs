@@ -5,6 +5,7 @@ using System.IO.Compression;
 using VHSMovies.Api.Settings;
 using VHSMovies.Application;
 using VHSMovies.Infraestructure;
+using VHSMovies.Infrastructure;
 using VHSMovies.Mediator.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

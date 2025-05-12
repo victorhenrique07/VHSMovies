@@ -16,7 +16,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 Action<HttpClient> httpClientConfigurator = c =>
 {
-    c.BaseAddress = new Uri("https://api.vhsmovies.com.br");
+    c.BaseAddress = new Uri("http://localhost:5000");
 };
 
 builder.Services.AddRefitClient<ITitlesClient>()
