@@ -13,8 +13,9 @@ using VHSMovies.Application.Handlers;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Infraestructure.Repository;
 
-namespace VHSMovies.Tests.Application
+namespace VHSMovies.Tests.Unit.Application
 {
     public class GetRecommendedTitlesQueryHandlerTests
     {
