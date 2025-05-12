@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.BiDi.Modules.Log;
 using VHSMovies.Domain.Domain.Entity;
+using VHSMovies.Infrastructure;
 
 namespace VHSMovies.Infraestructure
 {
@@ -20,11 +21,13 @@ namespace VHSMovies.Infraestructure
         {
             if (!options.IsConfigured)
             {
-                string DATABASE_HOST = Environment.GetEnvironmentVariable("DATABASE_HOST");
-                string DATABASE_USERNAME = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
-                string DATABASE_PASSWORD = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
-                string DATABASE_NAME = Environment.GetEnvironmentVariable("DATABASE_NAME");
-                string DATABASE_PORT = Environment.GetEnvironmentVariable("DATABASE_PORT");
+                DbConfigurationManager manager = DbConfigurationManager.Instance;
+
+                string DATABASE_HOST = manager.GetConfigurationValue("DATABASE_HOST");
+                string DATABASE_USERNAME = manager.GetConfigurationValue("DATABASE_USERNAME");
+                string DATABASE_PASSWORD = manager.GetConfigurationValue("DATABASE_PASSWORD");
+                string DATABASE_NAME = manager.GetConfigurationValue("DATABASE_NAME");
+                string DATABASE_PORT = manager.GetConfigurationValue("DATABASE_PORT");
 
                 string conectionString = $"Server={DATABASE_HOST};Port={DATABASE_PORT};Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 
@@ -112,6 +115,9 @@ namespace VHSMovies.Infraestructure
                 .HasKey(g => g.Id);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RecommendedTitle>()
+                .HasKey(rt => rt.Id);
         }
     }
 }
