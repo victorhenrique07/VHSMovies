@@ -8,9 +8,9 @@ namespace VHSMovies.Domain.Domain.Repository
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAll();
+        Task<IReadOnlyCollection<T>> GetAll();
         Task<T> GetByIdAsync(int id);
-        Task RegisterListAsync(List<T> entity);
+        Task RegisterListAsync(IReadOnlyCollection<T> entity);
         Task RegisterAsync(T entity);
         Task SaveChanges();
     }

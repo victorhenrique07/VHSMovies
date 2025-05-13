@@ -24,21 +24,7 @@ namespace VHSMovies.Infraestructure.Repository
             return await _dbContext.Casts.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task UpdateAsync(List<Cast> casts)
-        {
-            try
-            {
-                _dbContext.Casts.UpdateRange(casts);
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar Casts: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task RegisterListAsync(List<Cast> casts)
+        public async Task RegisterListAsync(IReadOnlyCollection<Cast> casts)
         {
             try
             {
@@ -66,12 +52,12 @@ namespace VHSMovies.Infraestructure.Repository
             }
         }
 
-        public async Task<Cast> GetCastForTitleAsync(int titleId, int personId)
+        public async Task<IReadOnlyCollection<Cast>> GetAllCastByTitleAsync(int titleId)
         {
 
             var cast = await _dbContext.Casts
-                .Where(c => c.TitleId == titleId && c.PersonId == personId)
-                .FirstOrDefaultAsync();
+                .Where(c => c.TitleId == titleId)
+                .ToListAsync();
 
             return cast;
         }
@@ -82,24 +68,11 @@ namespace VHSMovies.Infraestructure.Repository
                 .Where(c => c.Role == role).ToListAsync();
         }
 
-        public async Task<IEnumerable<Cast>> GetAll()
+        public async Task<IReadOnlyCollection<Cast>> GetAll()
         {
             return await _dbContext.Casts.ToListAsync();
         }
 
-        public Task<IEnumerable<Cast>> GetAllByReviewerName(string reviewerName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Cast> GetByExternalIdAsync(string externalId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
     }
 }

@@ -49,11 +49,12 @@ namespace VHSMovies.Tests.Integration.Setup
             Context.People.AddRange(GetPersonList());
             Context.Genres.AddRange(GetGenresList());
             Context.Casts.AddRange(GetCastList());
+            Context.Titles.AddRange(GetTitlesList());
 
             Context.SaveChanges();
         }
 
-        private List<Cast> GetCastList()
+        public List<Cast> GetCastList()
         {
             return new List<Cast>
             {
@@ -136,8 +137,7 @@ namespace VHSMovies.Tests.Integration.Setup
                 }
             };
         }
-
-        private List<Genre> GetGenresList()
+        public List<Genre> GetGenresList()
         {
             return new List<Genre>
             {
@@ -169,8 +169,7 @@ namespace VHSMovies.Tests.Integration.Setup
                 new Genre { Id = 28, Name = "Western" },
             };
         }
-
-        private List<Person> GetPersonList()
+        public List<Person> GetPersonList()
         {
             return new List<Person>
             {
@@ -191,8 +190,7 @@ namespace VHSMovies.Tests.Integration.Setup
                 new Person("George R. R. Martin")  // Game of Thrones
             };
         }
-
-        private List<RecommendedTitle> GetRecommendedTitlesList()
+        public List<RecommendedTitle> GetRecommendedTitlesList()
         {
             return new List<RecommendedTitle>
             {
@@ -338,6 +336,72 @@ namespace VHSMovies.Tests.Integration.Setup
                     AverageRating = 9.4m,
                     TotalReviews = 454458,
                     Genres = new[] { "Documentary", "Family" },
+                    Relevance = 10.06m
+                }
+            };
+        }
+        public List<Title> GetTitlesList()
+        {
+            return new List<Title>
+            {
+                new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
+                {
+                    Id = 1297469,
+                    Relevance = 11.13m
+                },
+                new Title("The Dark Knight", TitleType.Movie, 2008, "tt0468569")
+                {
+                    Id = 1489427,
+                    Relevance = 10.98m
+                },
+                new Title("The Godfather", TitleType.Movie, 1972, "tt0068646")
+                {
+                    Id = 1260356,
+                    Relevance = 10.93m
+                },
+                new Title("Breaking Bad", TitleType.TvSeries, 2008, "tt0903747")
+                {
+                    Id = 1519096,
+                    Relevance = 11.12m
+                },
+                new Title("Game of Thrones", TitleType.TvSeries, 2011, "tt0944947")
+                {
+                    Id = 1522910,
+                    Relevance = 10.99m
+                },
+                new Title("Sherlock", TitleType.TvSeries, 2010, "tt1475582")
+                {
+                    Id = 1727014,
+                    Relevance = 10.52m
+                },
+                new Title("David Attenborough: A Life on Our Planet", TitleType.TvMovie, 2020, "tt11989890")
+                {
+                    Id = 1613429,
+                    Relevance = 9.00m
+                },
+                new Title("How the Grinch Stole Christmas!", TitleType.TvMovie, 1966, "tt0060345")
+                {
+                    Id = 1253249,
+                    Relevance = 8.95m
+                },
+                new Title("A Charlie Brown Christmas", TitleType.TvMovie, 1965, "tt0059026")
+                {
+                    Id = 1252161,
+                    Relevance = 8.82m
+                },
+                new Title("Chernobyl", TitleType.TvMiniSeries, 2019, "tt7366338")
+                {
+                    Id = 2325522,
+                    Relevance = 10.63m
+                },
+                new Title("Band of Brothers", TitleType.TvMiniSeries, 2001, "tt0185906")
+                {
+                    Id = 1342415,
+                    Relevance = 10.45m
+                },
+                new Title("Planet Earth", TitleType.TvMiniSeries, 2006, "tt0795176")
+                {
+                    Id = 1506162,
                     Relevance = 10.06m
                 }
             };

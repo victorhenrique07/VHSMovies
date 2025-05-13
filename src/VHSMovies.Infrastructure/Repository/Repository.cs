@@ -19,9 +19,9 @@ namespace VHSMovies.Infraestructure.Repository
             _context = context;
             dbContext = context.Set<T>();
         }
-        public async Task<IEnumerable<T>> GetAll() => await dbContext.ToListAsync();
+        public async Task<IReadOnlyCollection<T>> GetAll() => await dbContext.ToListAsync();
         public async Task<T> GetByIdAsync(int id) => await dbContext.FindAsync(id);
-        public async Task RegisterListAsync(List<T> entity) => await dbContext.AddRangeAsync(entity);
+        public async Task RegisterListAsync(IReadOnlyCollection<T> entity) => await dbContext.AddRangeAsync(entity);
         public async Task RegisterAsync(T entity) => await dbContext.AddAsync(entity);
         public async Task SaveChanges() => _context.SaveChangesAsync();
     }
