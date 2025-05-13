@@ -7,10 +7,12 @@ using VHSMovies.Domain.Domain.Entity;
 
 namespace VHSMovies.Domain.Domain.Repository
 {
-    public interface IPersonRepository : IRepository<Person>
+    public interface IPersonRepository
     {
-        Task<IEnumerable<Person>> GetAllPerson(string role);
+        Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole role);
 
-        Task<bool> VerifyIfPersonExists(Person person);
+        Task<Person> GetPersonById(int id);
+
+        Task RegisterListAsync(IReadOnlyCollection<Person> list);
     }
 }

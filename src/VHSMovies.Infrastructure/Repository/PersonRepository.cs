@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using System.Text.Json;
+using OpenQA.Selenium;
 
 namespace VHSMovies.Infraestructure.Repository
 {
@@ -22,105 +23,34 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IEnumerable<Person>> GetAllPerson(string personRole)
+        public async Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole personRole)
         {
-            Enum.TryParse<PersonRole>(personRole, out PersonRole role);
-
-            var teste = await dbContextClass.People
+            IReadOnlyCollection<Person> people = await dbContextClass.People
                 .Include(p => p.Titles)
                     .ThenInclude(c => c.Title)
-                .Where(p => p.Titles.Any(r => r.Role == role))
                 .ToListAsync();
 
-            return teste;
-        }
-
-        public async Task<bool> VerifyIfPersonExists(Person person)
-        {
-            try
+            if (personRole != PersonRole.None)
             {
-                Person existingPerson = await dbContextClass.People
-                        .Where(p => p.Id == person.Id).FirstOrDefaultAsync();
-
-                return existingPerson != null;
+                people = people.Where(p => p.Titles.Any(r => r.Role == personRole)).ToList();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao verificar pessoa: {ex.Message}");
-                throw;
-            }
+
+            return people;
         }
 
-        public async Task<IEnumerable<Person>> GetAll()
+        public async Task<Person> GetPersonById(int id)
         {
-            return await dbContextClass.People.Where(p => p.Name != null).ToListAsync();
+            Person? person = await dbContextClass.People
+                .Where(p => p.Id == id).FirstOrDefaultAsync();
+
+            if (person == null)
+                throw new NotFoundException("Person Not Found");
+
+            return person;
         }
 
-        public async Task<Person> GetByIdAsync(int id)
-        {
-            return await dbContextClass.Set<Person>().FirstOrDefaultAsync(x => x.Id == id);
-        }
+        public async Task RegisterListAsync(IReadOnlyCollection<Person> list) => await dbContextClass.People.AddRangeAsync(list);
 
-        public async Task<Person> GetByExternalIdAsync(string externalId)
-        {
-            return new Person();
-        }
-
-        public async Task UpdateAsync(List<Person> people)
-        {
-            try
-            {
-                dbContextClass.Set<Person>().UpdateRange(people);
-                await dbContextClass.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar dados: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task RegisterAsync(Person entity)
-        {
-            try
-            {
-                await dbContextClass.Set<Person>().AddAsync(entity);
-                await dbContextClass.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                Console.WriteLine("Erro ao salvar a entidade: " + ex.Message);
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine("Inner exception: " + ex.InnerException.Message);
-                    Console.WriteLine("Erro ao salvar: " + JsonSerializer.Serialize(entity));
-                }
-                throw;
-            }
-        }
-
-        public async Task RegisterListAsync(List<Person> entity)
-        {
-            try
-            {
-                await dbContextClass.Set<Person>().AddRangeAsync(entity);
-                await dbContextClass.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao registrar dados: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task SaveChanges()
-        {
-            await dbContextClass.SaveChangesAsync();
-        }
-
-        public Task<IEnumerable<Person>> GetAllByReviewerName(string reviewerName)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task SaveChangesAsync() => await dbContextClass.SaveChangesAsync();
     }
 }

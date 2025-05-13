@@ -36,7 +36,7 @@ namespace VHSMovies.Application.Handlers
         {
             List<Cast> newCasts = new List<Cast>();
 
-            var existingPeople = new HashSet<Person>(await personRepository.GetAll());
+            var existingPeople = new HashSet<Person>(await personRepository.GetAllPerson(PersonRole.None));
             var existingTitles = new HashSet<Title>(await titleRepository.GetAll());
 
             List<string> validHeaders = new List<string>()

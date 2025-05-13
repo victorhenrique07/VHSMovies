@@ -28,10 +28,13 @@ namespace VHSMovies.Tests.Integration.Application
         public async Task Handle_Should_ReturnExpectedResults_WithIncludeGenres()
         {
             // Arrange
+            using var context = _fixture.CreateInMemoryDbContext();
+            _fixture.SeedDatabase(context);
+
             var handler = new GetRecommendedTitlesQueryHandler(
-                new RecommendedTitlesRepository(_fixture.Context),
-                new CastRepository(_fixture.Context),
-                new GenreRepository(_fixture.Context)
+                new RecommendedTitlesRepository(context),
+                new CastRepository(context),
+                new GenreRepository(context)
             );
 
             var query = new GetRecommendedTitlesQuery
@@ -53,10 +56,13 @@ namespace VHSMovies.Tests.Integration.Application
         public async Task Handle_Should_ReturnExpectedResults_WithExcludeGenres()
         {
             // Arrange
+            using var context = _fixture.CreateInMemoryDbContext();
+            _fixture.SeedDatabase(context);
+
             var handler = new GetRecommendedTitlesQueryHandler(
-                new RecommendedTitlesRepository(_fixture.Context),
-                new CastRepository(_fixture.Context),
-                new GenreRepository(_fixture.Context)
+                new RecommendedTitlesRepository(context),
+                new CastRepository(context),
+                new GenreRepository(context)
             );
 
             var query = new GetRecommendedTitlesQuery
@@ -70,7 +76,7 @@ namespace VHSMovies.Tests.Integration.Application
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount(5);
+            result.Should().HaveCount(3);
             result.Should().Contain(t => t.Genres.Any(g => g.Name != "Drama"));
         }
     }

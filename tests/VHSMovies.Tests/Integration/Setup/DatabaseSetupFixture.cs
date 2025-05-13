@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +11,135 @@ using VHSMovies.Infraestructure;
 
 namespace VHSMovies.Tests.Integration.Setup
 {
-    public class DatabaseSetupFixture : IDisposable
+    public class DatabaseSetupFixture
     {
-        public readonly DbContextClass Context;
-
-        public DatabaseSetupFixture()
+        public DbContextClass CreateInMemoryDbContext()
         {
-            Context = DbContextHelper.CreateInMemoryDbContext();
+            var options = new DbContextOptionsBuilder<DbContextClass>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-            Context.RecommendedTitles.AddRangeAsync(GetRecommendedTitlesList());
-            Context.Genres.AddRangeAsync(new List<Genre>
+            var inMemorySettings = new Dictionary<string, string>();
+
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            return new DbContextClass(configuration, options);
+        }
+
+        public void Dispose(DbContextClass Context)
+        {
+            Context.Dispose();
+        }
+
+        public void ClearAllTables(DbContextClass Context)
+        {
+            Context.RecommendedTitles.RemoveRange(Context.RecommendedTitles);
+            Context.People.RemoveRange(Context.People);
+            Context.Genres.RemoveRange(Context.Genres);
+            Context.Casts.RemoveRange(Context.Casts);
+
+            Context.SaveChanges();
+        }
+
+        public void SeedDatabase(DbContextClass Context)
+        {
+            Context.RecommendedTitles.AddRange(GetRecommendedTitlesList());
+            Context.People.AddRange(GetPersonList());
+            Context.Genres.AddRange(GetGenresList());
+            Context.Casts.AddRange(GetCastList());
+
+            Context.SaveChanges();
+        }
+
+        private List<Cast> GetCastList()
+        {
+            return new List<Cast>
+            {
+                // The Shawshank Redemption
+                new Cast
+                {
+                    Id = 1,
+                    TitleId = 1297469,
+                    PersonId = 1, // Tim Robbins
+                    Role = PersonRole.Actor
+                },
+                new Cast
+                {
+                    Id = 2,
+                    TitleId = 1297469,
+                    PersonId = 5, // Frank Darabont
+                    Role = PersonRole.Director
+                },
+                new Cast
+                {
+                    Id = 3,
+                    TitleId = 1297469,
+                    PersonId = 8, // Stephen King
+                    Role = PersonRole.Writer
+                },
+
+                // The Dark Knight
+                new Cast
+                {
+                    Id = 4,
+                    TitleId = 1489427,
+                    PersonId = 2, // Christian Bale
+                    Role = PersonRole.Actor
+                },
+                new Cast
+                {
+                    Id = 5,
+                    TitleId = 1489427,
+                    PersonId = 6, // Christopher Nolan
+                    Role = PersonRole.Director
+                },
+                new Cast
+                {
+                    Id = 6,
+                    TitleId = 1489427,
+                    PersonId = 9, // Jonathan Nolan
+                    Role = PersonRole.Writer
+                },
+
+                // Breaking Bad
+                new Cast
+                {
+                    Id = 7,
+                    TitleId = 1519096,
+                    PersonId = 3, // Bryan Cranston
+                    Role = PersonRole.Actor
+                },
+                new Cast
+                {
+                    Id = 8,
+                    TitleId = 1519096,
+                    PersonId = 7, // Vince Gilligan
+                    Role = PersonRole.Director
+                },
+
+                // Game of Thrones
+                new Cast
+                {
+                    Id = 9,
+                    TitleId = 1522910,
+                    PersonId = 4, // Emilia Clarke
+                    Role = PersonRole.Actor
+                },
+                new Cast
+                {
+                    Id = 10,
+                    TitleId = 1522910,
+                    PersonId = 10, // George R. R. Martin
+                    Role = PersonRole.Writer
+                }
+            };
+        }
+
+        private List<Genre> GetGenresList()
+        {
+            return new List<Genre>
             {
                 new Genre { Id = 1, Name = "Action" },
                 new Genre { Id = 2, Name = "Adult" },
@@ -46,14 +167,29 @@ namespace VHSMovies.Tests.Integration.Setup
                 new Genre { Id = 26, Name = "Thriller" },
                 new Genre { Id = 27, Name = "War" },
                 new Genre { Id = 28, Name = "Western" },
-            });
-
-            Context.SaveChangesAsync();
+            };
         }
 
-        public void Dispose()
+        private List<Person> GetPersonList()
         {
-            Context.Dispose();
+            return new List<Person>
+            {
+                // Atores
+                new Person("Tim Robbins"),         // The Shawshank Redemption
+                new Person("Christian Bale"),      // The Dark Knight
+                new Person("Bryan Cranston"),      // Breaking Bad
+                new Person("Emilia Clarke"),       // Game of Thrones
+
+                // Diretores
+                new Person("Frank Darabont"),      // The Shawshank Redemption
+                new Person("Christopher Nolan"),   // The Dark Knight
+                new Person("Vince Gilligan"),      // Breaking Bad
+
+                // Escritores
+                new Person("Stephen King"),        // The Shawshank Redemption (baseado em obra dele)
+                new Person("Jonathan Nolan"),      // The Dark Knight
+                new Person("George R. R. Martin")  // Game of Thrones
+            };
         }
 
         private List<RecommendedTitle> GetRecommendedTitlesList()
@@ -96,8 +232,6 @@ namespace VHSMovies.Tests.Integration.Setup
                     Genres = new[] { "Crime", "Drama" },
                     Relevance = 10.93m
                 },
-
-                // Séries
                 new RecommendedTitle
                 {
                     Id = 1519096,
@@ -134,8 +268,6 @@ namespace VHSMovies.Tests.Integration.Setup
                     Genres = new[] { "Crime", "Drama", "Mystery" },
                     Relevance = 10.52m
                 },
-
-                // Especiais
                 new RecommendedTitle
                 {
                     Id = 1613429,
@@ -172,8 +304,6 @@ namespace VHSMovies.Tests.Integration.Setup
                     Genres = new[] { "Animation", "Comedy", "Drama" },
                     Relevance = 8.82m
                 },
-
-                // Minisséries
                 new RecommendedTitle
                 {
                     Id = 2325522,

@@ -9,7 +9,7 @@ namespace VHSMovies.Domain.Domain.Repository
 {
     public interface IRecommendedTitlesRepository
     {
-        Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles(int titlesAmount);
+        Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles();
 
         Task<RecommendedTitle> GetById(int id);
 

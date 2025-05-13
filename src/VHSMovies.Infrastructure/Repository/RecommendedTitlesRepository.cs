@@ -18,7 +18,7 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles(int titlesAmount)
+        public async Task<IReadOnlyCollection<RecommendedTitle>> GetAllRecommendedTitles()
         {
             IQueryable<RecommendedTitle> titles = Query();
 
