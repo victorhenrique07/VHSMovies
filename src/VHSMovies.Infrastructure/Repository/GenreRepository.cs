@@ -23,10 +23,5 @@ namespace VHSMovies.Infraestructure.Repository
         {
             return await dbContextClass.Genres.ToListAsync();
         }
-
-        public IQueryable<Genre> Query()
-        {
-            return dbContextClass.Genres.AsQueryable();
-        }
     }
 }
