@@ -39,6 +39,8 @@ namespace VHSMovies.Tests.Integration.Setup
             Context.People.RemoveRange(Context.People);
             Context.Genres.RemoveRange(Context.Genres);
             Context.Casts.RemoveRange(Context.Casts);
+            Context.Titles.RemoveRange(Context.Titles);
+            Context.Reviews.RemoveRange(Context.Reviews);
 
             Context.SaveChanges();
         }
@@ -50,6 +52,7 @@ namespace VHSMovies.Tests.Integration.Setup
             Context.Genres.AddRange(GetGenresList());
             Context.Casts.AddRange(GetCastList());
             Context.Titles.AddRange(GetTitlesList());
+            Context.Reviews.AddRange(GetReviewsList());
 
             Context.SaveChanges();
         }
@@ -404,6 +407,167 @@ namespace VHSMovies.Tests.Integration.Setup
                     Id = 1506162,
                     Relevance = 10.06m
                 }
+            };
+        }
+        public List<Review> GetReviewsList()
+        {
+            return new List<Review>
+            {
+                new Review("IMDb", 9.3m, 2700000)
+                {
+                    Id = 1,
+                    TitleExternalId = "tt0111161",
+                    TitleId = 1297469
+                },
+                new Review("Metacritic", 80.0m, 80_000)
+                {
+                    Id = 2,
+                    TitleExternalId = "mt0111161",
+                    TitleId = 1297469
+                },
+
+                new Review("IMDb", 9.0m, 2600000)
+                {
+                    Id = 3,
+                    TitleExternalId = "tt0468569",
+                    TitleId = 1489427
+                },
+                new Review("Metacritic", 84.0m, 85000)
+                {
+                    Id = 4,
+                    TitleExternalId = "mt0468569",
+                    TitleId = 1489427
+                },
+
+                new Review("IMDb", 9.2m, 2000000)
+                {
+                    Id = 5,
+                    TitleExternalId = "tt0068646",
+                    TitleId = 1260356
+                },
+                new Review("Metacritic", 100.0m, 75000)
+                {
+                    Id = 6,
+                    TitleExternalId = "mt0068646",
+                    TitleId = 1260356
+                },
+
+                new Review("IMDb", 9.5m, 1900000)
+                {
+                    Id = 7,
+                    TitleExternalId = "tt0903747",
+                    TitleId = 1519096
+                },
+                new Review("Metacritic", 87.0m, 60000)
+                {
+                    Id = 8,
+                    TitleExternalId = "mt0903747",
+                    TitleId = 1519096
+                },
+
+                new Review("IMDb", 9.2m, 1900000)
+                {
+                    Id = 9,
+                    TitleExternalId = "tt0944947",
+                    TitleId = 1522910
+                },
+                new Review("Metacritic", 86.0m, 65000)
+                {
+                    Id = 10,
+                    TitleExternalId = "mt0944947",
+                    TitleId = 1522910
+                },
+
+                new Review("IMDb", 9.1m, 950000)
+                {
+                    Id = 11,
+                    TitleExternalId = "tt1475582",
+                    TitleId = 1727014
+                },
+                new Review("Metacritic", 85.0m, 40000)
+                {
+                    Id = 12,
+                    TitleExternalId = "mt1475582",
+                    TitleId = 1727014
+                },
+
+                new Review("IMDb", 8.9m, 350000)
+                {
+                    Id = 13,
+                    TitleExternalId = "tt11989890",
+                    TitleId = 1613429
+                },
+                new Review("Metacritic", 72.0m, 20000)
+                {
+                    Id = 14,
+                    TitleExternalId = "mt11989890",
+                    TitleId = 1613429
+                },
+
+                new Review("IMDb", 8.3m, 100000)
+                {
+                    Id = 15,
+                    TitleExternalId = "tt0060345",
+                    TitleId = 1253249
+                },
+                new Review("Metacritic", 74.0m, 9000)
+                {
+                    Id = 16,
+                    TitleExternalId = "mt0060345",
+                    TitleId = 1253249
+                },
+
+                new Review("IMDb", 8.4m, 120000)
+                {
+                    Id = 17,
+                    TitleExternalId = "tt0059026",
+                    TitleId = 1252161
+                },
+                new Review("Metacritic", 78.0m, 11000)
+                {
+                    Id = 18,
+                    TitleExternalId = "mt0059026",
+                    TitleId = 1252161
+                },
+
+                new Review("IMDb", 9.4m, 1000000)
+                {
+                    Id = 19,
+                    TitleExternalId = "tt7366338",
+                    TitleId = 2325522
+                },
+                new Review("Metacritic", 95.0m, 50000)
+                {
+                    Id = 20,
+                    TitleExternalId = "mt7366338",
+                    TitleId = 2325522
+                },
+
+                new Review("IMDb", 9.4m, 550000)
+                {
+                    Id = 21,
+                    TitleExternalId = "tt0185906",
+                    TitleId = 1342415
+                },
+                new Review("Metacritic", 89.0m, 35000)
+                {
+                    Id = 22,
+                    TitleExternalId = "mt0185906",
+                    TitleId = 1342415
+                },
+
+                new Review("IMDb", 9.4m, 250000)
+                {
+                    Id = 23,
+                    TitleExternalId = "tt0795176",
+                    TitleId = 1506162
+                },
+                new Review("Metacritic", 90.0m, 22000)
+                {
+                    Id = 24,
+                    TitleExternalId = "mt0795176",
+                    TitleId = 1506162
+                },
             };
         }
     }
