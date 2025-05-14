@@ -20,8 +20,6 @@ namespace VHSMovies.Api.Integration.Main.Responses
 
         public int TotalReviews { get; set; }
 
-        public string PrincipalImageUrl { get; set; }
-
         public string PosterImageUrl { get; set; }
         public string BackdropImageUrl { get; set; }
 
