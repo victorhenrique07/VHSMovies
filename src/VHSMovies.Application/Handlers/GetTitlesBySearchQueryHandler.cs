@@ -14,7 +14,7 @@ using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers
 {
-    class GetTitlesBySearchQueryHandler : IRequestHandler<GetTitlesBySearchQuery, IReadOnlyCollection<TitleResponse>>
+    public class GetTitlesBySearchQueryHandler : IRequestHandler<GetTitlesBySearchQuery, IReadOnlyCollection<TitleResponse>>
     {
         private readonly IRecommendedTitlesRepository titleRepository;
 
@@ -27,10 +27,11 @@ namespace VHSMovies.Application.Handlers
         {
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
-            var results = await titleRepository.Query()
+            IQueryable<RecommendedTitle> titles = titleRepository.Query()
                 .Where(p => EF.Functions.Like(p.Name.ToLower(), $"%{query.SearchQuery.ToLower()}%"))
-                .Take(5)
-                .ToListAsync();
+                .Take(5);
+
+            var results = titles.ToList();
 
             List<TitleResponse> response = results.Select(t => titleResponseFactory.CreateTitleResponseByRecommendedTitle(t)).ToList();
 
