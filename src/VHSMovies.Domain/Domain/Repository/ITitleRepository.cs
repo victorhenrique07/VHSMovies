@@ -9,12 +9,11 @@ namespace VHSMovies.Domain.Domain.Repository
 {
     public interface ITitleRepository
     {
-        Task<IEnumerable<Title>> GetAll();
-        Task<IEnumerable<Title>> GetAllByReviewerName(string reviewerName);
-        Task<IEnumerable<Title>> GetAllByGenreId(int genreId);
+        Task<List<Title>> GetAll();
+        Task<List<Title>> GetAllByReviewerName(string reviewerName);
+        Task<List<Title>> GetAllByGenreId(int genreId);
         Task<Title> GetByIdAsync(int id);
         Task<Title> GetByExternalIdAsync(string externalId);
-        Task UpdateAsync(List<Title> entity);
         Task RegisterAsync(Title entity);
         Task RegisterListAsync(List<Title> entity);
 

@@ -53,6 +53,7 @@ namespace VHSMovies.Tests.Integration.Setup
             Context.Casts.AddRange(GetCastList());
             Context.Titles.AddRange(GetTitlesList());
             Context.Reviews.AddRange(GetReviewsList());
+            Context.TitlesGenres.AddRange(GetTitlesGenresList());
 
             Context.SaveChanges();
         }
@@ -568,6 +569,43 @@ namespace VHSMovies.Tests.Integration.Setup
                     TitleExternalId = "mt0795176",
                     TitleId = 1506162
                 },
+            };
+        }
+        public List<TitleGenre> GetTitlesGenresList()
+        {
+            return new List<TitleGenre>
+            {
+                new TitleGenre { TitleId = 1297469, GenreId = 9 },
+                new TitleGenre { TitleId = 1489427, GenreId = 1 },
+                new TitleGenre { TitleId = 1489427, GenreId = 7 },
+                new TitleGenre { TitleId = 1489427, GenreId = 9 },
+                new TitleGenre { TitleId = 1260356, GenreId = 7 },
+                new TitleGenre { TitleId = 1260356, GenreId = 9 },
+                new TitleGenre { TitleId = 1519096, GenreId = 7 },
+                new TitleGenre { TitleId = 1519096, GenreId = 9 },
+                new TitleGenre { TitleId = 1519096, GenreId = 26 },
+                new TitleGenre { TitleId = 1522910, GenreId = 1 },
+                new TitleGenre { TitleId = 1522910, GenreId = 3 },
+                new TitleGenre { TitleId = 1522910, GenreId = 9 },
+                new TitleGenre { TitleId = 1727014, GenreId = 7 },
+                new TitleGenre { TitleId = 1727014, GenreId = 9 },
+                new TitleGenre { TitleId = 1727014, GenreId = 18 },
+                new TitleGenre { TitleId = 1613429, GenreId = 5 },
+                new TitleGenre { TitleId = 1613429, GenreId = 8 },
+                new TitleGenre { TitleId = 1253249, GenreId = 4 },
+                new TitleGenre { TitleId = 1253249, GenreId = 6 },
+                new TitleGenre { TitleId = 1253249, GenreId = 10 },
+                new TitleGenre { TitleId = 1252161, GenreId = 4 },
+                new TitleGenre { TitleId = 1252161, GenreId = 6 },
+                new TitleGenre { TitleId = 1252161, GenreId = 9 },
+                new TitleGenre { TitleId = 2325522, GenreId = 9 },
+                new TitleGenre { TitleId = 2325522, GenreId = 14 },
+                new TitleGenre { TitleId = 2325522, GenreId = 26 },
+                new TitleGenre { TitleId = 1342415, GenreId = 1 },
+                new TitleGenre { TitleId = 1342415, GenreId = 9 },
+                new TitleGenre { TitleId = 1342415, GenreId = 14 },
+                new TitleGenre { TitleId = 1506162, GenreId = 8 },
+                new TitleGenre { TitleId = 1506162, GenreId = 10 }
             };
         }
     }

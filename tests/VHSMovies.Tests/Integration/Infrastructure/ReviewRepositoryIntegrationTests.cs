@@ -181,7 +181,5 @@ namespace VHSMovies.Tests.Integration.Infrastructure
                 Title = new { Name = "The Dark Knight" }
             }, options => options.ExcludingMissingMembers());
         }
-
-
     }
 }

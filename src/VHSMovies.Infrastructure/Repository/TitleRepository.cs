@@ -20,7 +20,7 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IEnumerable<Title>> GetAll()
+        public async Task<List<Title>> GetAll()
         {
             return await dbContextClass.Set<Title>()
                 .Include(t => t.Genres)
@@ -29,7 +29,7 @@ namespace VHSMovies.Infraestructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Title>> GetAllByReviewerName(string reviewerName)
+        public async Task<List<Title>> GetAllByReviewerName(string reviewerName)
         {
             return await dbContextClass.Set<Title>()
                 .Include(t => t.Ratings)
@@ -37,7 +37,7 @@ namespace VHSMovies.Infraestructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Title>> GetAllByGenreId(int genreId)
+        public async Task<List<Title>> GetAllByGenreId(int genreId)
         {
             return await dbContextClass.Set<Title>()
                 .Include(g => g.Genres)
@@ -53,19 +53,6 @@ namespace VHSMovies.Infraestructure.Repository
         public async Task<Title> GetByExternalIdAsync(string externalId)
         {
             return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.Ratings.Any(e => e.TitleExternalId == externalId));
-        }
-
-        public async Task UpdateAsync(List<Title> titles)
-        {
-            try
-            {
-                dbContextClass.Set<Title>().UpdateRange(titles);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao atualizar dados: {ex.Message}");
-                throw;
-            }
         }
 
         public async Task RegisterAsync(Title entity)
