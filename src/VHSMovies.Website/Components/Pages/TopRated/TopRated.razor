@@ -22,11 +22,11 @@ else
     {
         <TitleGrid Titles="@ActionTitles" SelectedExcludeTitles="selectedExcludeActionTitles" SectionTitle="Recommended Actions">
             <MudIconButton Icon="@Icons.Material.Filled.Refresh"
-                           Color="Color.Default"
-                           ClickPropagation="true"
-                           Edge="Edge.End"
-                           Style="right:10px"
-                           OnClick="LoadActionTitles" />
+            Color="Color.Default"
+            ClickPropagation="true"
+            Edge="Edge.End"
+            Style="right:10px"
+            OnClick="LoadActionTitles" />
         </TitleGrid>
         <MudDivider DividerType="DividerType.Middle" Class="my-6" />
     }
@@ -39,11 +39,11 @@ else
     {
         <TitleGrid Titles="@SciFiTitles" SelectedExcludeTitles="selectedExcludeSciFiTitles" SectionTitle="Recommended Sci-Fi's">
             <MudIconButton Icon="@Icons.Material.Filled.Refresh"
-                           Color="Color.Default"
-                           ClickPropagation="true"
-                           Edge="Edge.End"
-                           Style="right:10px"
-                           OnClick="LoadSciFiTitles" />
+            Color="Color.Default"
+            ClickPropagation="true"
+            Edge="Edge.End"
+            Style="right:10px"
+            OnClick="LoadSciFiTitles" />
         </TitleGrid>
         <MudDivider DividerType="DividerType.Middle" Class="my-6" />
     }
@@ -56,11 +56,11 @@ else
     {
         <TitleGrid Titles="@ThrillerTitles" SelectedExcludeTitles="selectedExcludeThrillerTitles" SectionTitle="Recommended Thrillers">
             <MudIconButton Icon="@Icons.Material.Filled.Refresh"
-                           Color="Color.Default"
-                           ClickPropagation="true"
-                           Edge="Edge.End"
-                           Style="right:10px"
-                           OnClick="LoadThrillerTitles" />
+            Color="Color.Default"
+            ClickPropagation="true"
+            Edge="Edge.End"
+            Style="right:10px"
+            OnClick="LoadThrillerTitles" />
         </TitleGrid>
     }
 }
@@ -86,9 +86,21 @@ else
             loading = true;
             StateHasChanged();
 
-            ActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28);
-            SciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878);
-            ThrillerTitles = await titlesClient.GetMostRelevantTitlesByGenre(53);
+            ActionTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 1,
+                Types = new[] { 1 },
+            });
+            SciFiTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 22,
+                Types = new[] { 1 },
+            });
+            ThrillerTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 26,
+                Types = new[] { 1 },
+            });
         }
         catch (Exception ex)
         {
@@ -109,7 +121,11 @@ else
 
             string titlesToExclude = string.Join(", ", selectedExcludeActionTitles.Select(t => t.Id));
 
-            ActionTitles = await titlesClient.GetMostRelevantTitlesByGenre(28, titlesToExclude);
+            ActionTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 1,
+                Types = new[] { 1 },
+            });
         }
         catch (TaskCanceledException ex)
         {
@@ -138,7 +154,11 @@ else
 
             string titlesToExclude = string.Join(", ", selectedExcludeSciFiTitles.Select(t => t.Id));
 
-            SciFiTitles = await titlesClient.GetMostRelevantTitlesByGenre(878, titlesToExclude);
+            SciFiTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 22,
+                Types = new[] { 1 },
+            });
         }
         catch (TaskCanceledException ex)
         {
@@ -167,7 +187,11 @@ else
 
             string titlesToExclude = string.Join(", ", selectedExcludeThrillerTitles.Select(t => t.Id));
 
-            ThrillerTitles = await titlesClient.GetMostRelevantTitlesByGenre(53, titlesToExclude);
+            ThrillerTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            {
+                GenreId = 26,
+                Types = new[] { 1 },
+            });
         }
         catch (TaskCanceledException ex)
         {
