@@ -42,10 +42,13 @@ namespace VHSMovies.Tests.Unit.Application
                 new RecommendedTitle { Name = "Band of Brothers" }
             }.AsQueryable();
 
-            _mockRepository.Setup(repo => repo.Query())
-                .Returns(fakeTitles.AsQueryable());
-
             // Act
+            var filteredTitles = fakeTitles
+                .Where(t => t.Name.ToLower().Contains(searchQuery.ToLower()))
+                .AsQueryable();
+
+            _mockRepository.Setup(repo => repo.Query()).Returns(filteredTitles);
+
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
@@ -64,6 +67,7 @@ namespace VHSMovies.Tests.Unit.Application
         {
             // Arrange
             var searchQuery = "Breaking";
+
             var query = new GetTitlesBySearchQuery()
             {
                 SearchQuery = searchQuery
@@ -78,11 +82,13 @@ namespace VHSMovies.Tests.Unit.Application
                 new RecommendedTitle { Name = "Band of Brothers" }
             }.AsQueryable();
 
-            var mockQueryable = fakeTitles;
-
-            _mockRepository.Setup(repo => repo.Query()).Returns(mockQueryable);
-
             // Act
+            var filteredTitles = fakeTitles
+                .Where(t => t.Name.ToLower().Contains(searchQuery.ToLower()))
+                .AsQueryable();
+
+            _mockRepository.Setup(repo => repo.Query()).Returns(filteredTitles);
+
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
