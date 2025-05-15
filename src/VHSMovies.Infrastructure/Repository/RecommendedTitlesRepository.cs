@@ -37,7 +37,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public IQueryable<RecommendedTitle> Query()
         {
-            return dbContextClass.RecommendedTitles.AsNoTracking();
+            return dbContextClass.RecommendedTitles.AsNoTracking().AsQueryable();
         }
     }
 }

@@ -48,8 +48,6 @@ namespace VHSMovies.Application.Handlers
                 titles = titles.Where(t => !query.TitlesToExclude.Contains(t.Id));
             }
 
-            var titlesList = titles.ToList();
-
             if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
             {
                 var includeGenres = new List<string>();
@@ -70,25 +68,24 @@ namespace VHSMovies.Application.Handlers
 
                 if (includeGenres.Count != 0)
                 {
-                    titlesList = titlesList.Where(title => title.Genres.Any(genre => includeGenres.Contains(genre))).ToList();
+                    titles = titles.Where(title => title.Genres.Any(genre => includeGenres.Contains(genre)));
                 }
 
                 if (excludeGenres.Count != 0)
                 {
-                    titlesList = titlesList.Where(title =>
-                        !title.Genres.Any(genre => excludeGenres.Contains(genre))
-                    ).ToList();
+                    titles = titles.Where(title =>
+                        !title.Genres.Any(genre => excludeGenres.Contains(genre)));
                 }
 
                 if (mustIncludeGenres.Count != 0)
                 {
-                    titlesList = titlesList.Where(title => mustIncludeGenres.All(genre => title.Genres.Contains(genre))).ToList();
+                    titles = titles.Where(title => mustIncludeGenres.All(genre => title.Genres.Contains(genre)));
                 }
             }
 
             if (query.Types != null)
             {
-                titlesList = titlesList.Where(title => query.Types.Any(titleType => title.Type == (int)titleType)).ToList();
+                titles = titles.Where(title => query.Types.Any(titleType => title.Type == (int)titleType));
             }
 
             if (query.Actors?.Any() == true || query.Directors?.Any() == true || query.Writers?.Any() == true)
@@ -118,26 +115,26 @@ namespace VHSMovies.Application.Handlers
                         matchingTitleIds = matchingTitleIds.Any() ? matchingTitleIds.Intersect(matchedTitles) : matchedTitles;
                     }
 
-                    titlesList = titlesList.Where(title => matchingTitleIds.Contains(title.Id)).ToList();
+                    titles = titles.Where(title => matchingTitleIds.Contains(title.Id));
                 }
             }
 
             if (query.MinimumRating != null)
             {
-                titlesList = titlesList.Where (t => t.AverageRating >= query.MinimumRating).ToList();
+                titles = titles.Where (t => t.AverageRating >= query.MinimumRating);
             }
 
             if (query.YearsRange != null)
             {
                 query.YearsRange = BubbleSort(query.YearsRange, query.YearsRange.Length);
 
-                titlesList = titlesList.Where(t => 
+                titles = titles.Where(t => 
                     t.ReleaseDate.HasValue &&
                     t.ReleaseDate > query.YearsRange[0] &&
-                    t.ReleaseDate < query.YearsRange[1]).ToList();
+                    t.ReleaseDate < query.YearsRange[1]);
             }
 
-            IReadOnlyCollection<RecommendedTitle> data = titlesList
+            IReadOnlyCollection<RecommendedTitle> data = titles
                 .OrderByDescending(t => t.Relevance)
                 .Take(query.TitlesAmount)
                 .ToList();
