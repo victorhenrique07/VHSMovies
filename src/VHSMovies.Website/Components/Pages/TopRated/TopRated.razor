@@ -195,15 +195,15 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine("[Thriller Movies] - Timeout: The request took too long and was cancelled.");
+            throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"[Thriller Movies] - Request Error: {ex.Message}");
+            throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Thriller Movies] - Unexpected Error: {ex.Message}");
+            throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
         {

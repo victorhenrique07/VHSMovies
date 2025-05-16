@@ -331,15 +331,15 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine("Timeout: The request took too long and was cancelled.");
+            throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"Request Error: {ex.Message}");
+            throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Unexpected Error: {ex.Message}");
+            throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
         {
