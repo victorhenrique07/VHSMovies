@@ -51,14 +51,14 @@ else
         {
             loading = true;
 
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery()
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
                 TitlesAmount = 12,
                 TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList(),
                 Types = [1]
             };
 
-            Titles = await titlesClient.GetMostRelevantTitles(query);
+            Titles = await titlesClient.GetRecommendationsTitles(query);
         }
         catch (TaskCanceledException ex)
         {

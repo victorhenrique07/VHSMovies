@@ -76,14 +76,13 @@ namespace VHSMovies.Application.Handlers
 
                 Review review = new Review(command.Source, rating, numVotes)
                 {
-                    TitleExternalId = tconst,
-                    TitleId = title.Id
+                    TitleExternalId = tconst
                 };
 
                 reviews.Add(review);
 
                 title.Ratings.Add(review);
-                title.Relevance = title.SetRelevance();
+                title.SetRelevance();
             }
 
             await reviewRepository.AddReviews(reviews);

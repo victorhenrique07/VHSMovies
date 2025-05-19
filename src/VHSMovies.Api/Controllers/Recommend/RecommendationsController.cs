@@ -44,22 +44,6 @@ namespace VHSMovies.Api.Controllers.Recommend
             return Ok(response);
         }
 
-        [HttpGet("most-relevant")]
-        public async Task<IActionResult> GetMostRelevantTitlesByGenre(int? genreId, string? titlesToExclude, string? types)
-        {
-            GetMostRelevantTitlesQuery query = new GetMostRelevantTitlesQuery() 
-            { 
-                GenresId = genreId.HasValue ? [genreId.Value] : null, 
-                TitlesAmount = 12,
-                TitlesToExclude = titlesToExclude != null ? ParseStringIntoIntArray(titlesToExclude) : null,
-                Types = types != null ? ParseStringIntoIntArray(types) : null
-            };
-
-            IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
-
-            return Ok(response);
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTitleById(int id)
         {

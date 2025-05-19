@@ -9,8 +9,6 @@ namespace VHSMovies.Domain.Domain.Entity
     public enum TitleType
     {
         Movie = 1,
-        TvSeries = 2,
-        TvMovie = 3,
-        TvMiniSeries = 4
+        TvSeries = 2
     }
 }

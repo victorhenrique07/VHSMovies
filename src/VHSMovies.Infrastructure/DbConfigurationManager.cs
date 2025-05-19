@@ -26,7 +26,7 @@ namespace VHSMovies.Infrastructure
 
         public string GetConfigurationValue(string key)
         {
-            return Environment.GetEnvironmentVariable(key);
+            return Environment.GetEnvironmentVariable(key, EnvironmentVariableTarget.Machine);
         }
     }
 }

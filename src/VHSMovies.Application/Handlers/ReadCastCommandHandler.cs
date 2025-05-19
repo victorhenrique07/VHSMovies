@@ -34,7 +34,7 @@ namespace VHSMovies.Application.Handlers
 
         public async Task<Unit> Handle(ReadCastCommand command, CancellationToken cancellationToken)
         {
-            List<Cast> newCasts = new List<Cast>();
+            /*List<Cast> newCasts = new List<Cast>();
 
             var existingPeople = new HashSet<Person>(await personRepository.GetAllPerson(PersonRole.None));
             var existingTitles = new HashSet<Title>(await titleRepository.GetAll());
@@ -107,7 +107,7 @@ namespace VHSMovies.Application.Handlers
 
                 if (personExists && titleExists)
                 {
-                    if (newCasts.Any(x => x.TitleId == titleId && x.PersonId == personId))
+                    if (newCasts.Any(x => x.Title.Id == titleId && x.Person.Id == personId))
                         continue;
 
                     _logger.LogInformation($"Pessoa \"{name}\" já existe.");
@@ -126,7 +126,7 @@ namespace VHSMovies.Application.Handlers
             }
 
             if (newCasts.Any())
-                await castRepository.RegisterListAsync(newCasts);
+                await castRepository.RegisterListAsync(newCasts);*/
 
             return Unit.Value;
         }

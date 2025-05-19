@@ -43,11 +43,6 @@ namespace VHSMovies.Application.Handlers
 
             IReadOnlyCollection<TitleResponse> response = new List<TitleResponse>();
 
-            if (query.TitlesToExclude != null && query.TitlesToExclude.Any())
-            {
-                titles = titles.Where(t => !query.TitlesToExclude.Contains(t.Id));
-            }
-
             if (query.IncludeGenres != null || query.ExcludeGenres != null || query.MustInclude != null)
             {
                 var includeGenres = new List<string>();
@@ -109,7 +104,7 @@ namespace VHSMovies.Application.Handlers
                     {
                         var castMatches = await castRepository.GetCastsByPersonRole(role);
                         var matchedTitles = castMatches.Where(c => names.Contains(c.Person.Name))
-                                                       .Select(c => c.TitleId)
+                                                       .Select(c => c.Title.Id)
                                                        .Distinct();
 
                         matchingTitleIds = matchingTitleIds.Any() ? matchingTitleIds.Intersect(matchedTitles) : matchedTitles;
@@ -132,6 +127,11 @@ namespace VHSMovies.Application.Handlers
                     t.ReleaseDate.HasValue &&
                     t.ReleaseDate > query.YearsRange[0] &&
                     t.ReleaseDate < query.YearsRange[1]);
+            }
+
+            if (query.TitlesToExclude != null && query.TitlesToExclude.Any())
+            {
+                titles = titles.Where(t => !query.TitlesToExclude.Contains(t.Id));
             }
 
             IReadOnlyCollection<RecommendedTitle> data = titles

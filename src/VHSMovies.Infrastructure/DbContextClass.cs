@@ -60,12 +60,6 @@ namespace VHSMovies.Infraestructure
             });
 
             modelBuilder.Entity<Title>()
-                .HasMany(t => t.Ratings)
-                .WithOne()
-                .HasForeignKey(r => r.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Title>()
                 .Property(t => t.Relevance)
                 .HasColumnType("numeric(5,2)");
 
@@ -74,12 +68,9 @@ namespace VHSMovies.Infraestructure
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Cast>()
-                .HasKey(tp => tp.Id);
-
-            modelBuilder.Entity<Cast>()
                 .HasOne(tp => tp.Person)
                 .WithMany(p => p.Titles)
-                .HasForeignKey(tp => tp.PersonId);
+                .HasForeignKey("PersonId");
 
             modelBuilder.Entity<Cast>()
                 .HasIndex(tp => tp.Id)
@@ -89,27 +80,31 @@ namespace VHSMovies.Infraestructure
                 .HasIndex(tp => tp.Id)
                 .IsUnique();
 
+            modelBuilder.Entity<Person>()
+                .Property(tp => tp.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Title)
                 .WithMany(t => t.Ratings)
-                .HasForeignKey(r => r.TitleId)
+                .HasForeignKey("TitleId")
                 .IsRequired();
 
             modelBuilder.Entity<Title>()
                 .HasMany(r => r.Ratings)
                 .WithOne(r => r.Title)
-                .HasForeignKey(r => r.TitleId)
+                .HasForeignKey("TitleId")
                 .IsRequired();
 
             modelBuilder.Entity<TitleGenre>()
                 .HasOne(tg => tg.Title)
                 .WithMany(t => t.Genres)
-                .HasForeignKey(tg => tg.TitleId);
+                .HasForeignKey("TitleId");
 
             modelBuilder.Entity<TitleGenre>()
                 .HasOne(tg => tg.Genre)
                 .WithMany(t => t.Titles)
-                .HasForeignKey(tg => tg.GenreId);
+                .HasForeignKey("GenreId");
 
             modelBuilder.Entity<Genre>()
                 .HasKey(g => g.Id);

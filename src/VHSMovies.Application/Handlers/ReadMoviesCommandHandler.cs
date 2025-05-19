@@ -82,8 +82,7 @@ namespace VHSMovies.Application.Handlers
                     .Where(g => genreLookup.ContainsKey(g.ToLower()))
                     .Select(g => new TitleGenre
                     {
-                        Genre = genreLookup[g.ToLower()],
-                        GenreId = genreLookup[g.ToLower()].Id
+                        Genre = genreLookup[g.ToLower()]
                     })
                     .ToList();
 
@@ -110,8 +109,8 @@ namespace VHSMovies.Application.Handlers
             {
                 "movie" => TitleType.Movie,
                 "tvseries" => TitleType.TvSeries,
-                "tvmovie" => TitleType.TvMovie,
-                "tvminiseries" => TitleType.TvMiniSeries
+                "tvmovie" => TitleType.Movie,
+                "tvminiseries" => TitleType.TvSeries
             };
         }
         private static string GetValueOrDefault(string? value) =>

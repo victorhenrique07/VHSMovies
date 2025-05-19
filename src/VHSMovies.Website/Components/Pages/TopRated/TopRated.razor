@@ -86,25 +86,33 @@ else
             loading = true;
             StateHasChanged();
 
-            ActionTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            ActionTitles = await titlesClient.GetRecommendationsTitles(new GetRecommendedTitlesQuery()
             {
-                GenreId = 1,
+                MustInclude = new int[] { 1 },
                 Types = new[] { 1 },
             });
-            SciFiTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            SciFiTitles = await titlesClient.GetRecommendationsTitles(new GetRecommendedTitlesQuery()
             {
-                GenreId = 22,
+                MustInclude = new int[] { 22 },
                 Types = new[] { 1 },
             });
-            ThrillerTitles = await titlesClient.GetMostRelevantTitles(new GetMostRelevantTitlesQuery()
+            ThrillerTitles = await titlesClient.GetRecommendationsTitles(new GetRecommendedTitlesQuery()
             {
-                GenreId = 26,
+                MustInclude = new int[] { 26 },
                 Types = new[] { 1 },
             });
         }
+        catch (TaskCanceledException ex)
+        {
+            throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new HttpRequestException($"Request Error: {ex.Message}");
+        }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error while loading titles: {ex.Message}");
+            throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
         {

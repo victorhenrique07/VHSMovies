@@ -38,7 +38,10 @@ namespace VHSMovies.Application.Factories
                                       ?? titleDetails.Tv_Season_Results.FirstOrDefault()
                                       ?? new();
 
-            DateOnly? release_date = result?.release_date ?? result?.first_air_date;
+            DateOnly? release_date = title.ReleaseDate.Value == null 
+                ? result?.release_date ?? result?.first_air_date : 
+                new DateOnly(title.ReleaseDate.Value, 1, 1);
+
             var overview = result?.overview ?? string.Empty;
             var posterUrl = string.IsNullOrEmpty(result?.poster_path)
                 ? string.Empty

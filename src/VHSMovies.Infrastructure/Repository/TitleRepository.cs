@@ -41,7 +41,7 @@ namespace VHSMovies.Infraestructure.Repository
         {
             return await dbContextClass.Set<Title>()
                 .Include(g => g.Genres)
-                .Where(t => t.Genres.Any(r => r.GenreId == genreId))
+                .Where(t => t.Genres.Any(r => r.Genre.Id == genreId))
                 .ToListAsync();
         }
 

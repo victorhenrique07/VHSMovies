@@ -56,7 +56,7 @@ namespace VHSMovies.Infraestructure.Repository
         {
 
             var cast = await _dbContext.Casts
-                .Where(c => c.TitleId == titleId)
+                .Where(c => c.Title.Id == titleId)
                 .ToListAsync();
 
             return cast;

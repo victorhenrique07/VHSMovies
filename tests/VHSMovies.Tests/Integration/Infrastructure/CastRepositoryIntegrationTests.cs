@@ -58,7 +58,6 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             // Assert
             cast.Should().NotBeNull();
             cast.Person.Name.Should().Be(expectedPersonName);
-            cast.TitleId.Should().Be(expectedTitleId);
             cast.Title.Id.Should().Be(expectedTitleId);
         }
 
@@ -108,7 +107,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             casts.Should().NotBeNullOrEmpty();
             casts.Should().AllSatisfy(cast =>
             {
-                cast.TitleId.Should().Be(titleId);
+                cast.Title.Id.Should().Be(titleId);
                 cast.Title.Should().NotBeNull();
                 cast.Person.Should().NotBeNull();
                 cast.Person.Id.Should().BeOneOf(peopleIds);
@@ -120,47 +119,64 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         {
             // Arrange
             using var context = _fixture.CreateInMemoryDbContext();
-            context.Titles.AddRange(_fixture.GetTitlesList());
-            context.People.AddRange(_fixture.GetPersonList());
 
-            var repository = new CastRepository(context);
+            var titles = _fixture.GetTitlesList();
+            var people = _fixture.GetPersonList();
+
+            context.Titles.AddRange(titles);
+            context.People.AddRange(people);
+            context.SaveChanges();
+
+            var castRepository = new CastRepository(context);
+            var titleRepository = new TitleRepository(context);
+            var personRepository = new PersonRepository(context);
+
+            Title shawshank = await titleRepository.GetByIdAsync(1297469);
+            Title darkKnight = await titleRepository.GetByIdAsync(1489427);
+            Title godfather = await titleRepository.GetByIdAsync(1519096);
+            Title breakingBad = await titleRepository.GetByIdAsync(1522910);
+            Person timRobbins = await personRepository.GetPersonById(1);
+            Person christianBale = await personRepository.GetPersonById(2);
+            Person bryanCranston = await personRepository.GetPersonById(3);
+            Person emiliaClarke = await personRepository.GetPersonById(4);
+
             IReadOnlyCollection<Cast> casts = new List<Cast>()
             {
                 new Cast
                 {
                     Id = 1,
-                    TitleId = 1297469,
-                    PersonId = 1, // Tim Robbins
+                    Title = shawshank,
+                    Person = timRobbins,
                     Role = PersonRole.Actor
                 },
                 new Cast
                 {
                     Id = 4,
-                    TitleId = 1489427,
-                    PersonId = 2, // Christian Bale
+                    Title = darkKnight,
+                    Person = christianBale,
                     Role = PersonRole.Actor
                 },
                 new Cast
                 {
                     Id = 7,
-                    TitleId = 1519096,
-                    PersonId = 3, // Bryan Cranston
+                    Title = godfather,
+                    Person = bryanCranston,
                     Role = PersonRole.Actor
                 },
                 new Cast
                 {
                     Id = 9,
-                    TitleId = 1522910,
-                    PersonId = 4, // Emilia Clarke
+                    Title = breakingBad,
+                    Person = emiliaClarke,
                     Role = PersonRole.Actor
                 },
             };
 
             // Act
-            await repository.RegisterListAsync(casts);
-            await repository.SaveChanges();
+            await castRepository.RegisterListAsync(casts);
+            await castRepository.SaveChanges();
 
-            var allCast = await repository.GetAll();
+            var allCast = await castRepository.GetAll();
 
             // Assert
             allCast.Should().NotBeNullOrEmpty();
@@ -168,10 +184,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             allCast.Should().AllSatisfy(cast =>
             {
                 cast.Should().NotBeNull();
-                cast.TitleId.Should().BeOneOf([1297469, 1489427, 1519096, 1522910]);
+                cast.Title.Id.Should().BeOneOf([1297469, 1489427, 1519096, 1522910]);
                 cast.Person.Should().NotBeNull();
                 cast.Person.Id.Should().BeOneOf([1, 2, 3, 4]);
-                cast.PersonId.Should().BeOneOf([1, 2, 3, 4]);
                 cast.Role.Should().Be(PersonRole.Actor);
             });
         }
@@ -181,28 +196,38 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         {
             // Arrange
             using var context = _fixture.CreateInMemoryDbContext();
-            context.Titles.Add(new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
-            {
-                Id = 1297469,
-                Relevance = 11.13m
-            });
-            context.People.Add(new Person("Tim Robbins"));
+            context.Titles.Add(
+                new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
+                {
+                    Id = 1297469,
+                    Relevance = 11.13m
+                }
+            );
 
-            var repository = new CastRepository(context);
+            context.People.Add(new Person("Tim Robbins"));
+            context.SaveChanges();
+
+            var castRepository = new CastRepository(context);
+            var titleRepository = new TitleRepository(context);
+            var personRepository = new PersonRepository(context);
+
+            Title shawshank = await titleRepository.GetByIdAsync(1297469);
+            Person timRobbins = await personRepository.GetPersonById(1);
+
             Cast cast = new Cast
             {
                 Id = 1,
-                TitleId = 1297469,
-                PersonId = 1,
+                Title = shawshank,
+                Person = timRobbins,
                 Role = PersonRole.Actor
             };
 
             // Act
-            await repository.RegisterAsync(cast);
-            await repository.SaveChanges();
+            await castRepository.RegisterAsync(cast);
+            await castRepository.SaveChanges();
 
-            var allCast = await repository.GetAll();
-            var castById = await repository.GetByIdAsync(1);
+            var allCast = await castRepository.GetAll();
+            var castById = await castRepository.GetByIdAsync(1);
 
             // Assert
             allCast.Should().NotBeNullOrEmpty();
@@ -210,7 +235,6 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             allCast.First().Id.Should().Be(1);
             castById.Should().NotBeNull();
             castById.Id.Should().Be(1);
-            castById.PersonId.Should().Be(1);
             castById.Person.Id.Should().Be(1);
             castById.Person.Name.Should().Be("Tim Robbins");
             castById.Title.Id.Should().Be(1297469);
@@ -219,7 +243,6 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             castById.Title.ReleaseDate.Should().Be(1994);
             castById.Title.Relevance.Should().Be(11.13m);
             castById.Title.IMDB_Id.Should().Be("tt0111161");
-            castById.TitleId.Should().Be(1297469);
             castById.Role.Should().Be(PersonRole.Actor);
         }
     }

@@ -206,6 +206,13 @@ else
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <MudChipSet @bind-SelectedValues="titlesTypes" CheckMark SelectionMode="SelectionMode.MultiSelection">
+                            <MudChip Text="red" Color="Color.Error" Value="1">Movie</MudChip>
+                            <MudChip Text="red" Color="Color.Error" Value="2">Tv Series</MudChip>
+                        </MudChipSet>
+                    </div>
+
                     <MudAutocomplete T="TitleResponse" Label="Titles to Exclude" SearchFunc="@SearchAsync" ValueChanged="AddTitleToExclude" 
                     AdornmentIcon="@Icons.Material.Filled.Search" ToStringFunc="@(e => e.Name)" SelectOnActivation="true" MinCharacters="3" MenuPosition="static"/>
 
@@ -282,7 +289,7 @@ else
     private List<int> includeGenres = new List<int>();
     private List<int> excludeGenres = new List<int>();
     private List<int> mustIncludeGenres = new List<int>();
-    private List<int> titlesTypes = new List<int>();
+    private IReadOnlyCollection<int> titlesTypes = new List<int>();
     private int fromYear = 2015;
     private int toYear = 2025;
 
@@ -324,7 +331,7 @@ else
                 YearsRange = new int[] { fromYear, toYear },
                 TitlesAmount = titlesAmount,
                 TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList(),
-                Types = titlesTypes.ToArray()
+                Types = titlesTypes.Count() < 2 && titlesTypes.Count() > 0 ? titlesTypes.ToArray() : null
             };
 
             Titles = await titlesClient.GetRecommendationsTitles(query);

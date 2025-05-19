@@ -20,6 +20,9 @@ namespace VHSMovies.Domain.Domain.Entity
             Type = type;
             ReleaseDate = releaseDate;
             IMDB_Id = imdbId;
+
+            if (this.Ratings != null)
+                SetRelevance();
         }
 
         public int Id { get; set; }
@@ -72,13 +75,19 @@ namespace VHSMovies.Domain.Domain.Entity
 
             foreach (Review review in Ratings)
             {
+                if (review.Rating > 10)
+                    review.Rating = review.Rating / 10;
+
                 medianRate += review.Rating;
             }
+
+            if (medianRate == 0)
+                return 0;
 
             return medianRate / Ratings.Count();
         }
 
-        public decimal SetRelevance()
+        public void SetRelevance()
         {
             decimal totalRatingsLog = this.TotalReviews > 0
                 ? (decimal)Math.Log10(this.TotalReviews)
@@ -87,7 +96,10 @@ namespace VHSMovies.Domain.Domain.Entity
             decimal averageWeight = 0.5m;
             decimal reviewsWeight = 1.0m;
 
-            return (this.AverageRating * averageWeight) + (totalRatingsLog * reviewsWeight);
+            Relevance = Math.Round(
+                (this.AverageRating * averageWeight) + (totalRatingsLog * reviewsWeight),
+                3
+            );
         }
 
         public override string ToString()
