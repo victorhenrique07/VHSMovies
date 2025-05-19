@@ -151,44 +151,6 @@ else
                                     }
                                 </MudGrid>
                             </MudExpansionPanel>
-                            <MudExpansionPanel Text="Title Types" Expanded="false">
-                                <MudGrid Spacing="0" Justify="Justify.Center" Class="ml-10">
-                                    @{
-                                        <MudItem xs="12" md="3">
-                                            <div class="checkbox-item">
-                                                <MudCheckBox T="bool"
-                                                            Label="Movie"
-                                                            ValueChanged="@(() => ArrangeTitlesTypes(1))"
-                                                            ReadOnly="false" />
-                                            </div>
-                                        </MudItem>
-                                        <MudItem xs="12" md="3">
-                                            <div class="checkbox-item">
-                                                <MudCheckBox T="bool"
-                                                            Label="Tv Shows"
-                                                            ValueChanged="@(() => ArrangeTitlesTypes(2))"
-                                                            ReadOnly="false"/>
-                                            </div>
-                                        </MudItem>
-                                        <MudItem xs="12" md="3">
-                                            <div class="checkbox-item">
-                                                <MudCheckBox T="bool"
-                                                            Label="Tv Movie"
-                                                            ValueChanged="@(() => ArrangeTitlesTypes(3))"
-                                                            ReadOnly="false" />
-                                            </div>
-                                        </MudItem>
-                                        <MudItem xs="12" md="3">
-                                            <div class="checkbox-item">
-                                                <MudCheckBox T="bool"
-                                                            Label="Mini Series"
-                                                            ValueChanged="@(() => ArrangeTitlesTypes(4))"
-                                                            ReadOnly="false" />
-                                            </div>
-                                        </MudItem>
-                                    }
-                                </MudGrid>
-                            </MudExpansionPanel>
                         </MudExpansionPanels>
                     </div>
 
@@ -359,20 +321,6 @@ else
     private async Task<IEnumerable<TitleResponse>> SearchAsync(string value, CancellationToken cancellationToken)
     {
         return await titlesClient.GetTitlesBySearch(value);
-    }
-
-    private void ArrangeTitlesTypes(int typeId)
-    {
-        if (titlesTypes.Contains(typeId))
-        {
-            titlesTypes.Remove(typeId);
-            return;
-        }
-        else
-        {
-            titlesTypes.Add(typeId);
-            return;
-        }
     }
 
     private void ArrangeIncludeGenres(int genreId)
