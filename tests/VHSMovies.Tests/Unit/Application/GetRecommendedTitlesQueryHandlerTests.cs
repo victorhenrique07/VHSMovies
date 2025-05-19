@@ -14,6 +14,7 @@ using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace VHSMovies.Tests.Unit.Application
 {
@@ -22,7 +23,6 @@ namespace VHSMovies.Tests.Unit.Application
         private readonly Mock<IRecommendedTitlesRepository> _recommendedRepoMock = new();
         private readonly Mock<IGenreRepository> _genreRepoMock = new();
         private readonly Mock<ICastRepository> _castRepoMock = new();
-        private readonly Mock<HttpClient> _httpClientMock = new();
 
         private readonly GetRecommendedTitlesQueryHandler _handler;
 
@@ -58,297 +58,439 @@ namespace VHSMovies.Tests.Unit.Application
                 _castRepoMock.Object,
                 _genreRepoMock.Object
             );
+
+            darkKnightRecommendedTitle = new RecommendedTitle
+            {
+                Id = darkKnightTitle.Id,
+                Name = darkKnightTitle.Name,
+                AverageRating = darkKnightTitle.AverageRating,
+                ReleaseDate = darkKnightTitle.ReleaseDate,
+                Relevance = darkKnightTitle.Relevance,
+                Genres = new[] { "Drama", "Action" }
+            };
+
+            sharshankRecommendedTitle = new RecommendedTitle
+            {
+                Id = shawshankTitle.Id,
+                Name = shawshankTitle.Name,
+                AverageRating = shawshankTitle.AverageRating,
+                ReleaseDate = shawshankTitle.ReleaseDate,
+                Relevance = shawshankTitle.Relevance,
+                Genres = new[] { "Drama" }
+            };
+
+            inceptionRecommendedTitle = new RecommendedTitle
+            {
+                Id = inceptionTitle.Id,
+                Name = inceptionTitle.Name,
+                AverageRating = inceptionTitle.AverageRating,
+                ReleaseDate = inceptionTitle.ReleaseDate,
+                Relevance = inceptionTitle.Relevance,
+                Genres = new[] { "Action", "Drama" }
+            };
+
+            titles = new List<RecommendedTitle>
+            {
+                darkKnightRecommendedTitle,
+                sharshankRecommendedTitle,
+                inceptionRecommendedTitle
+            };
         }
 
-        [Fact]
-        public async Task Handle_ReturnsAllTitles_WhenNoFilterIsApplied()
+        private readonly Title darkKnightTitle = new Title("The Dark Knight", TitleType.Movie, 2008, "tt0468569")
         {
-            var fixture = new Fixture();
-            var random = new Random();
+            Id = 1489427,
+            Relevance = 10.98m,
+            Genres = new List<TitleGenre>()
+            {
+                new TitleGenre() 
+                { 
+                    Genre = new Genre()
+                    {
+                        Id = 1,
+                        Name = "Action"
+                    }
+                },
+                new TitleGenre()
+                {
+                    Genre = new Genre()
+                    {
+                        Id = 9,
+                        Name = "Drama"
+                    }
+                },
+            },
+            Ratings = new List<Review>
+            {
+                new Review("IMDb", 9.0m, 2600000)
+                {
+                    Id = 3,
+                    TitleExternalId = "tt0468569"
+                },
+                new Review("Metacritic", 84.0m, 85000)
+                {
+                    Id = 4,
+                    TitleExternalId = "mt0468569"
+                }
+            }
+        };
+        
+        private readonly Title shawshankTitle = new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
+        {
+            Id = 1297469,
+            Relevance = 11.13m,
+            Genres = new List<TitleGenre>()
+            {
+                new TitleGenre()
+                {
+                    Genre = new Genre()
+                    {
+                        Id = 9,
+                        Name = "Drama"
+                    }
+                }
+            },
+            Ratings = new List<Review>
+            {
+                new Review("IMDb", 9.3m, 2700000)
+                {
+                    Id = 1,
+                    TitleExternalId = "tt0111161"
+                },
+                new Review("Metacritic", 80.0m, 80_000)
+                {
+                    Id = 2,
+                    TitleExternalId = "mt0111161"
+                },
+            }
+        };
 
-            fixture.Customize<DateOnly>(c => c.FromFactory(() => new DateOnly(2023, 1, 1)));
+        private readonly Title inceptionTitle = new Title("Inception", TitleType.Movie, 2010, "tt1375666")
+        {
+            Id = 1234567,
+            Relevance = 9.5m,
+            Genres = new List<TitleGenre>()
+            {
+                new TitleGenre()
+                {
+                    Genre = new Genre()
+                    {
+                        Id = 1,
+                        Name = "Action"
+                    }
+                },
+                new TitleGenre()
+                {
+                    Genre = new Genre()
+                    {
+                        Id = 9,
+                        Name = "Drama"
+                    }
+                },
+            },
+            Ratings = new List<Review>()
+            {
+                new Review("IMDb", 9.2m, 2000000)
+                {
+                    Id = 5,
+                    TitleExternalId = "tt1375666"
+                },
+                new Review("Metacritic", 100.0m, 75000)
+                {
+                    Id = 6,
+                    TitleExternalId = "tt1375666"
+                },
+            }
+        };
 
-            fixture.Customize<RecommendedTitle>(composer =>
-                composer.With(x => x.Genres, new[] {random.Next(0, 2) == 0 ? "Action" : "Drama" }));
+        private readonly RecommendedTitle darkKnightRecommendedTitle;
 
-            var titles = fixture.CreateMany<RecommendedTitle>(10).AsQueryable();
+        private readonly RecommendedTitle sharshankRecommendedTitle;
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+        private readonly RecommendedTitle inceptionRecommendedTitle;
 
-            var query = new GetRecommendedTitlesQuery { TitlesAmount = 10 };
+        private readonly IReadOnlyCollection<RecommendedTitle> titles;
 
+        [Fact]
+        public async Task ShouldReturnsAllTitlesWhenNoFilterIsApplied()
+        {
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+
+            var query = new GetRecommendedTitlesQuery();
+
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            result.Should().HaveCount(10);
+            // Assert
+            result.Should().HaveCount(3);
         }
 
-        [Fact]
-        public async Task Handle_ExcludesTitles_WhenTitlesToExcludeIsProvided()
+        [Theory]
+        [InlineData(new int[] { 1489427, 1297469 }, 1234567)]
+        [InlineData(new int[] { 1234567, 1297469 }, 1489427)]
+        [InlineData(new int[] { 1234567, 1489427 }, 1297469)]
+        public async Task ShouldExcludesTitlesWhenTitlesToExcludeIsProvided(int[] excludedTitles, int expectedTitleId)
         {
-            var fixture = new Fixture();
-
-            fixture.Customize<DateOnly>(c => c.FromFactory(() => new DateOnly(2023, 1, 1)));
-
-            var titles = fixture.CreateMany<RecommendedTitle>(10).Select((title, index) =>
-            {
-                title.Id = index + 1;
-                title.Genres = Array.Empty<string>();
-                return title;
-            }).ToList();
-
+            // Arrange
             _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
-                TitlesToExclude = new List<int> { 2 }
+                TitlesToExclude = excludedTitles
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            result.Should().HaveCount(9);
-            result.Should().NotContain(t => t.Id == 2);
+            // Assert
+            result.Should().HaveCount(1);
+            result.Should().Contain(t => t.Id == expectedTitleId);
+            result.Should().NotContain(result => excludedTitles.Contains(result.Id));
         }
 
         [Fact]
-        public async Task Handle_FiltersByMinimumRating()
+        public async Task ShouldReturnTitlesAverageRatingGreaterOrEqualThan4()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, AverageRating = 4.5m, Relevance = 1, Genres = Array.Empty<string>() },
-                new() { Id = 2, AverageRating = 3.0m, Relevance = 2, Genres = Array.Empty<string>() },
-            }.AsQueryable();
-
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
                 MinimumRating = 4
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            result.Should().ContainSingle();
-            result.First().Id.Should().Be(1);
+            // Assert
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(3);
+            result.Should().NotContain(t => t.AverageRating < 4);
         }
 
         [Fact]
-        public async Task Handle_FiltersByYearsRange()
+        public async Task ShouldReturnInceptionTitleWhenYearsRangeStartsAt2009()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, ReleaseDate = 2010, Relevance = 1, Genres = Array.Empty<string>() },
-                new() { Id = 2, ReleaseDate = 2022, Relevance = 2, Genres = Array.Empty<string>() },
-            }.AsQueryable();
-
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
                 YearsRange = new[] { 2009, 2020 }
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            DateOnly value = result.First().ReleaseDate.Value;
 
             result.Should().ContainSingle();
-            result.First().Id.Should().Be(1);
+            result.First().Id.Should().Be(inceptionTitle.Id);
+            result.First().Name.Should().Be(inceptionTitle.Name);
+            result.First().AverageRating.Should().Be(inceptionTitle.AverageRating);
+            value.Year.Should().Be(inceptionTitle.ReleaseDate);
+            result.First().Genres.Should().AllSatisfy(genre =>
+            {
+                genre.Name.Should().BeOneOf(inceptionRecommendedTitle.Genres);
+            });
         }
 
         [Fact]
-        public async Task Handle_ReturnsEmpty_WhenNoTitleMatchesActor()
+        public async Task ShouldReturnEmptyListWhenNoTitleMatchesActor()
         {
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 1, Genres = Array.Empty<string>() },
-            }.AsQueryable());
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Actor)).ReturnsAsync(new List<Cast>());
+            var fixture = new Fixture();
 
-            var query = new GetRecommendedTitlesQuery
-            {
-                TitlesAmount = 10,
-                Actors = new List<string> { "Nonexistent Actor" }
-            };
+            fixture.Behaviors
+            .OfType<ThrowingRecursionBehavior>()
+            .ToList()
+            .ForEach(b => fixture.Behaviors.Remove(b));
 
-            var result = await _handler.Handle(query, CancellationToken.None);
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            result.Should().BeEmpty();
-        }
+            fixture.Customize<Cast>(composer =>
+                composer.With(x => x.Role, PersonRole.Actor));
 
-        [Fact]
-        public async Task Handle_WithGenreFilters_FiltersTitlesCorrectly()
-        {
-            var allTitles = new List<RecommendedTitle>
-            {
-                new RecommendedTitle { Id = 1, Genres = new [] { "Action", "Drama" }, Relevance = 0.9m },
-                new RecommendedTitle { Id = 2, Genres = new [] { "Action", "Horror" }, Relevance = 0.8m },
-                new RecommendedTitle { Id = 3, Genres = new [] { "Drama" }, Relevance = 0.7m },
-                new RecommendedTitle { Id = 4, Genres = new [] { "Action" }, Relevance = 0.95m },
-            };
+            IReadOnlyCollection<Cast> cast = fixture.CreateMany<Cast>(10).ToList();
 
-            var query = new GetRecommendedTitlesQuery
-            {
-                IncludeGenres = new HashSet<int> { 1, 2 },
-                ExcludeGenres = new HashSet<int> { 3 },
-                MustInclude = new HashSet<int> { 1 },
-                TitlesAmount = 10
-            };
-
-            _recommendedRepoMock.Setup(repo => repo.Query()).Returns(allTitles.AsQueryable());
-
-            var result = await _handler.Handle(query, CancellationToken.None);
-
-            var resultIds = result.Select(r => r.Id).ToList();
-
-            Assert.Equal(2, result.Count);
-            Assert.Contains(resultIds, id => id == 1);
-            Assert.Contains(resultIds, id => id == 4);
-            Assert.DoesNotContain(resultIds, id => id == 2);
-            Assert.DoesNotContain(resultIds, id => id == 3);
-        }
-
-        [Fact]
-        public async Task Handle_WithOnlyActors_FiltersCorrectly()
-        {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 3.5m, Genres = Array.Empty<string>() },
-                new() { Id = 2, Relevance = 2.1m, Genres = Array.Empty<string>()},
-                new() { Id = 3, Relevance = 4.8m, Genres = Array.Empty<string>()}
-            }.AsQueryable();
-
-            var cast = new List<Cast>
-            {
-                new() { TitleId = 1, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { TitleId = 3, Person = new Person("Actor B"), Role = PersonRole.Actor }
-            };
-
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
             _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Actor)).ReturnsAsync(cast);
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
-                Actors = new List<string> { "Actor A" }
+                Actors = new List<string> { "Nonexistent Actor" }
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            result.Should().HaveCount(1);
-            result.First().Id.Should().Be(1);
+            // Assert
+            result.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task Handle_WithOnlyDirectors_FiltersCorrectly()
+        public async Task ShouldReturnShawshankMovieWithExcludeGenresEqualToAction()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 1.5m, Genres = Array.Empty<string>() },
-                new() { Id = 2, Relevance = 3.5m, Genres = Array.Empty<string>() }
-            }.AsQueryable();
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
-            var cast = new List<Cast>
+            var query = new GetRecommendedTitlesQuery
             {
-                new() { TitleId = 2, Person = new Person("Director A"), Role = PersonRole.Director }
+                IncludeGenres = new HashSet<int> { 2 },
+                ExcludeGenres = new HashSet<int> { 1 },
+                MustInclude = new HashSet<int> { 2 }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNullOrEmpty();
+            result.Should().ContainSingle();
+            result.Should().ContainSingle(t => t.Id == 1297469);
+            result.First().Genres.Should().Contain(g => g.Id == 2);
+            result.First().Genres.Should().Contain(g => g.Name == "Drama");
+            result.First().Name.Should().Be("The Shawshank Redemption");
+        }
+
+        [Fact]
+        public async Task ShouldReturnDarkKnightWhenFilterByActorA()
+        {
+            // Arrange
+            List<Cast> cast = new List<Cast>
+            {
+                new() { Title = darkKnightTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new() { Title = inceptionTitle, Person = new Person("Actor B"), Role = PersonRole.Actor }
+            };
+
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Actor)).ReturnsAsync(cast);
+
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery
+            {
+                Actors = new List<string> { "Actor A" }
+            };
+
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNullOrEmpty();
+            result.Should().ContainSingle();
+            result.Should().Contain(t => t.Id == 1489427);
+            result.Should().NotContain(t => t.Id == 1234567 && t.Id == 1297469);
+
+        }
+
+        [Fact]
+        public async Task ShouldReturnShawshankWhenFilterByDirectorA()
+        {
+            // Arrange
+            var cast = new List<Cast>
+            {
+                new() { Title = shawshankTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new() { Title = inceptionTitle, Person = new Person("Director B"), Role = PersonRole.Director }
+            };
+
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
             _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Director)).ReturnsAsync(cast);
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
                 Directors = new List<string> { "Director A" }
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
+            // Assert
+            result.Should().NotBeNullOrEmpty();
             result.Should().ContainSingle();
-            result.First().Id.Should().Be(2);
+            result.Should().Contain(t => t.Id == 1297469);
+            result.Should().NotContain(t => t.Id == 1234567 && t.Id == 1489427);
         }
 
         [Fact]
-        public async Task Handle_WithOnlyWriters_FiltersCorrectly()
+        public async Task ShouldReturnShawshankWhenFilterByWriterA()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 1.2m, Genres = Array.Empty<string>() },
-                new() { Id = 2, Relevance = 2.2m, Genres = Array.Empty<string>() }
-            }.AsQueryable();
-
+            // Arrange
             var cast = new List<Cast>
             {
-                new() { TitleId = 1, Person = new Person("Writer A"), Role = PersonRole.Writer }
+                new() { Title = shawshankTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
+                new() { Title = darkKnightTitle, Person = new Person("Writer B"), Role = PersonRole.Writer }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
             _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Writer)).ReturnsAsync(cast);
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
                 Writers = new List<string> { "Writer A" }
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
+            // Assert
+            result.Should().NotBeNullOrEmpty();
             result.Should().ContainSingle();
-            result.First().Id.Should().Be(1);
+            result.Should().Contain(t => t.Id == 1297469);
+            result.Should().NotContain(t => t.Id == 1234567 && t.Id == 1489427);
         }
 
-        [Fact]
-        public async Task Handle_WithAllPeopleFilters_IntersectsResultsCorrectly()
+        [Theory]
+        [InlineData(new[] { "Actor A" }, new string[0], new string[0], new[] { 1297469, 1489427 })]
+        [InlineData(new string[0], new[] { "Director A" }, new string[0], new[] { 1234567, 1489427 })]
+        [InlineData(new string[0], new string[0], new[] { "Writer A" }, new[] { 1234567, 1489427 })]
+        [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new string[0], new[] { 1489427 })]
+        [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new[] { "Writer A" }, new[] { 1489427 })]
+        [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new[] { "Writer C" }, new int[0])]
+        [InlineData(new string[0], new string[0], new string[0], new[] { 1234567, 1297469, 1489427 })]
+        public async Task ShouldReturnCorrectTitlesWithPersonFilters(
+            string[] actors, string[] directors, string[] writers, int[] expectedIds)
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 4.0m, Genres = Array.Empty<string>() },
-                new() { Id = 2, Relevance = 3.0m, Genres = Array.Empty<string>()},
-                new() { Id = 3, Relevance = 5.0m, Genres = Array.Empty<string>()}
-            }.AsQueryable();
-
+            // Arrange
             var cast = new List<Cast>
             {
-                new() { TitleId = 1, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { TitleId = 1, Person = new Person("Director A"), Role = PersonRole.Director },
-                new() { TitleId = 1, Person = new Person("Writer A"), Role = PersonRole.Writer },
-                new() { TitleId = 2, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { TitleId = 3, Person = new Person("Director A"), Role = PersonRole.Director }
+                new() { Title = darkKnightTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new() { Title = darkKnightTitle, Person = new Person("Actor B"), Role = PersonRole.Actor },
+                new() { Title = darkKnightTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new() { Title = darkKnightTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
+                new() { Title = shawshankTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new() { Title = shawshankTitle, Person = new Person("Writer B"), Role = PersonRole.Writer },
+                new() { Title = inceptionTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new() { Title = inceptionTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
+                new() { Title = inceptionTitle, Person = new Person("Actor C"), Role = PersonRole.Actor },
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
             _castRepoMock.Setup(c => c.GetCastsByPersonRole(It.IsAny<PersonRole>())).ReturnsAsync((PersonRole role) =>
                 cast.Where(x => x.Role == role).ToList());
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
-                Actors = new List<string> { "Actor A" },
-                Directors = new List<string> { "Director A" },
-                Writers = new List<string> { "Writer A" }
+                Actors = actors.ToList(),
+                Directors = directors.ToList(),
+                Writers = writers.ToList()
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            result.Should().ContainSingle();
-            result.First().Id.Should().Be(1);
+            // Assert
+            result.Select(r => r.Id).Should().BeEquivalentTo(expectedIds);
         }
 
         [Fact]
-        public async Task Handle_YearsRangeOutsideAllTitles_ReturnsEmpty()
+        public async Task ShouldReturnEmptyMoviesListWhenYearOutOfRange()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, ReleaseDate = 2000, Relevance = 2.0m },
-                new() { Id = 2, ReleaseDate = 2005, Relevance = 2.5m }
-            }.AsQueryable();
-
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
             var query = new GetRecommendedTitlesQuery
             {
-                TitlesAmount = 10,
                 YearsRange = new[] { 2015, 2020 }
             };
 
@@ -358,43 +500,41 @@ namespace VHSMovies.Tests.Unit.Application
         }
 
         [Fact]
-        public async Task Handle_OrdersByRelevanceAndLimitsAmount()
+        public async Task ShouldReturnMoviesOrderedByRelevanceAndLimitsAmount()
         {
-            var titles = new List<RecommendedTitle>
-            {
-                new() { Id = 1, Relevance = 2.0m, Genres = Array.Empty<string>() },
-                new() { Id = 2, Relevance = 5.0m, Genres = Array.Empty<string>() },
-                new() { Id = 3, Relevance = 3.0m, Genres = Array.Empty < string >() }
-            }.AsQueryable();
-
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
+            // Arrange
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
             var query = new GetRecommendedTitlesQuery
             {
                 TitlesAmount = 2
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
+            // Assert
+            result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(2);
-            result.First().Id.Should().Be(2);
-            result.Last().Id.Should().Be(3);
+            result.First().Id.Should().Be(1297469);
+            result.Last().Id.Should().Be(1489427);
         }
 
         [Fact]
         public async Task Handle_AllFiltersCombined_ReturnsExpectedResult()
         {
-            var titles = new List<RecommendedTitle>
+            IQueryable<RecommendedTitle> titles = new List<RecommendedTitle>
             {
-                new() { Id = 1, AverageRating = 4.5m, ReleaseDate = 2020, Relevance = 4.5m, Genres = new[] { "Drama", "Action" } },
-                new() { Id = 2, AverageRating = 3.5m, ReleaseDate = 2018, Relevance = 3.0m, Genres = new[] { "Horror" } }
+                darkKnightRecommendedTitle,
+                sharshankRecommendedTitle,
+                inceptionRecommendedTitle
             }.AsQueryable();
 
             var cast = new List<Cast>
             {
-                new() { TitleId = 1, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { TitleId = 1, Person = new Person("Director A"), Role = PersonRole.Director },
-                new() { TitleId = 1, Person = new Person("Writer A"), Role = PersonRole.Writer }
+                new() { Title = shawshankTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new() { Title = shawshankTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new() { Title = shawshankTitle, Person = new Person("Writer A"), Role = PersonRole.Writer }
             };
 
             _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
@@ -405,19 +545,23 @@ namespace VHSMovies.Tests.Unit.Application
             {
                 TitlesAmount = 5,
                 MinimumRating = 4.0m,
-                YearsRange = new[] { 2019, 2021 },
+                YearsRange = new[] { 1992, 2000 },
                 Actors = new List<string> { "Actor A" },
                 Directors = new List<string> { "Director A" },
                 Writers = new List<string> { "Writer A" },
-                IncludeGenres = new HashSet<int> { 1, 2 },
-                ExcludeGenres = new HashSet<int> { 3 },
-                MustInclude = new HashSet<int> { 1 }
+                IncludeGenres = new HashSet<int> { 2 },
+                ExcludeGenres = new HashSet<int> { 1 },
+                MustInclude = new HashSet<int> { 2 }
             };
 
             var result = await _handler.Handle(query, CancellationToken.None);
 
             result.Should().ContainSingle();
-            result.First().Id.Should().Be(1);
+            result.First().Id.Should().Be(1297469);
+            result.First().Genres.Should().Contain(result => result.Id == 2);
+            result.First().Genres.Should().Contain(result => result.Name == "Drama");
+            result.First().Name.Should().Be("The Shawshank Redemption");
+            result.First().AverageRating.Should().BeGreaterThan(4.0m);
         }
     }
 }
