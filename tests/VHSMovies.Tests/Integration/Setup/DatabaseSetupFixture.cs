@@ -215,32 +215,32 @@ namespace VHSMovies.Tests.Integration.Setup
                     Id = 1727014,
                     Relevance = 10.52m
                 },
-                new Title("David Attenborough: A Life on Our Planet", TitleType.TvMovie, 2020, "tt11989890")
+                new Title("David Attenborough: A Life on Our Planet", TitleType.Movie, 2020, "tt11989890")
                 {
                     Id = 1613429,
                     Relevance = 9.00m
                 },
-                new Title("How the Grinch Stole Christmas!", TitleType.TvMovie, 1966, "tt0060345")
+                new Title("How the Grinch Stole Christmas!", TitleType.Movie, 1966, "tt0060345")
                 {
                     Id = 1253249,
                     Relevance = 8.95m
                 },
-                new Title("A Charlie Brown Christmas", TitleType.TvMovie, 1965, "tt0059026")
+                new Title("A Charlie Brown Christmas", TitleType.Movie, 1965, "tt0059026")
                 {
                     Id = 1252161,
                     Relevance = 8.82m
                 },
-                new Title("Chernobyl", TitleType.TvMiniSeries, 2019, "tt7366338")
+                new Title("Chernobyl", TitleType.TvSeries, 2019, "tt7366338")
                 {
                     Id = 2325522,
                     Relevance = 10.63m
                 },
-                new Title("Band of Brothers", TitleType.TvMiniSeries, 2001, "tt0185906")
+                new Title("Band of Brothers", TitleType.TvSeries, 2001, "tt0185906")
                 {
                     Id = 1342415,
                     Relevance = 10.45m
                 },
-                new Title("Planet Earth", TitleType.TvMiniSeries, 2006, "tt0795176")
+                new Title("Planet Earth", TitleType.TvSeries, 2006, "tt0795176")
                 {
                     Id = 1506162,
                     Relevance = 10.06m
