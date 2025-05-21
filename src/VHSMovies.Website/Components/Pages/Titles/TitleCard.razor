@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using VHSMovies.Api.Integration.Main.Responses
+﻿@using VHSMovies.Api.Integration.Main.Responses
 @using MudBlazor;
 
 <MudCard class="movie-card">
@@ -7,7 +6,7 @@
         <CardHeaderContent>
             <div class="movie-poster">
                 <img src="@Title.BackdropImageUrl" alt="@Title.Name">
-                <div class="movie-score">@Title.AverageRating.ToString("N1", CultureInfo.GetCultureInfo("pt-BR"))</div>
+                <div class="movie-score">@Title.AverageRating</div>
                 <MudPaper Class="exclude-button-paper justify-content-center align-items-center position-absolute" Elevation="0">
                     <MudIconButton 
                         Class="exclude-button" 

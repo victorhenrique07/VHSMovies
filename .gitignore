@@ -6,3 +6,5 @@
 /VHSMovies.Mediator/obj
 /.vs/ProjectEvaluation
 /.vs
+**/bin/
+**/obj/

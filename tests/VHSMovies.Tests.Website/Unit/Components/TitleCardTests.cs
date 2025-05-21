@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,9 @@ namespace VHSMovies.Tests.Website.E2E.Components
     {
         public TitleCardTests()
         {
+            CultureInfo.CurrentCulture = new CultureInfo("pt-BR");
+            CultureInfo.CurrentUICulture = new CultureInfo("pt-BR");
+
             Services.AddMudServices();
 
             Services.AddSingleton<MudBlazor.IKeyInterceptorService>(new Mock<MudBlazor.IKeyInterceptorService>().Object);
