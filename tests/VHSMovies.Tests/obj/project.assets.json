@@ -1806,6 +1806,23 @@
           }
         }
       },
+      "Refit/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Refit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Refit.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/netstandard2.0/refit.props": {},
+          "buildTransitive/netstandard2.0/refit.targets": {}
+        }
+      },
       "RestSharp/112.1.0": {
         "type": "package",
         "compile": {
@@ -3543,6 +3560,19 @@
         },
         "runtime": {
           "lib/net9.0/ZstdSharp.dll": {}
+        }
+      },
+      "VHSMovies.Api.Integration/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Refit": "8.0.0"
+        },
+        "compile": {
+          "bin/placeholder/VHSMovies.Api.Integration.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/VHSMovies.Api.Integration.dll": {}
         }
       },
       "VHSMovies.Application/1.0.0": {
@@ -5898,6 +5928,33 @@
         "lib/net8.0/Pomelo.EntityFrameworkCore.MySql.xml",
         "pomelo.entityframeworkcore.mysql.9.0.0-preview.3.efcore.9.0.0.nupkg.sha512",
         "pomelo.entityframeworkcore.mysql.nuspec"
+      ]
+    },
+    "Refit/8.0.0": {
+      "sha512": "gXRmIy3Va0mwwr8usnqVRQFoFIJaJGlWTTXBlwxIkHB/xwXnq1Ybs1YNA2BM1O4G46JLLlGjg6YOwrTZusuY3Q==",
+      "type": "package",
+      "path": "refit/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE/LICENSE",
+        "README.md",
+        "analyzers/dotnet/roslyn3.8/cs/InterfaceStubGeneratorV1.dll",
+        "analyzers/dotnet/roslyn4.1/cs/InterfaceStubGeneratorV2.dll",
+        "build/netstandard2.0/refit.targets",
+        "buildTransitive/netstandard2.0/refit.props",
+        "buildTransitive/netstandard2.0/refit.targets",
+        "lib/net462/Refit.dll",
+        "lib/net462/Refit.xml",
+        "lib/net6.0/Refit.dll",
+        "lib/net6.0/Refit.xml",
+        "lib/net8.0/Refit.dll",
+        "lib/net8.0/Refit.xml",
+        "lib/netstandard2.0/Refit.dll",
+        "lib/netstandard2.0/Refit.xml",
+        "refit.8.0.0.nupkg.sha512",
+        "refit.nuspec",
+        "refit_logo.png"
       ]
     },
     "RestSharp/112.1.0": {
@@ -10146,6 +10203,11 @@
         "zstdsharp.port.nuspec"
       ]
     },
+    "VHSMovies.Api.Integration/1.0.0": {
+      "type": "project",
+      "path": "../../src/VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj",
+      "msbuildProject": "../../src/VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj"
+    },
     "VHSMovies.Application/1.0.0": {
       "type": "project",
       "path": "../../src/VHSMovies.Application/VHSMovies.Application.csproj",
@@ -10163,8 +10225,8 @@
     },
     "VHSMovies.Mediator/1.0.0": {
       "type": "project",
-      "path": "../../VHSMovies.Mediator/VHSMovies.Mediator.csproj",
-      "msbuildProject": "../../VHSMovies.Mediator/VHSMovies.Mediator.csproj"
+      "path": "../../src/VHSMovies.Mediator/VHSMovies.Mediator.csproj",
+      "msbuildProject": "../../src/VHSMovies.Mediator/VHSMovies.Mediator.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -10174,8 +10236,10 @@
       "Microsoft.EntityFrameworkCore.InMemory >= 9.0.1",
       "Microsoft.NET.Test.Sdk >= 17.8.0",
       "Moq >= 4.20.72",
+      "VHSMovies.Api.Integration >= 1.0.0",
       "VHSMovies.Application >= 1.0.0",
       "VHSMovies.Infrastructure >= 1.0.0",
+      "VHSMovies.Mediator >= 1.0.0",
       "coverlet.collector >= 6.0.0",
       "xunit >= 2.5.3",
       "xunit.runner.visualstudio >= 2.5.3"
@@ -10213,11 +10277,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
+            "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api.Integration\\VHSMovies.Api.Integration.csproj": {
+              "projectPath": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Api.Integration\\VHSMovies.Api.Integration.csproj"
+            },
             "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Application\\VHSMovies.Application.csproj": {
               "projectPath": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Application\\VHSMovies.Application.csproj"
             },
             "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Infrastructure\\VHSMovies.Infrastructure.csproj": {
               "projectPath": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Infrastructure\\VHSMovies.Infrastructure.csproj"
+            },
+            "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Mediator\\VHSMovies.Mediator.csproj": {
+              "projectPath": "C:\\Users\\henri\\source\\repos\\victorhenrique07\\VHSMovies\\src\\VHSMovies.Mediator\\VHSMovies.Mediator.csproj"
             }
           }
         }
