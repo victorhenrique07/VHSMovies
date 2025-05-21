@@ -9,6 +9,8 @@ on:
       - 'src/VHSMovies.Mediator/**'
       - 'src/VHSMovies.Application/**'
       - 'src/VHSMovies.Domain/**'
+      - 'tests/VHSMovies.Tests/**'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,7 +42,7 @@ jobs:
         run: dotnet restore ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj
 
       - name: Unit Tests and Integration Tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --no-build --verbosity normal
 
   release-api-container:
      runs-on: ubuntu-latest

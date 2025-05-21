@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/VHSMovies.Api.Integration/**'
       - 'src/VHSMovies.Website/**'
+      - 'tests/VHSMovies.Tests.Website/**'
 
 jobs:
   build:
@@ -38,7 +39,7 @@ jobs:
         run: dotnet restore ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj
 
       - name: Unit Tests, Integration Tests and E2E Tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj --no-build --verbosity normal
 
   release-website-container:
     runs-on: ubuntu-latest
