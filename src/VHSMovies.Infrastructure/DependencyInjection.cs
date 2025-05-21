@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
 using VHSMovies.Infrastructure;
+using VHSMovies.Infrastructure.Redis;
 
 namespace VHSMovies.Infraestructure
 {
@@ -28,6 +30,9 @@ namespace VHSMovies.Infraestructure
 
             string connectionString = $"Server={DATABASE_HOST};Port={DATABASE_PORT};Database={DATABASE_NAME};Uid={DATABASE_USERNAME};Pwd={DATABASE_PASSWORD};";
 
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("The database connection string was not defined.");
+
             services.AddDbContext<DbContextClass>(options =>
                 options.UseNpgsql(connectionString)
                    .EnableSensitiveDataLogging()
@@ -39,6 +44,28 @@ namespace VHSMovies.Infraestructure
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IRecommendedTitlesRepository, RecommendedTitlesRepository>();
             services.AddScoped<ITitleRepository, TitleRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            DbConfigurationManager manager = DbConfigurationManager.Instance;
+
+            string REDIS_HOST = manager.GetConfigurationValue("REDISHOST");
+            string REDIS_PORT = manager.GetConfigurationValue("REDISPORT");
+            string REDIS_PASSWORD = manager.GetConfigurationValue("REDISPASSWORD");
+
+            string connectionString = $"{REDIS_HOST}:{REDIS_PORT},password={REDIS_PASSWORD},defaultDatabase=0";
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("The redis connection string was not defined.");
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(connectionString)
+            );
+
+            services.AddScoped<IRedisRepository, RedisRepository>();
 
             return services;
         }

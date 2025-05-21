@@ -6,6 +6,8 @@ using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
 using VHSMovies.Mediator.Interfaces;
 using VHSMovies.Domain.Domain.Entity;
+using VHSMovies.Infrastructure.Redis;
+using System.Text.Json;
 
 namespace VHSMovies.Api.Controllers.Recommend
 {
@@ -14,19 +16,30 @@ namespace VHSMovies.Api.Controllers.Recommend
     public class RecommendationsController : ControllerBase
     {
         private readonly IMediator mediator;
-        private IConfiguration configuration;
-        private readonly IMemoryCache _cache;
-        public RecommendationsController(IMediator mediator, IConfiguration configuration, IMemoryCache _cache)
+        private readonly IRedisRepository redis;
+
+        public RecommendationsController(IMediator mediator, IRedisRepository redis)
         {
             this.mediator = mediator;
-            this.configuration = configuration;
-            this._cache = _cache;
+            this.redis = redis;
         }
 
         [HttpGet("recommend")]
         public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, 
             decimal? minimumRating, string? yearsRange, int? titlesAmount, string? titlesToExclude, string? types)
         {
+            var cacheKey = GenerateCacheKey(includeGenres, mustInclude, excludeGenres, minimumRating.ToString(), 
+                yearsRange, titlesAmount.ToString(),titlesToExclude, types);
+
+            var cachedData = await redis.GetAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedData))
+            {
+                var cachedResponse = JsonSerializer.Deserialize<IReadOnlyCollection<TitleResponse>>(cachedData);
+
+                return Ok(cachedResponse);
+            }
+
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
             {
                 IncludeGenres = includeGenres != null ? ParseStringIntoHashSet(includeGenres) : null,
@@ -40,6 +53,9 @@ namespace VHSMovies.Api.Controllers.Recommend
             };
 
             IReadOnlyCollection<TitleResponse> response = await mediator.Send(query);
+
+            var jsonResponse = JsonSerializer.Serialize(response);
+            await redis.SetAsync(cacheKey, jsonResponse);
 
             return Ok(response);
         }
@@ -83,6 +99,15 @@ namespace VHSMovies.Api.Controllers.Recommend
                 .ToList();
 
             return list;
+        }
+
+        private string GenerateCacheKey(params string?[] inputs)
+        {
+            var rawKey = string.Join("|", inputs.Select(x => x ?? string.Empty));
+            using var sha256 = System.Security.Cryptography.SHA256.Create();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(rawKey);
+            var hashBytes = sha256.ComputeHash(bytes);
+            return "RecommendedTitles_" + BitConverter.ToString(hashBytes).Replace("-", "");
         }
     }
 }

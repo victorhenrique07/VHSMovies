@@ -38,6 +38,15 @@ services:
      networks:
       - vhsmovies_network
 
+  vhsmovies.redis:
+    image: redis:latest
+    container_name: vhsmovies.redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--requirepass", "redis"]
+    networks:
+      - vhsmovies_network
+
 networks:
   vhsmovies_network:
     driver: bridge

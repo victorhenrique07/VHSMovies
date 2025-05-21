@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.IO.Compression;
 using VHSMovies.Api.Settings;
 using VHSMovies.Application;
@@ -16,7 +17,9 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 builder.WebHost.UseUrls($"http://*:{port}");
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddRedis(builder.Configuration);
 builder.Services.AddSimpleMediator();
+
 
 builder.Services.Configure<FormOptions>(options =>
 {
