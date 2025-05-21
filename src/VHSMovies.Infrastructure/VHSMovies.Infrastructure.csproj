@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\VHSMovies.Mediator\VHSMovies.Mediator.csproj" />
+    <ProjectReference Include="..\VHSMovies.Mediator\VHSMovies.Mediator.csproj" />
     <ProjectReference Include="..\VHSMovies.Domain\VHSMovies.Domain.csproj" />
   </ItemGroup>
 </Project>

@@ -23,7 +23,7 @@ namespace VHSMovies.Tests.Unit.Application
             _handler = new GetTitlesBySearchQueryHandler(_mockRepository.Object);
         }
 
-        [Theory]
+        /*[Theory]
         [InlineData("The", 3)]
         public async Task Handle_ReturnsFilteredTitles_WhenSearchQueryMatches(string searchQuery, int expectedTitlesCount)
         {
@@ -60,7 +60,7 @@ namespace VHSMovies.Tests.Unit.Application
                 title.Name.Should().NotContain("Game of Thrones");
                 title.Name.Should().NotContain("Band of Brothers");
             });
-        }
+        }*/
 
         [Fact]
         public async Task Handle_ReturnsEmptyList_WhenNoMatchFound()

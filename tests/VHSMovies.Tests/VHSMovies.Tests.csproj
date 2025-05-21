@@ -10,12 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="E2E\**" />
+    <EmbeddedResource Remove="E2E\**" />
+    <None Remove="E2E\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
-    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
@@ -31,5 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\VHSMovies.Application\VHSMovies.Application.csproj" />
     <ProjectReference Include="..\..\src\VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\VHSMovies.Mediator\VHSMovies.Mediator.csproj" />
+	<ProjectReference Include="..\..\src\VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj" />
   </ItemGroup>
 </Project>

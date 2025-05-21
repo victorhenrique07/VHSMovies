@@ -1,0 +1,64 @@
+name: Build
+
+on: 
+  push:
+    branches: [main]
+    paths:
+      - 'src/VHSMovies.Api/**'
+      - 'src/VHSMovies.Infrastructure/**'
+      - 'src/VHSMovies.Mediator/**'
+      - 'src/VHSMovies.Application/**'
+      - 'src/VHSMovies.Domain/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET 9.0 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+      - name: Restore Dependencies
+        run: dotnet restore ./src/VHSMovies.Api/VHSMovies.Api.csproj
+      - name: Build Project
+        run: dotnet build ./src/VHSMovies.Api/VHSMovies.Api.csproj --no-restore
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9.0 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0
+
+      - name: Restore Test Dependencies
+        run: dotnet restore ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj
+
+      - name: Unit Tests and Integration Tests
+        run: dotnet test --no-build --verbosity normal
+
+  release-api-container:
+     runs-on: ubuntu-latest
+     needs: [tests]
+     steps:
+       - uses: actions/checkout@v4
+       - name: Docker Login
+         uses: docker/login-action@v2
+         with:
+           username: ${{ secrets.DOCKER_USER }}
+           password: ${{ secrets.DOCKER_USER_PASSWORD }}
+
+       - name: Build and push Docker image (API)
+         uses: docker/build-push-action@v3
+         with:
+           context: .
+           file: ./src/VHSMovies.Api/Dockerfile
+           push: true
+           tags: |
+             ${{ secrets.DOCKER_USER }}/vhsmovies-api:v1
+             ${{ secrets.DOCKER_USER }}/vhsmovies-api:latest

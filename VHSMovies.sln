@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "tests\VH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Mediator", "src\VHSMovies.Mediator\VHSMovies.Mediator.csproj", "{799AA97A-09A5-469B-B6A7-C343E4428D1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests.Website", "tests\VHSMovies.Tests.Website\VHSMovies.Tests.Website.csproj", "{7CE107B9-619D-4A40-81C8-E3171F60FFFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{799AA97A-09A5-469B-B6A7-C343E4428D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{799AA97A-09A5-469B-B6A7-C343E4428D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{799AA97A-09A5-469B-B6A7-C343E4428D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
