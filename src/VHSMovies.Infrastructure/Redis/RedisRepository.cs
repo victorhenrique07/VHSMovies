@@ -16,8 +16,12 @@ namespace VHSMovies.Infrastructure.Redis
             _database = connection.GetDatabase();
         }
 
-        public async Task SetAsync(string key, string value) =>
-            await _database.StringSetAsync(key, value);
+        public async Task SetAsync(string key, string value)
+        {
+
+
+            await _database.StringSetAsync(key, value, TimeSpan.FromHours(24));
+        }
 
         public async Task<string?> GetAsync(string key) =>
             await _database.StringGetAsync(key);

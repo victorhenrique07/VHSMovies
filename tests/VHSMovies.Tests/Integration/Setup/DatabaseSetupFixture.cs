@@ -55,13 +55,13 @@ namespace VHSMovies.Tests.Integration.Setup
 
         public void SeedDatabase(DbContextClass Context)
         {
-            Context.RecommendedTitles.AddRange(GetRecommendedTitlesList());
             Context.Genres.AddRange(genres);
             Context.Titles.AddRange(titles);
-            Context.People.AddRange(people);
-            Context.TitlesGenres.AddRange(GetTitlesGenresList());
-            Context.Casts.AddRange(GetCastList());
             Context.Reviews.AddRange(GetReviewsList());
+            Context.TitlesGenres.AddRange(GetTitlesGenresList());
+            Context.People.AddRange(people);
+            Context.Casts.AddRange(GetCastList());
+            Context.RecommendedTitles.AddRange(GetRecommendedTitlesList());
 
             Context.SaveChanges();
         }

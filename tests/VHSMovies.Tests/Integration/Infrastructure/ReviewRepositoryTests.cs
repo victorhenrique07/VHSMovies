@@ -11,11 +11,11 @@ using VHSMovies.Tests.Integration.Setup;
 namespace VHSMovies.Tests.Integration.Infrastructure
 {
     [Collection("DatabaseCollection")]
-    public class ReviewRepositoryIntegrationTests
+    public class ReviewRepositoryTests
     {
         private readonly DatabaseSetupFixture _fixture;
 
-        public ReviewRepositoryIntegrationTests(DatabaseSetupFixture fixture)
+        public ReviewRepositoryTests(DatabaseSetupFixture fixture)
         {
             _fixture = fixture;
         }

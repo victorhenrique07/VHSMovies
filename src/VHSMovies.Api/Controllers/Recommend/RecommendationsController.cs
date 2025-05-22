@@ -65,7 +65,10 @@ namespace VHSMovies.Api.Controllers.Recommend
         {
             GetTitleByIdQuery query = new GetTitleByIdQuery() { Id = id };
 
-            TitleResponse response = await mediator.Send(query);
+            TitleResponse? response = await mediator.Send(query);
+
+            if (response == null)
+                return NotFound($"Title not found");
 
             return Ok(response);
         }

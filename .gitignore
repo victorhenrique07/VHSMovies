@@ -6,5 +6,9 @@
 /VHSMovies.Mediator/obj
 /.vs/ProjectEvaluation
 /.vs
-**/bin/
-**/obj/
+/VHSMovies.Tests/bin/
+/VHSMovies.Tests/obj/
+/VHSMovies.Tests.Website/bin/
+/VHSMovies.Tests.Website/obj/
+**/bin
+**/obj

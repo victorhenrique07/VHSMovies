@@ -19,6 +19,7 @@
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
@@ -31,10 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\Api\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\src\VHSMovies.Api\VHSMovies.Api.csproj" />
     <ProjectReference Include="..\..\src\VHSMovies.Application\VHSMovies.Application.csproj" />
     <ProjectReference Include="..\..\src\VHSMovies.Infrastructure\VHSMovies.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\VHSMovies.Mediator\VHSMovies.Mediator.csproj" />
