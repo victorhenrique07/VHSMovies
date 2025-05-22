@@ -1,12 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using VHSMovies.Mediator.Interfaces;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using VHSMovies.Mediator.Implementation;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Mediator.Extensions
 {

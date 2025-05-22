@@ -1,10 +1,12 @@
-﻿using VHSMovies.Mediator;
+﻿using System.Text.Json;
+
 using Microsoft.AspNetCore.Mvc;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
-using VHSMovies.Mediator.Interfaces;
 using VHSMovies.Infrastructure.Redis;
-using System.Text.Json;
+using VHSMovies.Mediator;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers
 {

@@ -1,9 +1,11 @@
-﻿using VHSMovies.Mediator;
+﻿using System;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using VHSMovies.Application.Models;
+
 using VHSMovies.Application.Commands;
+using VHSMovies.Application.Models;
+using VHSMovies.Mediator;
 using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers

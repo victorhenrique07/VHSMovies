@@ -1,8 +1,11 @@
+using System.IO.Compression;
+
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
+
 using StackExchange.Redis;
-using System.IO.Compression;
+
 using VHSMovies.Api.Settings;
 using VHSMovies.Application;
 using VHSMovies.Infraestructure;
@@ -32,7 +35,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(Configuration.CorsPolicyName, policy =>
     {
-        policy.WithOrigins( 
+        policy.WithOrigins(
                 Configuration.FrontendUrl
             )
               .AllowAnyMethod()

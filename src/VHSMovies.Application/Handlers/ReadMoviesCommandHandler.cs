@@ -1,19 +1,22 @@
-﻿using VHSMovies.Mediator;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using OpenQA.Selenium.DevTools.V129.Audits;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+
+using OpenQA.Selenium.DevTools.V129.Audits;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
-using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Mediator;
 using VHSMovies.Mediator.Implementation;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers
 {

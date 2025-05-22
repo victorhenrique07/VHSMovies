@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+
 using OpenQA.Selenium.BiDi.Modules.Log;
+
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Infrastructure;
 

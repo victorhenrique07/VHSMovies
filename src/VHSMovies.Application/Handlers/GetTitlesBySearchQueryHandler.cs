@@ -1,15 +1,17 @@
-﻿using VHSMovies.Mediator;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Factories;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Mediator;
 using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers

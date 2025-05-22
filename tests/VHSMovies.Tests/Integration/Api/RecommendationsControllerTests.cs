@@ -1,17 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+
+using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using MySqlX.XDevAPI;
+
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+
 using VHSMovies.Api.Integration.Main.Responses;
-using VHSMovies.Application.Commands;
-using VHSMovies.Application.Factories;
 using VHSMovies.Tests.Integration.Setup;
 
 namespace VHSMovies.Tests.Integration.Api
@@ -115,15 +110,12 @@ namespace VHSMovies.Tests.Integration.Api
             // Arrange
             using var context = databaseFixture.CreateInMemoryDbContext();
             databaseFixture.SeedDatabase(context);
-
             // Act
-            var result = await httpClient.GetAsync("/api/titles/1");
-
+            var result = await httpClient.GetAsync("/api/titles/999999");
             // Assert
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-
             var content = await result.Content.ReadAsStringAsync();
-            content.Should().Contain("Title not found");
+            content.Should().Contain("Title with id 999999 not found");
         }
     }
 }

@@ -37,18 +37,20 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public int? ReleaseDate { get; set; }
 
-        public int TotalReviews {
+        public int TotalReviews
+        {
             get
             {
                 return CalculateTotalRatingsValue();
             }
         }
 
-        public decimal AverageRating { 
-            get 
+        public decimal AverageRating
+        {
+            get
             {
                 return CalculateMedianRateValue();
-            } 
+            }
         }
 
         public decimal Relevance { get; set; } = 0m;
@@ -70,7 +72,7 @@ namespace VHSMovies.Domain.Domain.Entity
         }
 
         private decimal CalculateMedianRateValue()
-        { 
+        {
             decimal medianRate = 0.0m;
 
             foreach (Review review in Ratings)

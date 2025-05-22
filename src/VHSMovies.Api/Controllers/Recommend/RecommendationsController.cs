@@ -1,13 +1,15 @@
-﻿using VHSMovies.Mediator;
+﻿using System.Linq;
+using System.Text.Json;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Linq;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Models;
-using VHSMovies.Mediator.Interfaces;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Infrastructure.Redis;
-using System.Text.Json;
+using VHSMovies.Mediator;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers.Recommend
 {
@@ -25,11 +27,11 @@ namespace VHSMovies.Api.Controllers.Recommend
         }
 
         [HttpGet("recommend")]
-        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres, 
+        public async Task<IActionResult> RecommendedTitles(string? includeGenres, string? mustInclude, string? excludeGenres,
             decimal? minimumRating, string? yearsRange, int? titlesAmount, string? titlesToExclude, string? types)
         {
-            var cacheKey = GenerateCacheKey(includeGenres, mustInclude, excludeGenres, minimumRating.ToString(), 
-                yearsRange, titlesAmount.ToString(),titlesToExclude, types);
+            var cacheKey = GenerateCacheKey(includeGenres, mustInclude, excludeGenres, minimumRating.ToString(),
+                yearsRange, titlesAmount.ToString(), titlesToExclude, types);
 
             var cachedData = await redis.GetAsync(cacheKey);
 

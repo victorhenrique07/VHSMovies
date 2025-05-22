@@ -1,12 +1,17 @@
-﻿using AutoFixture;
-using Castle.Components.DictionaryAdapter.Xml;
-using FluentAssertions;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using AutoFixture;
+
+using Castle.Components.DictionaryAdapter.Xml;
+
+using FluentAssertions;
+
+using Moq;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Factories;
 using VHSMovies.Application.Handlers;
@@ -14,6 +19,7 @@ using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace VHSMovies.Tests.Unit.Application
@@ -103,8 +109,8 @@ namespace VHSMovies.Tests.Unit.Application
             Relevance = 10.98m,
             Genres = new List<TitleGenre>()
             {
-                new TitleGenre() 
-                { 
+                new TitleGenre()
+                {
                     Genre = new Genre()
                     {
                         Id = 1,
@@ -134,7 +140,7 @@ namespace VHSMovies.Tests.Unit.Application
                 }
             }
         };
-        
+
         private readonly Title shawshankTitle = new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
         {
             Id = 1297469,

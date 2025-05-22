@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using VHSMovies.Infraestructure;
 
 namespace VHSMovies.Api.Settings
@@ -9,7 +10,7 @@ namespace VHSMovies.Api.Settings
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
 
-            using DbContextClass dbContext = 
+            using DbContextClass dbContext =
                 scope.ServiceProvider.GetRequiredService<DbContextClass>();
 
             dbContext.Database.Migrate();

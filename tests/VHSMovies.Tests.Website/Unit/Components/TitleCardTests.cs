@@ -4,12 +4,18 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Bunit;
+
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
+
 using MudBlazor.Services;
+
 using VHSMovies.Api.Integration.Main.Responses;
 using VHSMovies.Website.Components.Pages.Titles;
 

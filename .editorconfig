@@ -1,0 +1,12 @@
+root = true
+
+[*.cs]
+dotnet_diagnostic.xUnit1031.severity = warning
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+
+# Remove using não utilizados
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = true

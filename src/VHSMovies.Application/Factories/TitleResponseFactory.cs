@@ -1,14 +1,17 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+
+using Microsoft.IdentityModel.Tokens;
+
+using RestSharp;
+
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
-using RestSharp;
 
 namespace VHSMovies.Application.Factories
 {
@@ -38,8 +41,8 @@ namespace VHSMovies.Application.Factories
                                       ?? titleDetails.Tv_Season_Results.FirstOrDefault()
                                       ?? new();
 
-            DateOnly? release_date = title.ReleaseDate.Value == null 
-                ? result?.release_date ?? result?.first_air_date : 
+            DateOnly? release_date = title.ReleaseDate.Value == null
+                ? result?.release_date ?? result?.first_air_date :
                 new DateOnly(title.ReleaseDate.Value, 1, 1);
 
             var overview = result?.overview ?? string.Empty;
@@ -66,7 +69,7 @@ namespace VHSMovies.Application.Factories
             {
                 PosterImageUrl = imageUrl,
                 Genres = title.Genres
-                                .Select(gt => new GenreResponse(gt.Genre.Name) { Id = gt.Genre.Id})
+                                .Select(gt => new GenreResponse(gt.Genre.Name) { Id = gt.Genre.Id })
                                 .ToList(),
             };
         }

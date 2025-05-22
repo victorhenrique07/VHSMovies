@@ -1,19 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using OfficeOpenXml;
-using VHSMovies.Mediator;
-using VHSMovies.Application.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using VHSMovies.Application.Commands;
 using System.Formats.Asn1;
 using System.Globalization;
+using System.IO;
+
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.VisualBasic.FileIO;
-using System.Collections.Generic;
-using VHSMovies.Mediator.Interfaces;
+
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic.FileIO;
+
+using OfficeOpenXml;
+
+using VHSMovies.Application.Commands;
+using VHSMovies.Application.Models;
+using VHSMovies.Mediator;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Api.Controllers
 {
@@ -263,7 +267,7 @@ namespace VHSMovies.Api.Controllers
             {
                 if (record == null) continue;
 
-                if ((record.titleType.ToLower() != "tvseries" && 
+                if ((record.titleType.ToLower() != "tvseries" &&
                     record.titleType.ToLower() != "movie" &&
                     record.titleType.ToLower() != "tvmovie" &&
                     record.titleType.ToLower() != "tvminiseries") ||

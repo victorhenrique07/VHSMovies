@@ -1,17 +1,19 @@
-﻿using VHSMovies.Mediator;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Application.Factories;
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+using VHSMovies.Mediator;
 using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers
@@ -24,7 +26,7 @@ namespace VHSMovies.Application.Handlers
         private readonly ILogger<GetRecommendedTitlesQueryHandler> logger;
 
         public GetRecommendedTitlesQueryHandler(
-            IRecommendedTitlesRepository recomendedTitlesRepository, 
+            IRecommendedTitlesRepository recomendedTitlesRepository,
             ICastRepository castRepository,
             IGenreRepository genreRepository)
         {
@@ -116,14 +118,14 @@ namespace VHSMovies.Application.Handlers
 
             if (query.MinimumRating != null)
             {
-                titles = titles.Where (t => t.AverageRating >= query.MinimumRating);
+                titles = titles.Where(t => t.AverageRating >= query.MinimumRating);
             }
 
             if (query.YearsRange != null)
             {
                 query.YearsRange = BubbleSort(query.YearsRange, query.YearsRange.Length);
 
-                titles = titles.Where(t => 
+                titles = titles.Where(t =>
                     t.ReleaseDate.HasValue &&
                     t.ReleaseDate > query.YearsRange[0] &&
                     t.ReleaseDate < query.YearsRange[1]);
@@ -168,6 +170,6 @@ namespace VHSMovies.Application.Handlers
             }
 
             return arr;
-        }       
+        }
     }
 }

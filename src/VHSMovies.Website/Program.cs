@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 using MudBlazor.Services;
+
 using Refit;
+
 using VHSMovies.Api.Integration.Main.Clients;
 using VHSMovies.Website;
 using VHSMovies.Website.Layout;

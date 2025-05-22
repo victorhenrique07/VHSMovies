@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium.BiDi.Modules.Log;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+
+using OpenQA.Selenium.BiDi.Modules.Log;
+
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 
@@ -46,7 +49,7 @@ namespace VHSMovies.Infraestructure.Repository
             catch (DbUpdateException ex)
             {
                 throw new DbUpdateException($"Error while adding reviews: {ex.Message}");
-                
+
             }
         }
 

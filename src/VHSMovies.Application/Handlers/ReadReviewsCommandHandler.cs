@@ -1,17 +1,19 @@
-﻿using VHSMovies.Mediator;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 using VHSMovies.Application.Commands;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
-using VHSMovies.Mediator.Interfaces;
+using VHSMovies.Mediator;
 using VHSMovies.Mediator.Implementation;
-using System.Globalization;
-using Microsoft.EntityFrameworkCore;
+using VHSMovies.Mediator.Interfaces;
 
 namespace VHSMovies.Application.Handlers
 {
