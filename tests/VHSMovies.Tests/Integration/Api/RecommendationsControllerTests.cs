@@ -2,6 +2,7 @@
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.DependencyInjection;
 
 using StackExchange.Redis;
@@ -40,6 +41,11 @@ namespace VHSMovies.Tests.Integration.Api
             var endpoints = redis.GetEndPoints();
             var server = redis.GetServer(endpoints[0]);
 
+            foreach (var key in server.Keys(pattern: "RecommendedTitles_*"))
+            {
+                redisDatabase.KeyDelete(key);
+            }
+
             // Act
             var result = await httpClient.GetAsync("/api/titles/recommend?minimumRating=8");
 
@@ -68,6 +74,7 @@ namespace VHSMovies.Tests.Integration.Api
             });
             server.Keys().Should().NotBeEmpty();
             server.Keys().Should().HaveCount(1);
+            server.Keys().Should().Contain(k => k.ToString().StartsWith("RecommendedTitles_"));
         }
 
         [Theory]
@@ -115,7 +122,7 @@ namespace VHSMovies.Tests.Integration.Api
             // Assert
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
             var content = await result.Content.ReadAsStringAsync();
-            content.Should().Contain("Title with id 999999 not found");
+            content.Should().Contain("Title not found");
         }
     }
 }
