@@ -25,7 +25,7 @@ namespace VHSMovies.Infraestructure
             IConfiguration configuration,
             IWebHostEnvironment environment)
         {
-            if (environment.IsDevelopment())
+            if (environment == null || environment.IsDevelopment())
             {
                 services.AddDbContext<DbContextClass>(options =>
                     options.UseSqlite("DataSource=:memory:")
