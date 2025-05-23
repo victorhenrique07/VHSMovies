@@ -36,14 +36,13 @@ jobs:
       - name: Setup .NET 9.0 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
-          include-prerelease: true
+          dotnet-version: 9.0
 
       - name: Restore Test Dependencies
         run: dotnet restore ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj
 
       - name: Unit Tests and Integration Tests
-        run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --no-build --verbosity normal
 
   release-api-container:
      runs-on: ubuntu-latest
