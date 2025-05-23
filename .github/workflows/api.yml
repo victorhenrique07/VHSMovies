@@ -43,7 +43,7 @@ jobs:
         run: dotnet restore ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj
 
       - name: Unit Tests and Integration Tests
-        run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --no-build --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --verbosity normal
 
   release-api-container:
      runs-on: ubuntu-latest
