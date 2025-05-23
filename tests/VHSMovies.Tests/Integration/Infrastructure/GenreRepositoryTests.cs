@@ -15,21 +15,22 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class GenreRepositoryTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public GenreRepositoryTests(DatabaseSetupFixture fixture)
+        public GenreRepositoryTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Fact]
         public async Task ShouldReturnAllGenres()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
-            string[] genresList = _fixture.GetGenresList().Select(genre => genre.Name).ToArray();
+            string[] genresList = seed.GetGenresList(context).Select(genre => genre.Name).ToArray();
             IReadOnlyCollection<Genre> genres = new List<Genre>();
             var repository = new GenreRepository(context);
 

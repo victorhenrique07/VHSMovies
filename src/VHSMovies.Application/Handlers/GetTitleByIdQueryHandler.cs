@@ -11,26 +11,23 @@ namespace VHSMovies.Application.Handlers
 {
     public class GetTitleByIdQueryHandler : IRequestHandler<GetTitleByIdQuery, TitleResponse>
     {
-        private readonly IRecommendedTitlesRepository recommendedTitlesRepository;
-        private readonly IGenreRepository genreRepository;
+        private readonly ITitleRepository titleRepository;
 
-        public GetTitleByIdQueryHandler(IRecommendedTitlesRepository recommendedTitlesRepository, IGenreRepository genreRepository)
+        public GetTitleByIdQueryHandler(ITitleRepository titleRepository)
         {
-            this.recommendedTitlesRepository = recommendedTitlesRepository;
-            this.genreRepository = genreRepository;
+            this.titleRepository = titleRepository;
         }
+
         public async Task<TitleResponse?> Handle(GetTitleByIdQuery query, CancellationToken cancellationToken)
         {
-            RecommendedTitle title = await recommendedTitlesRepository.GetById(query.Id);
+            Title title = await titleRepository.GetByIdAsync(query.Id);
 
             if (title == null)
                 return null;
 
-            IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
-
             TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
 
-            TitleResponse response = titleResponseFactory.CreateTitleResponseByRecommendedTitle(title, allGenres);
+            TitleResponse response = titleResponseFactory.CreateTitleResponseByTitle(title);
 
             return response;
         }

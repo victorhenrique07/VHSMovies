@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 using OpenQA.Selenium.BiDi.Modules.Log;
 
@@ -11,10 +13,12 @@ namespace VHSMovies.Infraestructure
     public class DbContextClass : DbContext
     {
         protected readonly IConfiguration Configuration;
+        private readonly IWebHostEnvironment env;
 
-        public DbContextClass(IConfiguration configuration, DbContextOptions<DbContextClass> options = null)
+        public DbContextClass(IConfiguration configuration, IWebHostEnvironment env, DbContextOptions<DbContextClass> options = null)
             : base(options)
         {
+            this.env = env;
             Configuration = configuration;
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
@@ -55,24 +59,30 @@ namespace VHSMovies.Infraestructure
             modelBuilder.Entity<Review>().ToTable("reviews");
             modelBuilder.Entity<Genre>().ToTable("genres");
 
-            modelBuilder.Entity<RecommendedTitle>(entity =>
+            if (env.IsDevelopment())
             {
-                entity.HasNoKey();
-                entity.ToView("recommended_titles");
-            });
+                modelBuilder.Entity<RecommendedTitle>(entity =>
+                {
+                    entity.HasNoKey();
+                    entity.ToTable("recommended_titles");
+                });
+            }
+            else
+            {
+                modelBuilder.Entity<RecommendedTitle>(entity =>
+                {
+                    entity.HasNoKey();
+                    entity.ToView("recommended_titles");
+                });
+            }
 
-            modelBuilder.Entity<Title>()
-                .Property(t => t.Relevance)
-                .HasColumnType("numeric(5,2)");
+                modelBuilder.Entity<Title>()
+                    .Property(t => t.Relevance)
+                    .HasColumnType("numeric(5,2)");
 
             modelBuilder.Entity<TitleGenre>()
                 .Property(tg => tg.Id)
                 .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Cast>()
-                .HasOne(tp => tp.Person)
-                .WithMany(p => p.Titles)
-                .HasForeignKey("PersonId");
 
             modelBuilder.Entity<Cast>()
                 .HasIndex(tp => tp.Id)
@@ -97,6 +107,16 @@ namespace VHSMovies.Infraestructure
                 .WithOne(r => r.Title)
                 .HasForeignKey("TitleId")
                 .IsRequired();
+
+            modelBuilder.Entity<Cast>()
+                .HasOne(t => t.Title)
+                .WithMany(t => t.Casts)
+                .HasForeignKey("TitleId");
+
+            modelBuilder.Entity<Cast>()
+                .HasOne(t => t.Person)
+                .WithMany(t => t.Titles)
+                .HasForeignKey("PersonId");
 
             modelBuilder.Entity<TitleGenre>()
                 .HasOne(tg => tg.Title)

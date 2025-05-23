@@ -20,6 +20,7 @@ namespace VHSMovies.Application.Factories
         public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title, IReadOnlyCollection<Genre> genres = null)
         {
             List<GenreResponse> titlesGenres = new List<GenreResponse>();
+            List<Cast> titleCasts = new List<Cast>();
 
             if (genres != null && !title.Genres.IsNullOrEmpty())
             {
@@ -63,14 +64,60 @@ namespace VHSMovies.Application.Factories
 
         public TitleResponse CreateTitleResponseByTitle(Title title)
         {
-            string imageUrl = "";
+            TitleDetailsTMDB titleDetails = FindTitleDetails(title.IMDB_Id);
 
-            return new TitleResponse(title.Id, title.Name, new DateOnly(title.ReleaseDate.Value, 1, 1), "title.Description", title.AverageRating, title.TotalReviews)
+            TitleDetailsResult result = titleDetails.Movie_Results.FirstOrDefault()
+                                      ?? titleDetails.Tv_Results.FirstOrDefault()
+                                      ?? titleDetails.Tv_Season_Results.FirstOrDefault()
+                                      ?? new();
+
+            DateOnly? release_date = title.ReleaseDate.Value == null
+                ? result?.release_date ?? result?.first_air_date :
+                new DateOnly(title.ReleaseDate.Value, 1, 1);
+
+            var overview = result?.overview ?? string.Empty;
+            var posterUrl = string.IsNullOrEmpty(result?.poster_path)
+                ? string.Empty
+                : "https://image.tmdb.org/t/p/original" + result.poster_path;
+            var backdropUrl = string.IsNullOrEmpty(result?.backdrop_path)
+                ? string.Empty
+                : "https://image.tmdb.org/t/p/original" + result.backdrop_path;
+
+
+            List<GenreResponse> titleGenres = new List<GenreResponse>();
+            List<CastResponse> titleCast = new List<CastResponse>();
+
+            foreach (TitleGenre titleGenre in title.Genres)
             {
-                PosterImageUrl = imageUrl,
-                Genres = title.Genres
-                                .Select(gt => new GenreResponse(gt.Genre.Name) { Id = gt.Genre.Id })
-                                .ToList(),
+                if (titleGenre == null)
+                    continue;
+
+                Genre genre = titleGenre.Genre;
+                titleGenres.Add(new GenreResponse(genre.Id, genre.Name));
+            }
+
+            foreach (Cast cast in title.Casts)
+            {
+                if (cast == null)
+                    continue;
+
+                PersonResponse person = new PersonResponse(cast.Person.Id, cast.Person.Name);
+
+                CastResponse castResponse = new CastResponse()
+                {
+                    Person = person,
+                    Role = cast.Role
+                };
+
+                titleCast.Add(castResponse);
+            }
+
+            return new TitleResponse(title.Id, title.Name, release_date, overview, title.AverageRating, title.TotalReviews)
+            {
+                PosterImageUrl = posterUrl,
+                BackdropImageUrl = backdropUrl,
+                Genres = titleGenres,
+                Cast = titleCast
             };
         }
 

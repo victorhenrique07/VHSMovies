@@ -59,6 +59,8 @@ namespace VHSMovies.Domain.Domain.Entity
 
         public List<TitleGenre> Genres { get; set; } = new List<TitleGenre>();
 
+        public List<Cast> Casts { get; set; } = new List<Cast>();
+
         private int CalculateTotalRatingsValue()
         {
             int totalReviews = 0;

@@ -27,7 +27,7 @@ namespace VHSMovies.Infraestructure.Repository
         {
             return await dbContextClass.Set<Title>()
                 .Include(t => t.Genres)
-                .ThenInclude(tg => tg.Genre)
+                    .ThenInclude(tg => tg.Genre)
                 .Include(t => t.Ratings)
                 .ToListAsync();
         }
@@ -50,7 +50,15 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<Title> GetByIdAsync(int id)
         {
-            return await dbContextClass.Set<Title>().FirstOrDefaultAsync(x => x.Id == id);
+            var testeRepo = await dbContextClass.Casts.ToListAsync();
+
+            return await dbContextClass.Set<Title>()
+                .Include(t => t.Ratings)
+                .Include(c => c.Casts)
+                    .ThenInclude(p => p.Person)
+                .Include(t => t.Genres)
+                    .ThenInclude(tg => tg.Genre)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Title> GetByExternalIdAsync(string externalId)

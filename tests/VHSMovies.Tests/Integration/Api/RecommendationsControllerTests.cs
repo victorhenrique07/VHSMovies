@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using StackExchange.Redis;
 
-using VHSMovies.Api.Integration.Main.Responses;
+using VHSMovies.Application.Models;
+using VHSMovies.Infraestructure;
 using VHSMovies.Tests.Integration.Setup;
 
 namespace VHSMovies.Tests.Integration.Api
@@ -33,8 +34,9 @@ namespace VHSMovies.Tests.Integration.Api
         public async Task GetRecommendedTitlesReturnsExpectedData()
         {
             // Arrange
+            PopulateDatabase seed = new PopulateDatabase();
             using var context = databaseFixture.CreateInMemoryDbContext();
-            databaseFixture.SeedDatabase(context);
+            seed.SeedDatabase(context);
 
             var redisDatabase = redis.GetDatabase();
 
@@ -80,13 +82,14 @@ namespace VHSMovies.Tests.Integration.Api
         [Theory]
         [InlineData(1297469, "The Shawshank Redemption")]
         [InlineData(1489427, "The Dark Knight")]
-        [InlineData(1260356, "The Godfather")]
+        [InlineData(1522910, "Game of Thrones")]
         [InlineData(1519096, "Breaking Bad")]
         public async Task GetTitleByIdShouldReturnExpectedTitle(int titleId, string expectedTitleName)
         {
             // Arrange
+            PopulateDatabase seed = new PopulateDatabase();
             using var context = databaseFixture.CreateInMemoryDbContext();
-            databaseFixture.SeedDatabase(context);
+            seed.SeedDatabase(context);
 
             // Act
             var result = await httpClient.GetAsync($"/api/titles/{titleId}");
@@ -107,6 +110,7 @@ namespace VHSMovies.Tests.Integration.Api
             title.ReleaseDate.Should().NotBeNull();
             title.Genres.Should().NotBeNullOrEmpty();
             title.Description.Should().NotBeNullOrEmpty();
+            title.Cast.Should().NotBeNullOrEmpty();
             title.PosterImageUrl.Should().NotBeNullOrEmpty();
             title.BackdropImageUrl.Should().NotBeNullOrEmpty();
         }
@@ -115,10 +119,13 @@ namespace VHSMovies.Tests.Integration.Api
         public async Task GetTitleByIdShouldThrowNotFoundException()
         {
             // Arrange
+            PopulateDatabase seed = new PopulateDatabase();
             using var context = databaseFixture.CreateInMemoryDbContext();
-            databaseFixture.SeedDatabase(context);
+            seed.SeedDatabase(context);
+
             // Act
             var result = await httpClient.GetAsync("/api/titles/999999");
+
             // Assert
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
             var content = await result.Content.ReadAsStringAsync();

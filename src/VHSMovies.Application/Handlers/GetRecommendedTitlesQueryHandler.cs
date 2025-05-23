@@ -137,6 +137,7 @@ namespace VHSMovies.Application.Handlers
             }
 
             IReadOnlyCollection<RecommendedTitle> data = titles
+                .AsEnumerable()
                 .OrderByDescending(t => t.Relevance)
                 .Take(query.TitlesAmount)
                 .ToList();

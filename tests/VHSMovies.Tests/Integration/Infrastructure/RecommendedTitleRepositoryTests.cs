@@ -15,19 +15,20 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class RecommendedTitleRepositoryTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public RecommendedTitleRepositoryTests(DatabaseSetupFixture fixture)
+        public RecommendedTitleRepositoryTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Fact]
         public async Task ShouldReturnAllRecommendedTitles()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             IReadOnlyCollection<RecommendedTitle> titles = new List<RecommendedTitle>();
             var repository = new RecommendedTitlesRepository(context);
@@ -49,8 +50,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnTitleById(int id, string name)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new RecommendedTitlesRepository(context);
 
@@ -67,8 +69,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnAllRecommendedTitlesAsQueryable()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             IQueryable<RecommendedTitle> titles = new List<RecommendedTitle>().AsQueryable();
             var repository = new RecommendedTitlesRepository(context);

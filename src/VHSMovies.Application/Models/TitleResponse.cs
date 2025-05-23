@@ -19,6 +19,8 @@
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
 
+        public IReadOnlyCollection<CastResponse> Cast { get; set; }
+
         public TitleResponse()
         {
         }

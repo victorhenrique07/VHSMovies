@@ -15,19 +15,20 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class CastRepositoryIntegrationTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public CastRepositoryIntegrationTests(DatabaseSetupFixture fixture)
+        public CastRepositoryIntegrationTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Fact]
         public async Task ShouldReturnAllCast()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             IReadOnlyCollection<Cast> casts = new List<Cast>();
             var repository = new CastRepository(context);
@@ -37,7 +38,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
 
             // Assert
             casts.Should().NotBeEmpty();
-            casts.Should().HaveCount(10);
+            casts.Should().HaveCount(19);
         }
 
         [Theory]
@@ -49,8 +50,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShoulReturnCastById(int castId, string expectedPersonName, int expectedTitleId)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new CastRepository(context);
 
@@ -64,14 +66,15 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         }
 
         [Theory]
-        [InlineData(PersonRole.Actor, 4)]
+        [InlineData(PersonRole.Actor, 11)]
         [InlineData(PersonRole.Writer, 3)]
-        [InlineData(PersonRole.Director, 3)]
+        [InlineData(PersonRole.Director, 5)]
         public async Task ShouldReturnTaskByPersonRole(PersonRole expectedRole, int expectedCastsCount)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new CastRepository(context);
 
@@ -97,8 +100,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnCastByTitleId(int titleId, int[] peopleIds)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new CastRepository(context);
 
@@ -120,10 +124,11 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldSaveCastList()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
 
-            var titles = _fixture.GetTitlesList();
-            var people = _fixture.GetPersonList();
+            var titles = seed.GetTitlesList(context);
+            var people = seed.GetPersonList(context);
 
             context.Titles.AddRange(titles);
             context.People.AddRange(people);
@@ -197,7 +202,8 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldSaveOnlyOneCast()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+
             context.Titles.Add(
                 new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
                 {

@@ -15,19 +15,20 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class ReviewRepositoryTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public ReviewRepositoryTests(DatabaseSetupFixture fixture)
+        public ReviewRepositoryTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Fact]
         public async Task ShouldReturnAllReviews()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             IReadOnlyCollection<Review> reviews = new List<Review>();
             var repository = new ReviewRepository(context);
@@ -46,8 +47,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShoulReturnReviewByReviewerName(string reviewerName)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new ReviewRepository(context);
 
@@ -81,8 +83,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             decimal expectedRating, int expectedTotalReviews)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new ReviewRepository(context);
 
@@ -103,7 +106,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldSaveReviewsList()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            using var context = databaseFixture.CreateInMemoryDbContext();
 
             var reviewRepository = new ReviewRepository(context);
             var titleRepository = new TitleRepository(context);

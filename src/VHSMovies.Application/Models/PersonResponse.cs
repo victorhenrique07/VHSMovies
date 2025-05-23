@@ -16,11 +16,10 @@ namespace VHSMovies.Application.Models
 
         public ICollection<TitleResponse>? Titles { get; set; }
 
-        public PersonResponse(int id, string name, ICollection<TitleResponse> titles)
+        public PersonResponse(int id, string name)
         {
             Id = id;
             Name = name;
-            Titles = titles;
         }
     }
 }

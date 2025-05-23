@@ -16,11 +16,11 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class PersonRepositoryTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public PersonRepositoryTests(DatabaseSetupFixture fixture)
+        public PersonRepositoryTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Theory]
@@ -31,8 +31,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnAllPerson(PersonRole role, int expectedCountResult)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             IReadOnlyCollection<Person> people = new List<Person>();
             var repository = new PersonRepository(context);
@@ -53,8 +54,10 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnPersonById(int id, string expectedName)
         {
             //Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
+
             var repository = new PersonRepository(context);
 
             // Act
@@ -73,8 +76,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnPersonByRole(int id, string expectedName)
         {
             //Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             var repository = new PersonRepository(context);
 
@@ -90,7 +94,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldSavePersonList()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            using var context = databaseFixture.CreateInMemoryDbContext();
 
             var repository = new PersonRepository(context);
             IReadOnlyCollection<Person> personList = new List<Person>

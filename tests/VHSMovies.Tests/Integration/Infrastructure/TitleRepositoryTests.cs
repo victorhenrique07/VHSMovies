@@ -16,18 +16,18 @@ namespace VHSMovies.Tests.Integration.Infrastructure
     [Collection("DatabaseCollection")]
     public class TitleRepositoryTests
     {
-        private readonly DatabaseSetupFixture _fixture;
+        private readonly DatabaseSetupFixture databaseFixture;
 
-        public TitleRepositoryTests(DatabaseSetupFixture fixture)
+        public TitleRepositoryTests(DatabaseSetupFixture databaseFixture)
         {
-            _fixture = fixture;
+            this.databaseFixture = databaseFixture;
         }
 
         [Fact]
         public async Task ShouldSaveNewSingleTitle()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            using var context = databaseFixture.CreateInMemoryDbContext();
 
             Title title = new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
             {
@@ -52,7 +52,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldSaveTitlesList()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
+            using var context = databaseFixture.CreateInMemoryDbContext();
 
             List<Title> titles = new List<Title>(){
                 new Title("The Shawshank Redemption", TitleType.Movie, 1994, "tt0111161")
@@ -85,8 +85,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnAllTitlesWithGenresAndRatings()
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             TitleRepository repository = new TitleRepository(context);
 
@@ -112,8 +113,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnAllByReviewerName(string reviewerName)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             TitleRepository repository = new TitleRepository(context);
 
@@ -142,8 +144,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnAllByGenreId(int genreId)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             TitleRepository repository = new TitleRepository(context);
 
@@ -168,8 +171,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnTitleById(int titleId, string titleExpectedName)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             TitleRepository repository = new TitleRepository(context);
 
@@ -199,8 +203,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         public async Task ShouldReturnTitleByExternalId(string titleExternalId, string titleExpectedName, string reviewerName)
         {
             // Arrange
-            using var context = _fixture.CreateInMemoryDbContext();
-            _fixture.SeedDatabase(context);
+            PopulateDatabase seed = new PopulateDatabase();
+            using var context = databaseFixture.CreateInMemoryDbContext();
+            seed.SeedDatabase(context);
 
             TitleRepository repository = new TitleRepository(context);
 
