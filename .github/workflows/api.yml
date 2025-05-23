@@ -41,6 +41,9 @@ jobs:
       - name: Restore Test Dependencies
         run: dotnet restore ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj
 
+      - name: Build Test Project
+        run: dotnet build ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --no-restore
+
       - name: Unit Tests and Integration Tests
         run: dotnet test ./tests/VHSMovies.Tests/VHSMovies.Tests.csproj --no-build --verbosity normal
 
