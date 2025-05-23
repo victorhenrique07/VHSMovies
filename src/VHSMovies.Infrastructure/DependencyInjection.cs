@@ -66,13 +66,9 @@ namespace VHSMovies.Infraestructure
 
         public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
-            DbConfigurationManager manager = DbConfigurationManager.Instance;
+            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", EnvironmentVariableTarget.Machine) ?? "localhost:6379";
 
-            string REDIS_HOST = manager.GetConfigurationValue("REDISHOST");
-            string REDIS_PORT = manager.GetConfigurationValue("REDISPORT");
-            string REDIS_PASSWORD = manager.GetConfigurationValue("REDISPASSWORD");
-
-            string connectionString = $"{REDIS_HOST}:{REDIS_PORT},password={REDIS_PASSWORD},defaultDatabase=0";
+            string connectionString = $"{REDIS_CONNECTION_STRING}";
 
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new InvalidOperationException("The redis connection string was not defined.");
