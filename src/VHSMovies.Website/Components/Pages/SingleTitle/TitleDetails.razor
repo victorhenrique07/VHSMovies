@@ -1,0 +1,80 @@
+﻿@using VHSMovies.Api.Integration.Main.Responses
+
+<MudContainer Class="movie-layout flex-nowrap d-flex flex-row align-start gap-12 py-16">
+    <div class="poster">
+        <MudImage Src="@Title.PosterImageUrl" Alt="@Title.Name" />
+    </div>
+
+    <div class="content" style="min-width:700px; max-width:950px;">
+        <MudText Typo="Typo.h5" Class="mb-2 fw-bold">Overview</MudText>
+        <MudText Class="mb-4">
+            @Title.Description
+        </MudText>
+
+        <div class="movie-details-sections d-grid gap-8 mt-8">
+            <div class="movie-detail">
+                @if (Title.Directors != null)
+                {
+                    <MudText Typo="Typo.h3">@(Title.Directors.Count() > 1 ? "Directors" : "Director")</MudText>
+
+                    foreach (PersonResponse director in Title.Directors)
+                    {
+                        <p>@director.Name</p>
+                    }
+                }
+            </div>
+            <div class="movie-detail">
+                @if (Title.Writers != null)
+                {
+                    <MudText Typo="Typo.h3">@(Title.Writers.Count() > 1 ? "Writers" : "Writer")</MudText>
+
+                    foreach (PersonResponse director in Title.Writers)
+                    {
+                        <p>@director.Name</p>
+                    }
+                }
+            </div>
+            <div class="movie-detail">
+                @if (Title.Writers != null)
+                {
+                    <MudText Typo="Typo.h3">@(Title.Actors.Count() > 1 ? "Actors" : "Actor")</MudText>
+
+                    foreach (PersonResponse actor in Title.Actors)
+                    {
+                        <p>@actor.Name</p>
+                    }
+                }
+            </div>
+            <div class="movie-detail">
+                <MudText Typo="Typo.h3">Release Year</MudText>
+                @if (Title.ReleaseDate.HasValue)
+                {
+                    <p>@Title.ReleaseDate.Value.Year</p>
+                }
+                else
+                {
+                    <p>Unknown</p>
+                }
+            </div>
+
+            @if (Title.Providers != null)
+            {
+                <div class="movie-detail flex-row">
+                    <MudText Typo="Typo.h3">Watch Providers</MudText>
+
+                    @foreach (WatchProvider provider in Title.Providers)
+                    {
+                        <MudTooltip Text="@provider.Name">
+                            <MudImage Src="@provider.LogoPath" Class="rounded-lg" Width="85" Height="85" />
+                        </MudTooltip>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public TitleResponse Title { get; set; }
+}

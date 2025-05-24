@@ -1,0 +1,32 @@
+﻿
+::deep .genre, ::deep .release-date, ::deep .runtime {
+    font-size: 0.8rem;
+    background-color: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+::deep .movie-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+::deep .rating-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #ffc107;
+    color: black;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::deep .rating-number {
+    font-size: 1.5rem;
+}
+
+::deep .rating-count {
+    display: block;
+}

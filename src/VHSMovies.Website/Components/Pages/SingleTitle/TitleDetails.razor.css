@@ -1,0 +1,35 @@
+﻿.movie-detail ::deep h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.4rem;
+}
+
+.movie-detail ::deep p {
+    margin: 0;
+    font-weight: 500;
+    color: #212529;
+}
+
+.movie-detail ::deep img {
+    padding: 10px;
+}
+
+.poster ::deep img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.poster {
+    width: 300px;
+    height: 450px;
+    border-radius: 1.6rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.movie-details-sections {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
