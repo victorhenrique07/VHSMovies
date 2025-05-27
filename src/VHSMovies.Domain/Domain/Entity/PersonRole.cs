@@ -8,9 +8,8 @@ namespace VHSMovies.Domain.Domain.Entity
 {
     public enum PersonRole
     {
-        None = 0,
-        Actor = 13,
+        Actor = 1,
         Director = 2,
-        Writer = 1
+        Writer = 3
     }
 }

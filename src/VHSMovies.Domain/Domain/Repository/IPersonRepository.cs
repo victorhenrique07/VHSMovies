@@ -10,10 +10,14 @@ namespace VHSMovies.Domain.Domain.Repository
 {
     public interface IPersonRepository
     {
-        Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole role);
+        Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole? role = null);
 
         Task<Person> GetPersonById(int id);
 
         Task RegisterListAsync(IReadOnlyCollection<Person> list);
+
+        IQueryable<Person> Query();
+
+        Task SaveChangesAsync();
     }
 }
