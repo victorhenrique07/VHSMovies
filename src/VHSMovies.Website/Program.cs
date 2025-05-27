@@ -17,9 +17,11 @@ builder.Services.AddMudServices();
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+var API_URL = builder.HostEnvironment.IsDevelopment() ? "http://localhost:5000" : "https://api.vhsmovies.com.br";
+
 Action<HttpClient> httpClientConfigurator = c =>
 {
-    c.BaseAddress = new Uri("https://api.vhsmovies.com.br");
+    c.BaseAddress = new Uri(API_URL);
 };
 
 builder.Services.AddRefitClient<ITitlesClient>()
@@ -28,6 +30,5 @@ builder.Services.AddRefitClient<IGenresClient>()
     .ConfigureHttpClient(httpClientConfigurator);
 
 builder.Services.AddSingleton<WebsiteDetails>();
-
 
 await builder.Build().RunAsync();

@@ -3,7 +3,13 @@
     public static class Configuration
     {
         public static string CorsPolicyName = "vhsmovies";
-        public static string BackendUrl = "https://api.vhsmovies.com.br";
-        public static string FrontendUrl = "https://www.vhsmovies.com.br";
+        private static string FrontendUrl { get; set; }
+
+        public static string GetFrontendUrl(IWebHostEnvironment webHost)
+        {
+            FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL", webHost.IsDevelopment() ? EnvironmentVariableTarget.Machine : EnvironmentVariableTarget.Process);
+
+            return FrontendUrl;
+        }
     }
 }

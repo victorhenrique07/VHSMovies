@@ -15,15 +15,13 @@ using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
 using VHSMovies.Infrastructure;
 using VHSMovies.Infrastructure.Redis;
+using VHSMovies.Infrastructure.Services;
 
 namespace VHSMovies.Infraestructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services, 
-            IConfiguration configuration,
-            IWebHostEnvironment environment)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
             if (environment == null || environment.IsDevelopment())
             {
@@ -64,9 +62,9 @@ namespace VHSMovies.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target)
         {
-            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", EnvironmentVariableTarget.Machine) ?? "localhost:6379";
+            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target);
 
             string connectionString = $"{REDIS_CONNECTION_STRING}";
 
@@ -78,6 +76,23 @@ namespace VHSMovies.Infraestructure
             );
 
             services.AddScoped<IRedisRepository, RedisRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target)
+        {
+            var apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY", target);
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+                throw new InvalidOperationException("The TMDb API key was not defined.");
+
+            services.AddHttpClient<ITMDbService, TMDbService>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                client.DefaultRequestHeaders.Add("accept", "application/json");
+            });
 
             return services;
         }
