@@ -5,7 +5,7 @@ using VHSMovies.Application.Models;
 using VHSMovies.Mediator;
 using VHSMovies.Mediator.Interfaces;
 
-namespace VHSMovies.Api.Controllers
+namespace VHSMovies.Api.Controllers.Cast
 {
     [ApiController]
     [Route("cast/")]

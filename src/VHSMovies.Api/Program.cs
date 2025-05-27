@@ -14,16 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+EnvironmentVariableTarget target = builder.Environment.IsDevelopment() ? EnvironmentVariableTarget.Machine : EnvironmentVariableTarget.Process;
+
 builder.WebHost.UseUrls($"http://*:{port}");
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
-builder.Services.AddRedis(builder.Configuration);
+builder.Services.AddRedis(builder.Configuration, target);
+builder.Services.AddTMDbClient(builder.Configuration, target);
 builder.Services.AddSimpleMediator();
-
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024;
+    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024 * 1024 * 1024;
 });
 
 builder.Services.AddMemoryCache();
@@ -33,7 +36,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(Configuration.CorsPolicyName, policy =>
     {
         policy.WithOrigins(
-                Configuration.FrontendUrl
+                Configuration.GetFrontendUrl(builder.Environment)
             )
               .AllowAnyMethod()
               .AllowAnyHeader()
@@ -74,7 +77,7 @@ app.UseAuthorization();
 
 app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
 
