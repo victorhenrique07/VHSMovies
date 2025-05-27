@@ -18,76 +18,69 @@ namespace VHSMovies.Application.Handlers
     public class ReadPeopleCommandHandler : IRequestHandler<ReadPeopleCommand, Unit>
     {
         private readonly IPersonRepository personRepository;
-        private readonly ITitleRepository titleRepository;
-        private readonly ICastRepository castRepository;
 
         private readonly ILogger<ReadPeopleCommandHandler> _logger;
 
         public ReadPeopleCommandHandler(IPersonRepository personRepository,
-            ILogger<ReadPeopleCommandHandler> _logger,
-            ITitleRepository titleRepository,
-            ICastRepository castRepository)
+            ILogger<ReadPeopleCommandHandler> _logger)
         {
             this.personRepository = personRepository;
             this._logger = _logger;
-            this.titleRepository = titleRepository;
-            this.castRepository = castRepository;
         }
 
         public async Task<Unit> Handle(ReadPeopleCommand command, CancellationToken cancellationToken)
         {
             List<Person> newPeople = new List<Person>();
 
-            var existingPeopleIds = new HashSet<int>((await personRepository.GetAllPerson(PersonRole.None)).Select(x => x.Id));
+            var existingPeopleIds = new HashSet<int>((await personRepository.GetAllPerson()).Select(x => x.Id));
 
-            List<string> validHeaders = new List<string>()
+            HashSet<string> validHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "personid",
-                "name_"
+                "nconst",
+                "primaryName",
+                "birthYear",
+                "deathYear"
             };
 
-            foreach (var rows in command.PeopleRows)
+            foreach (var rowSet in command.PeopleRows)
             {
-                int id = 0;
-                string name = "";
+                var normalizedKeys = rowSet.Select(r => r.Key.Trim().ToLower()).ToHashSet();
 
-                bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
+                if (!validHeaders.IsSubsetOf(normalizedKeys))
+                    throw new KeyNotFoundException("Headers do not match.");
 
-                if (!matchKeys)
-                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
+                var values = rowSet.ToDictionary(
+                    kv => kv.Key.Trim().ToLower(),
+                    kv => kv.Value?.Trim() ?? string.Empty
+                );
 
-                foreach (var row in rows)
+                string nconst = GetValueOrDefault(values["nconst"]);
+                string primaryName = GetValueOrDefault(values["primaryname"]);
+                int birthYear = ParseInt(values.GetValueOrDefault("birthyear"));
+                int deathYear = ParseInt(values.GetValueOrDefault("deathyear"));
+
+                _logger.LogInformation($"Processing person: {nconst} - {primaryName}");
+
+                Person person = new Person(primaryName)
                 {
-                    if (row.Key.ToLower() == "personid")
-                        id = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-                    if (row.Key.ToLower() == "name_")
-                        name = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                }
-
-                _logger.LogInformation($"Processando pessoa: {id} - {name}");
-
-                bool personExists = existingPeopleIds.Contains(id);
-
-                if (personExists)
-                {
-                    _logger.LogInformation($"Pessoa \"{name}\" já existe.");
-
-                    continue;
-                }
-
-                Person person = new Person(name)
-                {
-                    Id = id
+                    IMDB_Id = nconst,
+                    BirthYear = birthYear,
+                    DeathYear = deathYear
                 };
-
-                existingPeopleIds.Add(id);
 
                 newPeople.Add(person);
             }
 
             await personRepository.RegisterListAsync(newPeople);
+            await personRepository.SaveChangesAsync();
 
             return Unit.Value;
         }
+
+        private static string GetValueOrDefault(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+        private static int ParseInt(string value) =>
+            int.TryParse(value, out var result) ? result : 0;
     }
 }

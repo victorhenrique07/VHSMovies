@@ -13,6 +13,7 @@ using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+using VHSMovies.Infrastructure.Services;
 using VHSMovies.Mediator;
 using VHSMovies.Mediator.Interfaces;
 
@@ -23,23 +24,26 @@ namespace VHSMovies.Application.Handlers
         private readonly IRecommendedTitlesRepository recomendedTitlesRepository;
         private readonly ICastRepository castRepository;
         private readonly IGenreRepository genreRepository;
+        private readonly ITMDbService tmdbService;
         private readonly ILogger<GetRecommendedTitlesQueryHandler> logger;
 
         public GetRecommendedTitlesQueryHandler(
             IRecommendedTitlesRepository recomendedTitlesRepository,
             ICastRepository castRepository,
-            IGenreRepository genreRepository)
+            IGenreRepository genreRepository,
+            ITMDbService tmdbService)
         {
             this.recomendedTitlesRepository = recomendedTitlesRepository;
             this.castRepository = castRepository;
             this.genreRepository = genreRepository;
+            this.tmdbService = tmdbService;
         }
 
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetRecommendedTitlesQuery query, CancellationToken cancellationToken)
         {
             IQueryable<RecommendedTitle> titles = recomendedTitlesRepository.Query();
 
-            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
+            TitleResponseFactory titleResponseFactory = new TitleResponseFactory(tmdbService);
 
             IReadOnlyCollection<Genre> allGenres = await genreRepository.GetAll();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using VHSMovies.Application.Commands;
@@ -28,109 +29,124 @@ namespace VHSMovies.Application.Handlers
             ITitleRepository titleRepository,
             ICastRepository castRepository)
         {
-            this.personRepository = personRepository;
             this._logger = _logger;
+            this.personRepository = personRepository;
             this.titleRepository = titleRepository;
             this.castRepository = castRepository;
         }
 
         public async Task<Unit> Handle(ReadCastCommand command, CancellationToken cancellationToken)
         {
-            /*List<Cast> newCasts = new List<Cast>();
+            var tconsts = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var nconsts = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            var existingPeople = new HashSet<Person>(await personRepository.GetAllPerson(PersonRole.None));
-            var existingTitles = new HashSet<Title>(await titleRepository.GetAll());
-
-            List<string> validHeaders = new List<string>()
+            foreach (var row in command.CastRows.SelectMany(r => r))
             {
-                "personid",
-                "name",
-                "filmid",
-                "departmentid"
-            };
+                if (row.Key.Equals("tconst", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(row.Value))
+                    tconsts.Add(row.Value.Trim());
 
-            foreach (var rows in command.CastRows)
-            {
-                int personId = 0;
-                string name = "";
-                int titleId = 0;
-                PersonRole role = PersonRole.None;
-
-                Person person = new Person();
-                Cast cast = new Cast();
-
-                bool matchKeys = validHeaders.All(header => rows.Any(r => r.Key.ToLower() == header));
-
-                if (!matchKeys)
-                    throw new KeyNotFoundException("Cabeçalhos não correspondentes.");
-
-                foreach (var row in rows)
-                {
-                    if (row.Key.ToLower() == "personid")
-                    {
-                        personId = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-
-                        if (personId == 0)
-                            break;
-                    }
-                    if (row.Key.ToLower() == "name")
-                        name = !string.IsNullOrEmpty(row.Value) ? row.Value : "";
-                    if (row.Key.ToLower() == "filmid")
-                        titleId = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-                    if (row.Key.ToLower() == "departmentid")
-                    {
-                        int index = !string.IsNullOrEmpty(row.Value) ? Convert.ToInt32(row.Value) : 0;
-
-                        if (!Enum.IsDefined(typeof(PersonRole), index))
-                        {
-                            role = PersonRole.None;
-                            continue;
-                        }
-
-                        role = (PersonRole)Enum.ToObject(typeof(PersonRole), index);
-                    }
-                }
-
-                if (role == PersonRole.None)
-                    continue;
-
-                _logger.LogInformation($"Processando pessoa do elenco: {personId} - {name} - {role.ToString()}");
-
-                bool personExists = existingPeople.Any(x => x.Id == personId);
-
-                bool titleExists = existingTitles.Any(x => x.Id == titleId);
-
-                if (!titleExists)
-                {
-                    _logger.LogInformation($"Filme com Id {titleId} não existe.");
-
-                    continue;
-                }
-
-                if (personExists && titleExists)
-                {
-                    if (newCasts.Any(x => x.Title.Id == titleId && x.Person.Id == personId))
-                        continue;
-
-                    _logger.LogInformation($"Pessoa \"{name}\" já existe.");
-
-                    cast = new Cast()
-                    {
-                        PersonId = personId,
-                        TitleId = titleId,
-                        Role = role,
-                    };
-
-                    newCasts.Add(cast);
-
-                    continue;
-                }
+                if (row.Key.Equals("nconst", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(row.Value))
+                    nconsts.Add(row.Value.Trim());
             }
 
-            if (newCasts.Any())
-                await castRepository.RegisterListAsync(newCasts);*/
+            var titleList = await titleRepository.Query()
+                .Where(t => tconsts.Contains(t.IMDB_Id))
+                .ToListAsync(cancellationToken);
+
+            var personList = await personRepository.Query()
+                .Where(n => nconsts.Contains(n.IMDB_Id))
+                .ToListAsync(cancellationToken);
+
+            var titleMap = titleList.ToDictionary(t => t.IMDB_Id, StringComparer.OrdinalIgnoreCase);
+            var personMap = personList.ToDictionary(p => p.IMDB_Id, StringComparer.OrdinalIgnoreCase);
+
+            var validRowSets = command.CastRows
+                .Where(rowSet =>
+                {
+                    if (!rowSet.Any())
+                        return false;
+
+                    var values = rowSet.ToDictionary(
+                        kv => kv.Key.Trim(),
+                        kv => kv.Value?.Trim() ?? string.Empty,
+                        StringComparer.OrdinalIgnoreCase
+                    );
+
+                    return values.TryGetValue("tconst", out var tconst) && !string.IsNullOrWhiteSpace(tconst) &&
+                           titleMap.ContainsKey(tconst) && values.TryGetValue("nconst", out var nconst) &&
+                           !string.IsNullOrWhiteSpace(nconst) && personMap.ContainsKey(nconst);
+                })
+                .ToList();
+
+            command.CastRows.Clear();
+
+            var newCasts = new List<Cast>();
+
+            var existingCastKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var rowSet in validRowSets)
+            {
+                if (rowSet == null || rowSet.Count == 0)
+                    continue;
+
+                var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var kv in rowSet)
+                    values[kv.Key.Trim()] = kv.Value?.Trim() ?? string.Empty;
+
+                if (!values.TryGetValue("tconst", out var tconst) || string.IsNullOrWhiteSpace(tconst) ||
+                    !values.TryGetValue("nconst", out var nconst) || string.IsNullOrWhiteSpace(nconst) ||
+                    !values.TryGetValue("category", out var category))
+                {
+                    _logger.LogWarning("Missing required cast data.");
+                    continue;
+                }
+
+                var role = category.ToLowerInvariant() switch
+                {
+                    "actor" or "actress" => PersonRole.Actor,
+                    "director" => PersonRole.Director,
+                    "writer" => PersonRole.Writer,
+                    _ => (PersonRole?)null
+                };
+
+                if (!role.HasValue)
+                {
+                    _logger.LogWarning($"Cast role '{category}' does not exist.");
+                    continue;
+                }
+
+                if (!personMap.TryGetValue(nconst, out var person))
+                {
+                    _logger.LogWarning($"Person with nconst {nconst} not found.");
+                    continue;
+                }
+
+                if (!titleMap.TryGetValue(tconst, out var title))
+                {
+                    _logger.LogWarning($"Title with tconst {tconst} not found.");
+                    continue;
+                }
+
+                string castKey = $"{tconst}|{nconst}";
+
+                if (!existingCastKeys.Add(castKey))
+                    continue;
+
+                _logger.LogInformation($"Processing Cast - Role: {role}; Person: {person.Name}; Title: {title.Name}");
+
+                newCasts.Add(new Cast(title, person, role.Value));
+            }
+
+            validRowSets.Clear();
+
+            await castRepository.RegisterListAsync(newCasts);
+            await castRepository.SaveChanges();
 
             return Unit.Value;
         }
+
+        private static string GetValueOrDefault(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
     }
 }

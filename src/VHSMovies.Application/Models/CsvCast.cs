@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using VHSMovies.Domain.Domain.Entity;
-
 namespace VHSMovies.Application.Models
 {
-    public class CastResponse
+    public class CsvCast
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string tconst { get; set; }
+        public string nconst { get; set; }
+        public string category { get; set; }
     }
 }

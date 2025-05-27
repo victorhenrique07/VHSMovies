@@ -12,14 +12,19 @@
 
         public decimal AverageRating { get; set; }
 
-        public int TotalRatings { get; set; }
+        public int TotalReviews { get; set; }
 
         public string PosterImageUrl { get; set; }
+
         public string BackdropImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
 
-        public IReadOnlyCollection<CastResponse> Cast { get; set; }
+        public ICollection<CastResponse> Actors { get; set; } = new List<CastResponse>();
+        public ICollection<CastResponse> Directors { get; set; } = new List<CastResponse>();
+        public ICollection<CastResponse> Writers { get; set; } = new List<CastResponse>();
+
+        public List<WatchProvider> Providers { get; set; }
 
         public TitleResponse()
         {
@@ -32,7 +37,7 @@
             ReleaseDate = releaseDate;
             Description = description;
             AverageRating = averageRating;
-            TotalRatings = totalRatings;
+            TotalReviews = totalRatings;
         }
     }
 }

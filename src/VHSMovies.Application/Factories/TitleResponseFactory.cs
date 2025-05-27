@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 
 using Microsoft.IdentityModel.Tokens;
 
+using MySqlX.XDevAPI.Common;
+
 using RestSharp;
 
 using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
+using VHSMovies.Infraestructure.Services.Responses;
+using VHSMovies.Infrastructure.Services;
+using VHSMovies.Infrastructure.Services.Responses;
 
 namespace VHSMovies.Application.Factories
 {
     public class TitleResponseFactory
     {
+        private readonly ITMDbService tMDbService;
+
+        public TitleResponseFactory(ITMDbService tMDbService)
+        {
+            this.tMDbService = tMDbService;
+        }
+
         public TitleResponse CreateTitleResponseByRecommendedTitle(RecommendedTitle title, IReadOnlyCollection<Genre> genres = null)
         {
             List<GenreResponse> titlesGenres = new List<GenreResponse>();
@@ -35,7 +47,7 @@ namespace VHSMovies.Application.Factories
                 }
             }
 
-            var titleDetails = FindTitleDetails(title.IMDB_Id);
+            var titleDetails = tMDbService.FindTitleDetails(title.IMDB_Id).Result;
 
             TitleDetailsResult result = titleDetails.Movie_Results.FirstOrDefault()
                                       ?? titleDetails.Tv_Results.FirstOrDefault()
@@ -64,7 +76,7 @@ namespace VHSMovies.Application.Factories
 
         public TitleResponse CreateTitleResponseByTitle(Title title)
         {
-            TitleDetailsTMDB titleDetails = FindTitleDetails(title.IMDB_Id);
+            TitleDetailsTMDB titleDetails = tMDbService.FindTitleDetails(title.IMDB_Id).Result;
 
             TitleDetailsResult result = titleDetails.Movie_Results.FirstOrDefault()
                                       ?? titleDetails.Tv_Results.FirstOrDefault()
@@ -85,7 +97,6 @@ namespace VHSMovies.Application.Factories
 
 
             List<GenreResponse> titleGenres = new List<GenreResponse>();
-            List<CastResponse> titleCast = new List<CastResponse>();
 
             foreach (TitleGenre titleGenre in title.Genres)
             {
@@ -96,44 +107,52 @@ namespace VHSMovies.Application.Factories
                 titleGenres.Add(new GenreResponse(genre.Id, genre.Name));
             }
 
+            TitleResponse titleResponse = new TitleResponse(title.Id, title.Name, release_date, overview, title.AverageRating, title.TotalReviews)
+            {
+                PosterImageUrl = posterUrl,
+                BackdropImageUrl = backdropUrl,
+                Genres = titleGenres
+            };
+
             foreach (Cast cast in title.Casts)
             {
                 if (cast == null)
                     continue;
 
-                PersonResponse person = new PersonResponse(cast.Person.Id, cast.Person.Name);
-
                 CastResponse castResponse = new CastResponse()
                 {
-                    Person = person,
-                    Role = cast.Role
+                    Id = cast.Person.Id,
+                    Name = cast.Person.Name
                 };
 
-                titleCast.Add(castResponse);
+                if (cast.Role == PersonRole.Director)
+                {
+                    titleResponse.Directors.Add(castResponse);
+                }
+                else if (cast.Role == PersonRole.Writer)
+                {
+                    titleResponse.Writers.Add(castResponse);
+                }
+                else
+                {
+                    titleResponse.Actors.Add(castResponse);
+                }
             }
 
-            return new TitleResponse(title.Id, title.Name, release_date, overview, title.AverageRating, title.TotalReviews)
+            TMDbWatchProvider tmdbWatchProvider = tMDbService.FindTitleWatchProvider(result.id, title.Type).Result;
+
+            if (tmdbWatchProvider.results.ContainsKey("BR"))
             {
-                PosterImageUrl = posterUrl,
-                BackdropImageUrl = backdropUrl,
-                Genres = titleGenres,
-                Cast = titleCast
-            };
-        }
+                titleResponse.Providers = tmdbWatchProvider.results["BR"].flatrate?
+                    .Select(provider => new WatchProvider(provider.provider_name, provider.logo_path, "flatrate"))
+                    .ToList() ?? new List<WatchProvider>();
 
-        private TitleDetailsTMDB FindTitleDetails(string imdb_id)
-        {
-            var options = new RestClientOptions($"https://api.themoviedb.org/3/find/{imdb_id}?external_source=imdb_id");
+                titleResponse.Providers = tmdbWatchProvider.results["BR"].rent?
+                    .Select(provider => new WatchProvider(provider.provider_name, provider.logo_path, "rent"))
+                    .ToList() ?? new List<WatchProvider>();
+            }
 
-            var client = new RestClient(options);
-            var request = new RestRequest("");
-            request.AddHeader("accept", "application/json");
-            request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDVlNTg2ZWNkODdmY2I2YjFkNmU2Mzg5ZDg0NTUxYiIsIm5iZiI6MTczNDgwMTUwMS42MzMsInN1YiI6IjY3NjZmODVkMzMwYmNlNmVjOTkxMGQ2MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.SDtBev6hlNPFb-k_N7zSa1U_7S6FM2l7tqnATPGUNH0");
-            var response = client.GetAsync(request).Result;
-
-            var t = JsonSerializer.Deserialize<TitleDetailsTMDB>(response.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            return t;
+            return titleResponse;
         }
     }
 }
