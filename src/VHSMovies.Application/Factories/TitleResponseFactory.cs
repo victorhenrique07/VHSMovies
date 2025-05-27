@@ -24,6 +24,8 @@ namespace VHSMovies.Application.Factories
     {
         private readonly ITMDbService tMDbService;
 
+        public TitleResponseFactory() { }
+
         public TitleResponseFactory(ITMDbService tMDbService)
         {
             this.tMDbService = tMDbService;

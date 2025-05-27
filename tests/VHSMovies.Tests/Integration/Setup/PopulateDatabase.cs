@@ -33,159 +33,59 @@ namespace VHSMovies.Tests.Integration.Setup
             return new List<Cast>
             {
                 // The Shawshank Redemption
-                new Cast
-                {
-                    Id = 1,
-                    Title = Context.Titles.First(t => t.Id == 1297469),
-                    Person = Context.People.First(p => p.Id == 1), // Tim Robbins
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 2,
-                    Title = Context.Titles.First(t => t.Id == 1297469),
-                    Person = Context.People.First(p => p.Id == 5), // Frank Darabont
-                    Role = PersonRole.Director
-                },
-                new Cast
-                {
-                    Id = 3,
-                    Title = Context.Titles.First(t => t.Id == 1297469),
-                    Person = Context.People.First(p => p.Id == 8), // Stephen King
-                    Role = PersonRole.Writer
-                },
+                new Cast { Id = 1, Title = Context.Titles.First(t => t.Id == 1297469), Person = Context.People.First(p => p.Id == 1), Role = PersonRole.Actor },
+                new Cast { Id = 2, Title = Context.Titles.First(t => t.Id == 1297469), Person = Context.People.First(p => p.Id == 5), Role = PersonRole.Director },
+                new Cast { Id = 3, Title = Context.Titles.First(t => t.Id == 1297469), Person = Context.People.First(p => p.Id == 8), Role = PersonRole.Writer },
 
                 // The Dark Knight
-                new Cast
-                {
-                    Id = 4,
-                    Title = Context.Titles.First(t => t.Id == 1489427),
-                    Person = Context.People.First(p => p.Id == 2), // Christian Bale
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 5,
-                    Title = Context.Titles.First(t => t.Id == 1489427),
-                    Person = Context.People.First(p => p.Id == 6), // Christopher Nolan
-                    Role = PersonRole.Director
-                },
-                new Cast
-                {
-                    Id = 6,
-                    Title = Context.Titles.First(t => t.Id == 1489427),
-                    Person = Context.People.First(p => p.Id == 9), // Jonathan Nolan
-                    Role = PersonRole.Writer
-                },
+                new Cast { Id = 4, Title = Context.Titles.First(t => t.Id == 1489427), Person = Context.People.First(p => p.Id == 2), Role = PersonRole.Actor },
+                new Cast { Id = 5, Title = Context.Titles.First(t => t.Id == 1489427), Person = Context.People.First(p => p.Id == 6), Role = PersonRole.Director },
+                new Cast { Id = 6, Title = Context.Titles.First(t => t.Id == 1489427), Person = Context.People.First(p => p.Id == 9), Role = PersonRole.Writer },
 
                 // Breaking Bad
-                new Cast
-                {
-                    Id = 7,
-                    Title = Context.Titles.First(t => t.Id == 1519096),
-                    Person = Context.People.First(p => p.Id == 3), // Bryan Cranston
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 8,
-                    Title = Context.Titles.First(t => t.Id == 1519096),
-                    Person = Context.People.First(p => p.Id == 7), // Vince Gilligan
-                    Role = PersonRole.Director
-                },
+                new Cast { Id = 7, Title = Context.Titles.First(t => t.Id == 1519096), Person = Context.People.First(p => p.Id == 3), Role = PersonRole.Actor },
+                new Cast { Id = 8, Title = Context.Titles.First(t => t.Id == 1519096), Person = Context.People.First(p => p.Id == 7), Role = PersonRole.Director },
+                new Cast { Id = 9, Title = Context.Titles.First(t => t.Id == 1519096), Person = Context.People.First(p => p.Id == 16), Role = PersonRole.Writer },
 
                 // Game of Thrones
-                new Cast
-                {
-                    Id = 9,
-                    Title = Context.Titles.First(t => t.Id == 1522910),
-                    Person = Context.People.First(p => p.Id == 4), // Emilia Clarke
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 10,
-                    Title = Context.Titles.First(t => t.Id == 1522910),
-                    Person = Context.People.First(p => p.Id == 10), // George R. R. Martin
-                    Role = PersonRole.Writer
-                },
+                new Cast { Id = 10, Title = Context.Titles.First(t => t.Id == 1522910), Person = Context.People.First(p => p.Id == 4), Role = PersonRole.Actor },
+                new Cast { Id = 11, Title = Context.Titles.First(t => t.Id == 1522910), Person = Context.People.First(p => p.Id == 6), Role = PersonRole.Director },
+                new Cast { Id = 12, Title = Context.Titles.First(t => t.Id == 1522910), Person = Context.People.First(p => p.Id == 10), Role = PersonRole.Writer },
 
                 // Sherlock
-                new Cast
-                {
-                    Id = 11,
-                    Title = Context.Titles.First(t => t.Id == 1727014),
-                    Person = Context.People.First(p => p.Id == 4), // Emilia Clarke (substituir por Benedict Cumberbatch se quiser ser fiel)
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 12,
-                    Title = Context.Titles.First(t => t.Id == 1727014),
-                    Person = Context.People.First(p => p.Id == 7), // Vince Gilligan (substituir se quiser)
-                    Role = PersonRole.Director
-                },
+                new Cast { Id = 13, Title = Context.Titles.First(t => t.Id == 1727014), Person = Context.People.First(p => p.Id == 4), Role = PersonRole.Actor },
+                new Cast { Id = 14, Title = Context.Titles.First(t => t.Id == 1727014), Person = Context.People.First(p => p.Id == 6), Role = PersonRole.Director },
+                new Cast { Id = 15, Title = Context.Titles.First(t => t.Id == 1727014), Person = Context.People.First(p => p.Id == 9), Role = PersonRole.Writer },
 
                 // David Attenborough: A Life on Our Planet
-                new Cast
-                {
-                    Id = 13,
-                    Title = Context.Titles.First(t => t.Id == 1613429),
-                    Person = Context.People.First(p => p.Id == 1), // Tim Robbins (substituir por David Attenborough se quiser)
-                    Role = PersonRole.Actor
-                },
+                new Cast { Id = 16, Title = Context.Titles.First(t => t.Id == 1613429), Person = Context.People.First(p => p.Id == 12), Role = PersonRole.Actor },
+                new Cast { Id = 17, Title = Context.Titles.First(t => t.Id == 1613429), Person = Context.People.First(p => p.Id == 12), Role = PersonRole.Director },
+                new Cast { Id = 18, Title = Context.Titles.First(t => t.Id == 1613429), Person = Context.People.First(p => p.Id == 20), Role = PersonRole.Writer },
 
                 // How the Grinch Stole Christmas!
-                new Cast
-                {
-                    Id = 14,
-                    Title = Context.Titles.First(t => t.Id == 1253249),
-                    Person = Context.People.First(p => p.Id == 1), // Tim Robbins (substituir por Boris Karloff se quiser)
-                    Role = PersonRole.Actor
-                },
+                new Cast { Id = 19, Title = Context.Titles.First(t => t.Id == 1253249), Person = Context.People.First(p => p.Id == 1), Role = PersonRole.Actor },
+                new Cast { Id = 20, Title = Context.Titles.First(t => t.Id == 1253249), Person = Context.People.First(p => p.Id == 13), Role = PersonRole.Director },
+                new Cast { Id = 21, Title = Context.Titles.First(t => t.Id == 1253249), Person = Context.People.First(p => p.Id == 17), Role = PersonRole.Writer },
 
                 // A Charlie Brown Christmas
-                new Cast
-                {
-                    Id = 15,
-                    Title = Context.Titles.First(t => t.Id == 1252161),
-                    Person = Context.People.First(p => p.Id == 1), // Tim Robbins (substituir por Peter Robbins se quiser)
-                    Role = PersonRole.Actor
-                },
+                new Cast { Id = 22, Title = Context.Titles.First(t => t.Id == 1252161), Person = Context.People.First(p => p.Id == 1), Role = PersonRole.Actor },
+                new Cast { Id = 23, Title = Context.Titles.First(t => t.Id == 1252161), Person = Context.People.First(p => p.Id == 14), Role = PersonRole.Director },
+                new Cast { Id = 24, Title = Context.Titles.First(t => t.Id == 1252161), Person = Context.People.First(p => p.Id == 18), Role = PersonRole.Writer },
 
                 // Chernobyl
-                new Cast
-                {
-                    Id = 16,
-                    Title = Context.Titles.First(t => t.Id == 2325522),
-                    Person = Context.People.First(p => p.Id == 3), // Bryan Cranston (substituir por Jared Harris se quiser)
-                    Role = PersonRole.Actor
-                },
-                new Cast
-                {
-                    Id = 17,
-                    Title = Context.Titles.First(t => t.Id == 2325522),
-                    Person = Context.People.First(p => p.Id == 7), // Vince Gilligan (substituir por Johan Renck se quiser)
-                    Role = PersonRole.Director
-                },
+                new Cast { Id = 25, Title = Context.Titles.First(t => t.Id == 2325522), Person = Context.People.First(p => p.Id == 3), Role = PersonRole.Actor },
+                new Cast { Id = 26, Title = Context.Titles.First(t => t.Id == 2325522), Person = Context.People.First(p => p.Id == 11), Role = PersonRole.Director },
+                new Cast { Id = 27, Title = Context.Titles.First(t => t.Id == 2325522), Person = Context.People.First(p => p.Id == 19), Role = PersonRole.Writer },
 
                 // Band of Brothers
-                new Cast
-                {
-                    Id = 18,
-                    Title = Context.Titles.First(t => t.Id == 1342415),
-                    Person = Context.People.First(p => p.Id == 3), // Bryan Cranston (substituir por Damian Lewis se quiser)
-                    Role = PersonRole.Actor
-                },
+                new Cast { Id = 28, Title = Context.Titles.First(t => t.Id == 1342415), Person = Context.People.First(p => p.Id == 3), Role = PersonRole.Actor },
+                new Cast { Id = 29, Title = Context.Titles.First(t => t.Id == 1342415), Person = Context.People.First(p => p.Id == 15), Role = PersonRole.Director },
+                new Cast { Id = 30, Title = Context.Titles.First(t => t.Id == 1342415), Person = Context.People.First(p => p.Id == 21), Role = PersonRole.Writer },
 
                 // Planet Earth
-                new Cast
-                {
-                    Id = 19,
-                    Title = Context.Titles.First(t => t.Id == 1506162),
-                    Person = Context.People.First(p => p.Id == 1), // Tim Robbins (substituir por David Attenborough se quiser)
-                    Role = PersonRole.Actor
-                }
+                new Cast { Id = 31, Title = Context.Titles.First(t => t.Id == 1506162), Person = Context.People.First(p => p.Id == 12), Role = PersonRole.Actor },
+                new Cast { Id = 32, Title = Context.Titles.First(t => t.Id == 1506162), Person = Context.People.First(p => p.Id == 12), Role = PersonRole.Director },
+                new Cast { Id = 33, Title = Context.Titles.First(t => t.Id == 1506162), Person = Context.People.First(p => p.Id == 20), Role = PersonRole.Writer }
             };
         }
         public List<Title> GetTitlesList(DbContextClass Context)
@@ -259,20 +159,31 @@ namespace VHSMovies.Tests.Integration.Setup
             return new List<Person>
             {
                 // Atores
-                new Person("Tim Robbins") { Id = 1 },         // The Shawshank Redemption
-                new Person("Christian Bale") { Id = 2 },      // The Dark Knight
-                new Person("Bryan Cranston") { Id = 3 },      // Breaking Bad
-                new Person("Emilia Clarke") { Id = 4 },       // Game of Thrones
+                new Person("Tim Robbins") { Id = 1, IMDB_Id = "tt1" },
+                new Person("Christian Bale") { Id = 2, IMDB_Id = "tt2" },
+                new Person("Bryan Cranston") { Id = 3, IMDB_Id = "tt3" },
+                new Person("Emilia Clarke") { Id = 4, IMDB_Id = "tt4" },
 
                 // Diretores
-                new Person("Frank Darabont") { Id = 5 },      // The Shawshank Redemption
-                new Person("Christopher Nolan") { Id = 6 },   // The Dark Knight
-                new Person("Vince Gilligan") { Id = 7 },      // Breaking Bad
+                new Person("Frank Darabont") { Id = 5, IMDB_Id = "tt5" },
+                new Person("Christopher Nolan") { Id = 6, IMDB_Id = "tt6" },
+                new Person("Vince Gilligan") { Id = 7, IMDB_Id = "tt7" },
+                new Person("Johan Renck") { Id = 11, IMDB_Id = "tt11" }, // Chernobyl
+                new Person("David Attenborough") { Id = 12, IMDB_Id = "tt12" }, // Documentários
+                new Person("Ron Howard") { Id = 13, IMDB_Id = "tt13" }, // How the Grinch Stole Christmas!
+                new Person("Bill Melendez") { Id = 14, IMDB_Id = "tt14" }, // A Charlie Brown Christmas
+                new Person("Tom Hanks") { Id = 15, IMDB_Id = "tt15" }, // Band of Brothers
 
                 // Escritores
-                new Person("Stephen King") { Id = 8 },        // The Shawshank Redemption (baseado em obra dele)
-                new Person("Jonathan Nolan") { Id = 9 },      // The Dark Knight
-                new Person("George R. R. Martin") { Id = 10 }  // Game of Thrones
+                new Person("Stephen King") { Id = 8, IMDB_Id = "tt8" },
+                new Person("Jonathan Nolan") { Id = 9, IMDB_Id = "tt9" },
+                new Person("George R. R. Martin") { Id = 10, IMDB_Id = "tt10" },
+                new Person("Andrew Stanton") { Id = 16, IMDB_Id = "tt16" }, // Wall-E
+                new Person("Dr. Seuss") { Id = 17, IMDB_Id = "tt17" }, // How the Grinch Stole Christmas!
+                new Person("Charles M. Schulz") { Id = 18, IMDB_Id = "tt18" }, // Peanuts
+                new Person("Craig Mazin") { Id = 19, IMDB_Id = "tt19" }, // Chernobyl
+                new Person("Mark Olshaker") { Id = 20, IMDB_Id = "tt20" }, // Documentários
+                new Person("Erik Durschmied") { Id = 21, IMDB_Id = "tt21" } // Band of Brothers
             };
         }
         public List<Genre> GetGenresList(DbContextClass Context)

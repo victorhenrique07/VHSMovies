@@ -19,6 +19,7 @@ using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+using VHSMovies.Infrastructure.Services;
 
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
@@ -29,6 +30,7 @@ namespace VHSMovies.Tests.Unit.Application
         private readonly Mock<IRecommendedTitlesRepository> _recommendedRepoMock = new();
         private readonly Mock<IGenreRepository> _genreRepoMock = new();
         private readonly Mock<ICastRepository> _castRepoMock = new();
+        private readonly Mock<ITMDbService> _tmdbServiceMock = new();
 
         private readonly GetRecommendedTitlesQueryHandler _handler;
 
@@ -62,7 +64,8 @@ namespace VHSMovies.Tests.Unit.Application
             _handler = new GetRecommendedTitlesQueryHandler(
                 _recommendedRepoMock.Object,
                 _castRepoMock.Object,
-                _genreRepoMock.Object
+                _genreRepoMock.Object,
+                _tmdbServiceMock.Object
             );
 
             darkKnightRecommendedTitle = new RecommendedTitle

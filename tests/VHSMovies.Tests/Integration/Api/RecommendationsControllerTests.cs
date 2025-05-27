@@ -110,7 +110,9 @@ namespace VHSMovies.Tests.Integration.Api
             title.ReleaseDate.Should().NotBeNull();
             title.Genres.Should().NotBeNullOrEmpty();
             title.Description.Should().NotBeNullOrEmpty();
-            title.Cast.Should().NotBeNullOrEmpty();
+            title.Actors.Should().NotBeNullOrEmpty();
+            title.Directors.Should().NotBeNullOrEmpty();
+            title.Writers.Should().NotBeNullOrEmpty();
             title.PosterImageUrl.Should().NotBeNullOrEmpty();
             title.BackdropImageUrl.Should().NotBeNullOrEmpty();
         }

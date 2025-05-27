@@ -16,5 +16,6 @@
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
     <None Include="VHSMovies.Website\Components\Pages\Recommendations\Component.razor" />
+    <None Include="VHSMovies.Website\Components\Pages\TitleDetails\Component.razor" />
   </ItemGroup>
 </Project>
