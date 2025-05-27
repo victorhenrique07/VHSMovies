@@ -64,7 +64,7 @@ namespace VHSMovies.Infraestructure
 
         public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target)
         {
-            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target);
+            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target) ?? "localhost:6379";
 
             string connectionString = $"{REDIS_CONNECTION_STRING}";
 
