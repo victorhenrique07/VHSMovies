@@ -27,7 +27,6 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         [InlineData(PersonRole.Actor, 4)]
         [InlineData(PersonRole.Director, 3)]
         [InlineData(PersonRole.Writer, 3)]
-        [InlineData(PersonRole.None, 10)]
         public async Task ShouldReturnAllPerson(PersonRole role, int expectedCountResult)
         {
             // Arrange
@@ -109,7 +108,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             await repository.RegisterListAsync(personList);
             await repository.SaveChangesAsync();
 
-            var people = await repository.GetAllPerson(PersonRole.None);
+            var people = await repository.GetAllPerson();
 
             // Assert
             people.Should().NotBeNull();

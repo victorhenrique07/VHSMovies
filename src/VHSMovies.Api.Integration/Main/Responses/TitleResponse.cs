@@ -24,5 +24,11 @@ namespace VHSMovies.Api.Integration.Main.Responses
         public string BackdropImageUrl { get; set; }
 
         public IReadOnlyCollection<GenreResponse> Genres { get; set; }
+        public IReadOnlyCollection<WatchProvider> Providers { get; set; }
+
+        public IReadOnlyCollection<PersonResponse> Directors { get; set; }
+        public IReadOnlyCollection<PersonResponse> Actors { get; set; }
+        public IReadOnlyCollection<PersonResponse> Writers { get; set; }
+
     }
 }
