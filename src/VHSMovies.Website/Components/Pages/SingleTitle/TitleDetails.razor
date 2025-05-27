@@ -17,9 +17,14 @@
                 {
                     <MudText Typo="Typo.h3">@(Title.Directors.Count() > 1 ? "Directors" : "Director")</MudText>
 
-                    foreach (PersonResponse director in Title.Directors)
+                    foreach (PersonResponse director in showAllDirectors ? Title.Directors : Title.Directors.Take(visibleCast))
                     {
                         <p>@director.Name</p>
+                    }
+
+                    if (Title.Directors.Count > visibleCast)
+                    {
+                        <MudLink OnClick="@(() => showAllDirectors = !showAllDirectors)">@(showAllDirectors ? "Less" : "More")</MudLink>
                     }
                 }
             </div>
@@ -28,9 +33,14 @@
                 {
                     <MudText Typo="Typo.h3">@(Title.Writers.Count() > 1 ? "Writers" : "Writer")</MudText>
 
-                    foreach (PersonResponse director in Title.Writers)
+                    foreach (PersonResponse director in showAllWriters ? Title.Writers : Title.Writers.Take(visibleCast))
                     {
                         <p>@director.Name</p>
+                    }
+
+                    if (Title.Writers.Count > visibleCast)
+                    {
+                        <MudLink OnClick="@(() => showAllWriters = !showAllWriters)">@(showAllWriters ? "Less" : "More")</MudLink>
                     }
                 }
             </div>
@@ -39,9 +49,14 @@
                 {
                     <MudText Typo="Typo.h3">@(Title.Actors.Count() > 1 ? "Actors" : "Actor")</MudText>
 
-                    foreach (PersonResponse actor in Title.Actors)
+                    foreach (PersonResponse actor in showAllActors ? Title.Actors : Title.Actors.Take(visibleCast))
                     {
                         <p>@actor.Name</p>
+                    }
+
+                    if (Title.Actors.Count > visibleCast)
+                    {
+                        <MudLink OnClick="@(() => showAllActors = !showAllActors)">@(showAllActors ? "Less" : "More")</MudLink>
                     }
                 }
             </div>
@@ -65,7 +80,7 @@
                     @foreach (WatchProvider provider in Title.Providers)
                     {
                         <MudTooltip Text="@provider.Name">
-                            <MudImage Src="@provider.LogoPath" Class="rounded-lg" Width="85" Height="85" />
+                            <MudImage Src="@provider.LogoUrl" Class="rounded-lg" Width="85" Height="85" />
                         </MudTooltip>
                     }
                 </div>
@@ -74,7 +89,67 @@
     </div>
 </MudContainer>
 
+<style>
+    @@media (max-width: 992px) {
+    .movie-layout
+    {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    }
+
+    .movie-layout .poster {
+    margin-bottom: 2rem;
+    width: 100% !important;
+    max-width: 400px;
+    }
+
+    .movie-layout .content {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    }
+
+    .header-container {
+    flex-wrap: wrap;
+    }
+
+    .main-nav {
+    order: 3;
+    width: 100%;
+    margin-top: var(1.6rem);
+    }
+
+    .main-nav ul {
+    justify-content: center;
+    }
+
+    .movie-hero {
+    height: 50vh;
+    }
+
+    .movie-hero h1 {
+    font-size: 3.8rem;
+    }
+
+    .movie-details-grid {
+    grid-template-columns: 1fr;
+    gap: var(3.2rem);
+    }
+
+    .movie-poster-large {
+    max-width: 40rem;
+    margin: 0 auto;
+    }
+    }
+</style>
+
 @code {
     [Parameter]
     public TitleResponse Title { get; set; }
+
+    private int visibleCast = 3;
+
+    private bool showAllActors = false;
+    private bool showAllWriters = false;
+    private bool showAllDirectors = false;
 }

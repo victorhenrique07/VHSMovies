@@ -1,17 +1,15 @@
-﻿
+﻿::deep .mud-text-white {
+    color: white;
+}
+
+
 ::deep .genre, ::deep .release-date, ::deep .runtime {
     font-size: 0.8rem;
     background-color: #f0f0f0;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
 }
-
-::deep .movie-hero-content {
-    position: relative;
-    z-index: 2;
-}
-
-::deep .rating-circle {
+.rating-circle {
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -23,10 +21,127 @@
     justify-content: center;
 }
 
+::deep .rating-count {
+    display: block;
+}
+
 ::deep .rating-number {
     font-size: 1.5rem;
 }
 
-::deep .rating-count {
-    display: block;
+.movie-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.movie-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%);
+    z-index: var(--z-below);
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    ::deep .movie-hero {
+        height: auto;
+        min-height: 30rem;
+        padding: var(4rem) 0;
+    }
+
+    .movie-hero-content {
+        padding-bottom: var(2.4rem);
+    }
+}
+
+@media (max-width: 576px) {
+    ::deep .movie-hero {
+        min-height: 30rem;
+    }
+
+    .movie-hero ::deep h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .movie-hero ::deep h1 {
+        font-size: 4.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .movie-layout {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .movie-layout .poster {
+        margin-bottom: 2rem;
+        width: 100% !important;
+        max-width: 400px;
+    }
+
+    .movie-layout .content {
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .header-container {
+        flex-wrap: wrap;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        margin-top: var(1.6rem);
+    }
+
+        .main-nav ul {
+            justify-content: center;
+        }
+
+    .movie-hero {
+        height: 50vh;
+    }
+
+        .movie-hero h1 {
+            font-size: 3.8rem;
+        }
+
+    .movie-details-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .movie-poster-large {
+        max-width: 40rem;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .movie-hero {
+        height: 40vh;
+    }
+
+        .movie-hero h1 {
+            font-size: 3.4rem;
+        }
+
+    .movie-layout {
+        flex-direction: column !important;
+        align-items: center;
+    }
+
+        .movie-layout .poster {
+            margin-bottom: 2rem;
+        }
+
+        .movie-layout .content {
+            min-width: 100% !important;
+            max-width: 100% !important;
+        }
 }
