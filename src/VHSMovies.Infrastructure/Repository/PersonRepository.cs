@@ -26,14 +26,14 @@ namespace VHSMovies.Infraestructure.Repository
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole personRole)
+        public async Task<IReadOnlyCollection<Person>> GetAllPerson(PersonRole? personRole = null)
         {
             IReadOnlyCollection<Person> people = await dbContextClass.People
                 .Include(p => p.Titles)
                     .ThenInclude(c => c.Title)
                 .ToListAsync();
 
-            if (personRole != PersonRole.None)
+            if (personRole.HasValue)
             {
                 people = people.Where(p => p.Titles.Any(r => r.Role == personRole)).ToList();
             }
@@ -51,6 +51,8 @@ namespace VHSMovies.Infraestructure.Repository
 
             return person;
         }
+
+        public IQueryable<Person> Query() => dbContextClass.People;
 
         public async Task RegisterListAsync(IReadOnlyCollection<Person> list) => await dbContextClass.People.AddRangeAsync(list);
 

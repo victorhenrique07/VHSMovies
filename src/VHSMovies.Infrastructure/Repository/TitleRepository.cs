@@ -50,9 +50,7 @@ namespace VHSMovies.Infraestructure.Repository
 
         public async Task<Title> GetByIdAsync(int id)
         {
-            var testeRepo = await dbContextClass.Casts.ToListAsync();
-
-            return await dbContextClass.Set<Title>()
+            return await Query()
                 .Include(t => t.Ratings)
                 .Include(c => c.Casts)
                     .ThenInclude(p => p.Person)
