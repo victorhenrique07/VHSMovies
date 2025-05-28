@@ -38,7 +38,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
 
             // Assert
             casts.Should().NotBeEmpty();
-            casts.Should().HaveCount(19);
+            casts.Should().HaveCount(33);
         }
 
         [Theory]
@@ -67,8 +67,8 @@ namespace VHSMovies.Tests.Integration.Infrastructure
 
         [Theory]
         [InlineData(PersonRole.Actor, 11)]
-        [InlineData(PersonRole.Writer, 3)]
-        [InlineData(PersonRole.Director, 5)]
+        [InlineData(PersonRole.Writer, 11)]
+        [InlineData(PersonRole.Director, 11)]
         public async Task ShouldReturnTaskByPersonRole(PersonRole expectedRole, int expectedCastsCount)
         {
             // Arrange
@@ -95,8 +95,8 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         [Theory]
         [InlineData(1297469, new[] { 1, 5, 8 })]
         [InlineData(1489427, new[] { 2, 6, 9 })]
-        [InlineData(1519096, new[] { 3, 7 })]
-        [InlineData(1522910, new[] { 4, 10 })]
+        [InlineData(1519096, new[] { 3, 7, 16 })]
+        [InlineData(1522910, new[] { 4, 10, 6 })]
         public async Task ShouldReturnCastByTitleId(int titleId, int[] peopleIds)
         {
             // Arrange
@@ -212,7 +212,7 @@ namespace VHSMovies.Tests.Integration.Infrastructure
                 }
             );
 
-            context.People.Add(new Person("Tim Robbins"));
+            context.People.Add(new Person("Tim Robbins") { Id = 1, IMDB_Id = "tt1" });
             context.SaveChanges();
 
             var castRepository = new CastRepository(context);

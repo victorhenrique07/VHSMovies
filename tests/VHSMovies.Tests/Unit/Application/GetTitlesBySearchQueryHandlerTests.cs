@@ -12,18 +12,21 @@ using VHSMovies.Application.Commands;
 using VHSMovies.Application.Handlers;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
+using VHSMovies.Infrastructure.Services;
 
 namespace VHSMovies.Tests.Unit.Application
 {
     public class GetTitlesBySearchQueryHandlerTests
     {
         private readonly Mock<IRecommendedTitlesRepository> _mockRepository;
+        private readonly Mock<ITMDbService> _tmdbService;
         private readonly GetTitlesBySearchQueryHandler _handler;
 
         public GetTitlesBySearchQueryHandlerTests()
         {
             _mockRepository = new Mock<IRecommendedTitlesRepository>();
-            _handler = new GetTitlesBySearchQueryHandler(_mockRepository.Object);
+            _tmdbService = new Mock<ITMDbService>();
+            _handler = new GetTitlesBySearchQueryHandler(_mockRepository.Object, _tmdbService.Object);
         }
 
         /*[Theory]

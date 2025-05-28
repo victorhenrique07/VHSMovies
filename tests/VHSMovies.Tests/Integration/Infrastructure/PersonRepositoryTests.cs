@@ -24,9 +24,9 @@ namespace VHSMovies.Tests.Integration.Infrastructure
         }
 
         [Theory]
-        [InlineData(PersonRole.Actor, 4)]
-        [InlineData(PersonRole.Director, 3)]
-        [InlineData(PersonRole.Writer, 3)]
+        [InlineData(PersonRole.Actor, 5)]
+        [InlineData(PersonRole.Director, 8)]
+        [InlineData(PersonRole.Writer, 9)]
         public async Task ShouldReturnAllPerson(PersonRole role, int expectedCountResult)
         {
             // Arrange
@@ -98,10 +98,10 @@ namespace VHSMovies.Tests.Integration.Infrastructure
             var repository = new PersonRepository(context);
             IReadOnlyCollection<Person> personList = new List<Person>
             {
-                new Person("Tim Robbins"),
-                new Person("Christian Bale"),
-                new Person("Bryan Cranston"),
-                new Person("Emilia Clarke"),
+                new Person("Tim Robbins") { IMDB_Id = "tt1"},
+                new Person("Christian Bale") { IMDB_Id = "tt2"},
+                new Person("Bryan Cranston") { IMDB_Id = "tt3"},
+                new Person("Emilia Clarke") { IMDB_Id = "tt4"},
             };
 
             // Act

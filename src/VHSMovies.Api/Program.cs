@@ -16,12 +16,13 @@ builder.Services.AddControllers();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 
 EnvironmentVariableTarget target = builder.Environment.IsDevelopment() ? EnvironmentVariableTarget.Machine : EnvironmentVariableTarget.Process;
+bool isTest = builder.Environment.IsEnvironment("Test");
 
 builder.WebHost.UseUrls($"http://*:{port}");
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
-builder.Services.AddRedis(builder.Configuration, target);
-builder.Services.AddTMDbClient(builder.Configuration, target);
+builder.Services.AddRedis(builder.Configuration, target, isTest);
+builder.Services.AddTMDbClient(builder.Configuration, target, isTest);
 builder.Services.AddSimpleMediator();
 
 builder.Services.Configure<FormOptions>(options =>

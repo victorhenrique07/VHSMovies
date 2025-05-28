@@ -62,17 +62,24 @@ namespace VHSMovies.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target, bool isTest = false)
         {
-            var REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target) ?? "localhost:6379";
+            string REDIS_CONNECTION_STRING = "";
 
-            string connectionString = $"{REDIS_CONNECTION_STRING}";
+            if (isTest)
+            {
+                REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
+            }
+            else
+            {
+                REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target);
+            }
 
-            if (string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(REDIS_CONNECTION_STRING))
                 throw new InvalidOperationException("The redis connection string was not defined.");
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
-                ConnectionMultiplexer.Connect(connectionString)
+                ConnectionMultiplexer.Connect(REDIS_CONNECTION_STRING)
             );
 
             services.AddScoped<IRedisRepository, RedisRepository>();
@@ -80,9 +87,18 @@ namespace VHSMovies.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target)
+        public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target, bool isTest = false)
         {
-            var apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY", target);
+            string apiKey = "";
+
+            if (isTest)
+            {
+                apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY");
+            }
+            else
+            {
+                apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY", target);
+            }
 
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new InvalidOperationException("The TMDb API key was not defined.");

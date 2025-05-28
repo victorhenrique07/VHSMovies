@@ -20,15 +20,17 @@ namespace VHSMovies.Application.Handlers
     public class GetTitlesBySearchQueryHandler : IRequestHandler<GetTitlesBySearchQuery, IReadOnlyCollection<TitleResponse>>
     {
         private readonly IRecommendedTitlesRepository titleRepository;
+        private readonly ITMDbService tMDbService;
 
-        public GetTitlesBySearchQueryHandler(IRecommendedTitlesRepository titleRepository)
+        public GetTitlesBySearchQueryHandler(IRecommendedTitlesRepository titleRepository, ITMDbService tMDbService)
         {
             this.titleRepository = titleRepository;
+            this.tMDbService = tMDbService;
         }
 
         public async Task<IReadOnlyCollection<TitleResponse>> Handle(GetTitlesBySearchQuery query, CancellationToken cancellationToken)
         {
-            TitleResponseFactory titleResponseFactory = new TitleResponseFactory();
+            TitleResponseFactory titleResponseFactory = new TitleResponseFactory(tMDbService);
 
             IQueryable<RecommendedTitle> titles = titleRepository.Query()
                 .Where(p => EF.Functions.Like(p.Name.ToLower(), $"%{query.SearchQuery.ToLower()}%"))

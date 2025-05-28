@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using AutoFixture;
@@ -19,23 +20,29 @@ using VHSMovies.Application.Models;
 using VHSMovies.Domain.Domain.Entity;
 using VHSMovies.Domain.Domain.Repository;
 using VHSMovies.Infraestructure.Repository;
+using VHSMovies.Infraestructure.Services.Responses;
 using VHSMovies.Infrastructure.Services;
+using VHSMovies.Tests.Unit.Setup;
 
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace VHSMovies.Tests.Unit.Application
 {
+    [Collection("TMDbClientCollection")]
     public class GetRecommendedTitlesQueryHandlerTests
     {
         private readonly Mock<IRecommendedTitlesRepository> _recommendedRepoMock = new();
         private readonly Mock<IGenreRepository> _genreRepoMock = new();
         private readonly Mock<ICastRepository> _castRepoMock = new();
         private readonly Mock<ITMDbService> _tmdbServiceMock = new();
+        private readonly TMDbSetupFixture _fixture;
 
         private readonly GetRecommendedTitlesQueryHandler _handler;
 
-        public GetRecommendedTitlesQueryHandlerTests()
+        public GetRecommendedTitlesQueryHandlerTests(TMDbSetupFixture fixture)
         {
+            _fixture = fixture;
+
             var genres = new List<Genre>
             {
                 new Genre { Id = 1, Name = "Action" },
@@ -75,7 +82,8 @@ namespace VHSMovies.Tests.Unit.Application
                 AverageRating = darkKnightTitle.AverageRating,
                 ReleaseDate = darkKnightTitle.ReleaseDate,
                 Relevance = darkKnightTitle.Relevance,
-                Genres = new[] { "Drama", "Action" }
+                Genres = new[] { "Drama", "Action" },
+                IMDB_Id = "tt0111161"
             };
 
             sharshankRecommendedTitle = new RecommendedTitle
@@ -85,7 +93,8 @@ namespace VHSMovies.Tests.Unit.Application
                 AverageRating = shawshankTitle.AverageRating,
                 ReleaseDate = shawshankTitle.ReleaseDate,
                 Relevance = shawshankTitle.Relevance,
-                Genres = new[] { "Drama" }
+                Genres = new[] { "Drama" },
+                IMDB_Id = "tt0111161"
             };
 
             inceptionRecommendedTitle = new RecommendedTitle
@@ -95,7 +104,8 @@ namespace VHSMovies.Tests.Unit.Application
                 AverageRating = inceptionTitle.AverageRating,
                 ReleaseDate = inceptionTitle.ReleaseDate,
                 Relevance = inceptionTitle.Relevance,
-                Genres = new[] { "Action", "Drama" }
+                Genres = new[] { "Action", "Drama" },
+                IMDB_Id = "tt0111161"
             };
 
             titles = new List<RecommendedTitle>
@@ -224,7 +234,24 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnsAllTitlesWhenNoFilterIsApplied()
         {
             // Arrange
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery();
 
@@ -242,7 +269,24 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldExcludesTitlesWhenTitlesToExcludeIsProvided(int[] excludedTitles, int expectedTitleId)
         {
             // Arrange
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -262,7 +306,24 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnTitlesAverageRatingGreaterOrEqualThan4()
         {
             // Arrange
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -282,7 +343,24 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnInceptionTitleWhenYearsRangeStartsAt2009()
         {
             // Arrange
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -344,7 +422,24 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnShawshankMovieWithExcludeGenresEqualToAction()
         {
             // Arrange
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -369,14 +464,32 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnDarkKnightWhenFilterByActorA()
         {
             // Arrange
-            List<Cast> cast = new List<Cast>
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
+
+            List<Cast> casts = new List<Cast>
             {
                 new() { Title = darkKnightTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
                 new() { Title = inceptionTitle, Person = new Person("Actor B"), Role = PersonRole.Actor }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Actor)).ReturnsAsync(cast);
+            SetupCasts(casts);
 
             GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery
             {
@@ -398,14 +511,32 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnShawshankWhenFilterByDirectorA()
         {
             // Arrange
-            var cast = new List<Cast>
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
+
+            var casts = new List<Cast>
             {
                 new() { Title = shawshankTitle, Person = new Person("Director A"), Role = PersonRole.Director },
                 new() { Title = inceptionTitle, Person = new Person("Director B"), Role = PersonRole.Director }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Director)).ReturnsAsync(cast);
+            SetupCasts(casts);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -426,14 +557,32 @@ namespace VHSMovies.Tests.Unit.Application
         public async Task ShouldReturnShawshankWhenFilterByWriterA()
         {
             // Arrange
-            var cast = new List<Cast>
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+
+            TitleDetailsTMDB tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult>
+                {
+                    new TitleDetailsResult
+                    {
+                        overview = "overview",
+                        poster_path = "/image.jpg",
+                        backdrop_path = "/image.jpg",
+                        release_date = new DateOnly(2010, 7, 16)
+                    }
+                }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(darkKnightRecommendedTitle.IMDB_Id, tmdbResponse);
+
+            var casts = new List<Cast>
             {
                 new() { Title = shawshankTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
                 new() { Title = darkKnightTitle, Person = new Person("Writer B"), Role = PersonRole.Writer }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(PersonRole.Writer)).ReturnsAsync(cast);
+            SetupCasts(casts);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -451,33 +600,32 @@ namespace VHSMovies.Tests.Unit.Application
         }
 
         [Theory]
-        [InlineData(new[] { "Actor A" }, new string[0], new string[0], new[] { 1297469, 1489427 })]
-        [InlineData(new string[0], new[] { "Director A" }, new string[0], new[] { 1234567, 1489427 })]
-        [InlineData(new string[0], new string[0], new[] { "Writer A" }, new[] { 1234567, 1489427 })]
-        [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new string[0], new[] { 1489427 })]
         [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new[] { "Writer A" }, new[] { 1489427 })]
         [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new[] { "Writer C" }, new int[0])]
+        [InlineData(new[] { "Actor A" }, new string[0], new string[0], new[] { 1297469, 1489427 })]
+        [InlineData(new[] { "Actor A" }, new[] { "Director A" }, new string[0], new[] { 1489427 })]
         [InlineData(new string[0], new string[0], new string[0], new[] { 1234567, 1297469, 1489427 })]
+        [InlineData(new string[0], new[] { "Director A" }, new string[0], new[] { 1234567, 1489427 })]
+        [InlineData(new string[0], new string[0], new[] { "Writer A" }, new[] { 1234567, 1489427 })]
         public async Task ShouldReturnCorrectTitlesWithPersonFilters(
             string[] actors, string[] directors, string[] writers, int[] expectedIds)
         {
             // Arrange
-            var cast = new List<Cast>
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
+            var casts = new List<Cast>
             {
-                new() { Title = darkKnightTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { Title = darkKnightTitle, Person = new Person("Actor B"), Role = PersonRole.Actor },
-                new() { Title = darkKnightTitle, Person = new Person("Director A"), Role = PersonRole.Director },
-                new() { Title = darkKnightTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
-                new() { Title = shawshankTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { Title = shawshankTitle, Person = new Person("Writer B"), Role = PersonRole.Writer },
-                new() { Title = inceptionTitle, Person = new Person("Director A"), Role = PersonRole.Director },
-                new() { Title = inceptionTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
-                new() { Title = inceptionTitle, Person = new Person("Actor C"), Role = PersonRole.Actor },
+                new Cast { Title = darkKnightTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new Cast { Title = darkKnightTitle, Person = new Person("Actor B"), Role = PersonRole.Actor },
+                new Cast { Title = darkKnightTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new Cast { Title = darkKnightTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
+                new Cast { Title = shawshankTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
+                new Cast { Title = shawshankTitle, Person = new Person("Writer B"), Role = PersonRole.Writer },
+                new Cast { Title = inceptionTitle, Person = new Person("Director A"), Role = PersonRole.Director },
+                new Cast { Title = inceptionTitle, Person = new Person("Writer A"), Role = PersonRole.Writer },
+                new Cast { Title = inceptionTitle, Person = new Person("Actor C"), Role = PersonRole.Actor },
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(It.IsAny<PersonRole>())).ReturnsAsync((PersonRole role) =>
-                cast.Where(x => x.Role == role).ToList());
+            SetupCasts(casts);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -485,6 +633,24 @@ namespace VHSMovies.Tests.Unit.Application
                 Directors = directors.ToList(),
                 Writers = writers.ToList()
             };
+
+            var titleDetails = new TitleDetailsResult
+            {
+                id = 123,
+                overview = "Este é um resumo do título.",
+                poster_path = "/poster.jpg",
+                backdrop_path = "/backdrop.jpg",
+                release_date = new DateOnly(2023, 5, 15),
+                first_air_date = new DateOnly(1994, 10, 1)
+            };
+
+            var tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult> { titleDetails }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(sharshankRecommendedTitle.IMDB_Id, tmdbResponse);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -514,10 +680,24 @@ namespace VHSMovies.Tests.Unit.Application
             // Arrange
             _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
 
-            var query = new GetRecommendedTitlesQuery
-            {
-                TitlesAmount = 2
-            };
+            _tmdbServiceMock.Setup(s => s.FindTitleDetails(It.IsAny<string>()))
+                .ReturnsAsync(new TitleDetailsTMDB
+                {
+                    Movie_Results = new List<TitleDetailsResult>
+                    {
+                        new TitleDetailsResult
+                        {
+                            id = 123,
+                            overview = "Resumo de teste",
+                            poster_path = "/poster.jpg",
+                            backdrop_path = "/backdrop.jpg",
+                            release_date = new DateOnly(2023, 1, 1),
+                            first_air_date = new DateOnly(2023, 1, 1)
+                        }
+                    }
+                });
+
+            var query = new GetRecommendedTitlesQuery { TitlesAmount = 2 };
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -532,23 +712,35 @@ namespace VHSMovies.Tests.Unit.Application
         [Fact]
         public async Task Handle_AllFiltersCombined_ReturnsExpectedResult()
         {
-            IQueryable<RecommendedTitle> titles = new List<RecommendedTitle>
-            {
-                darkKnightRecommendedTitle,
-                sharshankRecommendedTitle,
-                inceptionRecommendedTitle
-            }.AsQueryable();
+            // Arrange
+            SetupRecommendedTitles(darkKnightRecommendedTitle, sharshankRecommendedTitle, inceptionRecommendedTitle);
 
-            var cast = new List<Cast>
+            var casts = new List<Cast>
             {
-                new() { Title = shawshankTitle, Person = new Person("Actor A"), Role = PersonRole.Actor },
-                new() { Title = shawshankTitle, Person = new Person("Director A"), Role = PersonRole.Director },
-                new() { Title = shawshankTitle, Person = new Person("Writer A"), Role = PersonRole.Writer }
+                new() { Title = shawshankTitle, Person = new Person("Actor A") { IMDB_Id = "tt1"}, Role = PersonRole.Actor },
+                new() { Title = shawshankTitle, Person = new Person("Director A") { IMDB_Id = "tt2"}, Role = PersonRole.Director },
+                new() { Title = shawshankTitle, Person = new Person("Writer A") { IMDB_Id = "tt3"}, Role = PersonRole.Writer }
             };
 
-            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles);
-            _castRepoMock.Setup(c => c.GetCastsByPersonRole(It.IsAny<PersonRole>())).ReturnsAsync((PersonRole role) =>
-                cast.Where(x => x.Role == role).ToList());
+            SetupCasts(casts);
+
+            var titleDetails = new TitleDetailsResult
+            {
+                id = 123,
+                overview = "Este é um resumo do título.",
+                poster_path = "/poster.jpg",
+                backdrop_path = "/backdrop.jpg",
+                release_date = new DateOnly(2023, 5, 15),
+                first_air_date = new DateOnly(1994, 10, 1)
+            };
+
+            var tmdbResponse = new TitleDetailsTMDB
+            {
+                Movie_Results = new List<TitleDetailsResult> { titleDetails }
+            };
+
+            var httpClient = _fixture.CreateMockedHttpClient(tmdbResponse);
+            SetupTMDbResponse(sharshankRecommendedTitle.IMDB_Id, tmdbResponse);
 
             var query = new GetRecommendedTitlesQuery
             {
@@ -563,6 +755,7 @@ namespace VHSMovies.Tests.Unit.Application
                 MustInclude = new HashSet<int> { 2 }
             };
 
+            // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             result.Should().ContainSingle();
@@ -571,6 +764,28 @@ namespace VHSMovies.Tests.Unit.Application
             result.First().Genres.Should().Contain(result => result.Name == "Drama");
             result.First().Name.Should().Be("The Shawshank Redemption");
             result.First().AverageRating.Should().BeGreaterThan(4.0m);
+        }
+
+        private void SetupRecommendedTitles(params RecommendedTitle[] titles)
+        {
+            _recommendedRepoMock.Setup(r => r.Query()).Returns(titles.AsQueryable());
+        }
+
+        private void SetupCasts(List<Cast> casts)
+        {
+            _castRepoMock.Setup(c => c.GetCastsByPersonRole(It.IsAny<PersonRole>()))
+                         .ReturnsAsync((PersonRole role) => casts.Where(c => c.Role == role).ToList());
+        }
+
+        private void SetupTMDbResponse(string imdbId, TitleDetailsTMDB tmdbResponse)
+        {
+            _tmdbServiceMock.Setup(t => t.FindTitleDetails(imdbId))
+                .ReturnsAsync(() =>
+                {
+                    return JsonSerializer.Deserialize<TitleDetailsTMDB>(
+                        JsonSerializer.Serialize(tmdbResponse),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                });
         }
     }
 }
