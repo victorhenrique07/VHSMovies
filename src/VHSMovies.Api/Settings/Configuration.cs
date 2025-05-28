@@ -7,7 +7,13 @@
 
         public static string GetFrontendUrl(IWebHostEnvironment webHost)
         {
-            FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL", webHost.IsDevelopment() ? EnvironmentVariableTarget.Machine : EnvironmentVariableTarget.Process);
+            FrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL", EnvironmentVariableTarget.Process)
+            ?? Environment.GetEnvironmentVariable("FRONTEND_URL", EnvironmentVariableTarget.User)
+            ?? Environment.GetEnvironmentVariable("FRONTEND_URL", EnvironmentVariableTarget.Machine)
+            ?? Environment.GetEnvironmentVariable("FRONTEND_URL");
+
+            if (string.IsNullOrWhiteSpace(FrontendUrl))
+                throw new InvalidOperationException("The front-end url was not defined.");
 
             return FrontendUrl;
         }
