@@ -62,24 +62,19 @@ namespace VHSMovies.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target, bool isTest = false)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
-            string REDIS_CONNECTION_STRING = "";
+            var redisConnectionString = configuration["REDIS_CONNECTION_STRING"]
+            ?? Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", EnvironmentVariableTarget.Process)
+            ?? Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", EnvironmentVariableTarget.User)
+            ?? Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", EnvironmentVariableTarget.Machine)
+            ?? Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
 
-            if (isTest)
-            {
-                REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
-            }
-            else
-            {
-                REDIS_CONNECTION_STRING = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING", target);
-            }
-
-            if (string.IsNullOrWhiteSpace(REDIS_CONNECTION_STRING))
+            if (string.IsNullOrWhiteSpace(redisConnectionString))
                 throw new InvalidOperationException("The redis connection string was not defined.");
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
-                ConnectionMultiplexer.Connect(REDIS_CONNECTION_STRING)
+                ConnectionMultiplexer.Connect(redisConnectionString)
             );
 
             services.AddScoped<IRedisRepository, RedisRepository>();
@@ -87,18 +82,13 @@ namespace VHSMovies.Infraestructure
             return services;
         }
 
-        public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration, EnvironmentVariableTarget target, bool isTest = false)
+        public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration)
         {
-            string apiKey = "";
-
-            if (isTest)
-            {
-                apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY");
-            }
-            else
-            {
-                apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY", target);
-            }
+            var apiKey = configuration["REDIS_CONNECTION_STRING"]
+            ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.Process)
+            ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.User)
+            ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.Machine)
+            ?? Environment.GetEnvironmentVariable("TMDB_API_KEY");
 
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new InvalidOperationException("The TMDb API key was not defined.");
