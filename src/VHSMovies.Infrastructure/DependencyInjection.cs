@@ -84,7 +84,7 @@ namespace VHSMovies.Infraestructure
 
         public static IServiceCollection AddTMDbClient(this IServiceCollection services, IConfiguration configuration)
         {
-            var apiKey = configuration["REDIS_CONNECTION_STRING"]
+            var apiKey = configuration["TMDB_API_KEY"]
             ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.Process)
             ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.User)
             ?? Environment.GetEnvironmentVariable("TMDB_API_KEY", EnvironmentVariableTarget.Machine)
