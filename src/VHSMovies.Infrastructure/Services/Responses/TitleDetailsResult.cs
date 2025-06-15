@@ -12,7 +12,7 @@ namespace VHSMovies.Infraestructure.Services.Responses
         public string overview { get; set; }
         public string poster_path { get; set; }
         public string backdrop_path { get; set; }
-        public DateOnly? release_date { get; set; }
-        public DateOnly? first_air_date { get; set; }
+        public string release_date { get; set; }
+        public string first_air_date { get; set; }
     }
 }

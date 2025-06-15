@@ -54,8 +54,11 @@ namespace VHSMovies.Application.Factories
                                       ?? titleDetails.Tv_Season_Results.FirstOrDefault()
                                       ?? new();
 
+            DateOnly? releaseDate = DateOnly.TryParse(result.release_date, out var release) ? release : null;
+            DateOnly? firstAirDate = DateOnly.TryParse(result.first_air_date, out var firstAir) ? firstAir : null;
+
             DateOnly? release_date = title.ReleaseDate.Value == null
-                ? result?.release_date ?? result?.first_air_date :
+                ? releaseDate ?? firstAirDate :
                 new DateOnly(title.ReleaseDate.Value, 1, 1);
 
             var overview = result?.overview ?? string.Empty;
@@ -83,8 +86,11 @@ namespace VHSMovies.Application.Factories
                                       ?? titleDetails.Tv_Season_Results.FirstOrDefault()
                                       ?? new();
 
+            DateOnly? releaseDate = DateOnly.TryParse(result.release_date, out var release) ? release : null;
+            DateOnly? firstAirDate = DateOnly.TryParse(result.first_air_date, out var firstAir) ? firstAir : null;
+
             DateOnly? release_date = title.ReleaseDate.Value == null
-                ? result?.release_date ?? result?.first_air_date :
+                ? releaseDate ?? firstAirDate :
                 new DateOnly(title.ReleaseDate.Value, 1, 1);
 
             var overview = result?.overview ?? string.Empty;
