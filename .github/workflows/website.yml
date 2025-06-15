@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/VHSMovies.Api.Integration/**'
       - 'src/VHSMovies.Website/**'
+      - 'tests/VHSMovies.Tests.Website/**'
       - '.github/workflows/website.yml'
 
 jobs:

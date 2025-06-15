@@ -9,6 +9,7 @@ on:
       - 'src/VHSMovies.Mediator/**'
       - 'src/VHSMovies.Application/**'
       - 'src/VHSMovies.Domain/**'
+      - 'tests/VHSMovies.Tests/**'
       - '.github/workflows/api.yml'
 
 jobs:
