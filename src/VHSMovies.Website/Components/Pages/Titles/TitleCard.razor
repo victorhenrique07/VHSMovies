@@ -7,16 +7,18 @@
         <MudCardHeader Class="pa-0">
             <CardHeaderContent>
                 <div class="movie-poster">
-                    <img src="@Title.BackdropImageUrl" alt="@Title.Name">
-                    <div class="movie-score">@Title.AverageRating.ToString("N1", CultureInfo.GetCultureInfo("pt-BR"))</div>
-                    <MudPaper Class="exclude-button-paper justify-content-center align-items-center position-absolute" Elevation="0">
-                        <MudIconButton
-                            Class="exclude-button"
-                            Icon="@Icons.Material.Filled.Close"
-                            Color="Color.Primary"
-                            OnClick="ExcludeTitle"
-                            ClickPropagation="true" />
-                    </MudPaper>
+                    <img src="@Title.BackdropImageUrl" alt="@Title.Name" onerror="this.style.display='none'">
+                    <div class="movie-header-buttons position-absolute d-flex justify-content-between align-items-center">
+                        <div class="movie-score">
+                            @Title.AverageRating.ToString("N1", CultureInfo.GetCultureInfo("pt-BR"))
+                        </div>
+                        <div class="exclude-button align-items-center justify-content-center">
+                            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                           Color="Color.Primary"
+                                           OnClick="ExcludeTitle"
+                                           ClickPropagation="true" />
+                        </div>
+                    </div>
                 </div>
             </CardHeaderContent>
         </MudCardHeader>
