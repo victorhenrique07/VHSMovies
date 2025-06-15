@@ -4,6 +4,7 @@ using FluentAssertions;
 
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 using StackExchange.Redis;
 
@@ -59,6 +60,8 @@ namespace VHSMovies.Tests.Integration.Api
                 PropertyNameCaseInsensitive = true
             });
 
+            var redisKeys = server.Keys(pattern: "RecommendedTitles_*");
+
             // Assert
             titles.Should().NotBeNullOrEmpty();
             titles.Should().HaveCount(10);
@@ -74,9 +77,9 @@ namespace VHSMovies.Tests.Integration.Api
                 title.PosterImageUrl.Should().NotBeNullOrEmpty();
                 title.BackdropImageUrl.Should().NotBeNullOrEmpty();
             });
-            server.Keys().Should().NotBeEmpty();
-            server.Keys().Should().HaveCount(1);
-            server.Keys().Should().Contain(k => k.ToString().StartsWith("RecommendedTitles_"));
+            redisKeys.Should().NotBeEmpty();
+            redisKeys.Should().HaveCount(1);
+            redisKeys.Should().Contain(k => k.ToString().StartsWith("RecommendedTitles_"));
         }
 
         [Theory]

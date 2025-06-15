@@ -245,7 +245,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -280,7 +280,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -317,7 +317,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -354,7 +354,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -433,7 +433,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -475,7 +475,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -522,7 +522,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -568,7 +568,7 @@ namespace VHSMovies.Tests.Unit.Application
                         overview = "overview",
                         poster_path = "/image.jpg",
                         backdrop_path = "/image.jpg",
-                        release_date = new DateOnly(2010, 7, 16)
+                        release_date = "2010/7/16"
                     }
                 }
             };
@@ -640,8 +640,8 @@ namespace VHSMovies.Tests.Unit.Application
                 overview = "Este é um resumo do título.",
                 poster_path = "/poster.jpg",
                 backdrop_path = "/backdrop.jpg",
-                release_date = new DateOnly(2023, 5, 15),
-                first_air_date = new DateOnly(1994, 10, 1)
+                release_date = "2023/5/15",
+                first_air_date = "1994/10/1"
             };
 
             var tmdbResponse = new TitleDetailsTMDB
@@ -691,8 +691,8 @@ namespace VHSMovies.Tests.Unit.Application
                             overview = "Resumo de teste",
                             poster_path = "/poster.jpg",
                             backdrop_path = "/backdrop.jpg",
-                            release_date = new DateOnly(2023, 1, 1),
-                            first_air_date = new DateOnly(2023, 1, 1)
+                            release_date = "2023/1/1",
+                            first_air_date = "2023/1/1"
                         }
                     }
                 });
@@ -730,8 +730,8 @@ namespace VHSMovies.Tests.Unit.Application
                 overview = "Este é um resumo do título.",
                 poster_path = "/poster.jpg",
                 backdrop_path = "/backdrop.jpg",
-                release_date = new DateOnly(2023, 5, 15),
-                first_air_date = new DateOnly(1994, 10, 1)
+                release_date = "2023/5/15",
+                first_air_date = "1994/10/1"
             };
 
             var tmdbResponse = new TitleDetailsTMDB
