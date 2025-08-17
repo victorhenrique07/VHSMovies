@@ -4,12 +4,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["VHSMovies.Web/VHSMovies.Web.csproj", "VHSMovies.Web/"]
-COPY ["VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj", "VHSMovies.Api.Integration/"]
+COPY ["src/VHSMovies.Web/VHSMovies.Web.csproj", "src/VHSMovies.Web/"]
+COPY ["src/VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj", "src/VHSMovies.Api.Integration/"]
 RUN dotnet restore "VHSMovies.Web/VHSMovies.Webs.csproj"
 
 COPY . .
-WORKDIR "/src/VHSMovies.Web"
+WORKDIR "src/src/VHSMovies.Web"
 RUN dotnet build "VHSMovies.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -18,4 +18,4 @@ RUN dotnet publish VHSMovies.Web.csproj -c Release -o /app/publish /p:UseAppHost
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
-COPY VHSMovies.Web/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
