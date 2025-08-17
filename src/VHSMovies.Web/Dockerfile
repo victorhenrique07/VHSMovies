@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["src/VHSMovies.Web/VHSMovies.Web.csproj", "src/VHSMovies.Web/"]
 COPY ["src/VHSMovies.Api.Integration/VHSMovies.Api.Integration.csproj", "src/VHSMovies.Api.Integration/"]
-RUN dotnet restore "src/VHSMovies.Web/VHSMovies.Webs.csproj"
+RUN dotnet restore "src/VHSMovies.Web/VHSMovies.Web.csproj"
 
 COPY . .
 WORKDIR "src/src/VHSMovies.Web"
