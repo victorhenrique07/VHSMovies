@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths:
       - 'src/VHSMovies.Api.Integration/**'
-      - 'src/VHSMovies.Website/**'
-      - 'tests/VHSMovies.Tests.Website/**'
+      - 'src/VHSMovies.Web/**'
+      - 'tests/VHSMovies.Tests.Web/**'
       - '.github/workflows/website.yml'
 
 jobs:
@@ -20,9 +20,9 @@ jobs:
         with:
           dotnet-version: 9.0
       - name: Restore Dependencies
-        run: dotnet restore ./src/VHSMovies.Website/VHSMovies.Website.csproj
+        run: dotnet restore ./src/VHSMovies.Web/VHSMovies.Web.csproj
       - name: Build Project
-        run: dotnet build ./src/VHSMovies.Website/VHSMovies.Website.csproj --no-restore
+        run: dotnet build ./src/VHSMovies.Web/VHSMovies.Web.csproj --no-restore
 
   tests:
     runs-on: ubuntu-latest
@@ -37,13 +37,13 @@ jobs:
           dotnet-version: 9.0
 
       - name: Restore Test Dependencies
-        run: dotnet restore ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj
+        run: dotnet restore ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj
 
       - name: Build tests
-        run: dotnet build ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj --no-restore
+        run: dotnet build ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj --no-restore
 
       - name: Unit Tests, Integration Tests and E2E Tests
-        run: dotnet test ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj --no-build --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj --no-build --verbosity normal
 
   release-website-container:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./src/VHSMovies.Website/Dockerfile
+          file: ./src/VHSMovies.Web/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USER }}/vhsmovies-website:v1
