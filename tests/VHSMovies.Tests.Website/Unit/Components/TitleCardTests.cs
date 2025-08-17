@@ -17,7 +17,7 @@ using Moq;
 using MudBlazor.Services;
 
 using VHSMovies.Api.Integration.Main.Responses;
-using VHSMovies.Website.Components.Pages.Titles;
+using VHSMovies.Web.Components.Pages.Titles;
 
 namespace VHSMovies.Tests.Website.E2E.Components
 {

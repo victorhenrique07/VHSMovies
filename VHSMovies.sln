@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api", "src\VHSMov
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose.dcproj", "{E4251A38-4779-4C97-8FA1-FCCB604BE878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Website", "src\VHSMovies.Website\VHSMovies.Website.csproj", "{B50229DB-A77A-4FAD-826B-36C90634EEA3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Api.Integration", "src\VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj", "{5C918923-06AF-4EFF-B4DB-1A815574A0E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests", "tests\VHSMovies.Tests\VHSMovies.Tests.csproj", "{A84C4914-4359-4A98-82F6-91A004D9E59B}"
@@ -22,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Mediator", "src\VHSMovies.Mediator\VHSMovies.Mediator.csproj", "{799AA97A-09A5-469B-B6A7-C343E4428D1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Tests.Website", "tests\VHSMovies.Tests.Website\VHSMovies.Tests.Website.csproj", "{7CE107B9-619D-4A40-81C8-E3171F60FFFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VHSMovies.Web", "src\VHSMovies.Web\VHSMovies.Web.csproj", "{77F7FC58-E13F-427A-B292-6BCD734D9717}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +49,6 @@ Global
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4251A38-4779-4C97-8FA1-FCCB604BE878}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B50229DB-A77A-4FAD-826B-36C90634EEA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C918923-06AF-4EFF-B4DB-1A815574A0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +65,10 @@ Global
 		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CE107B9-619D-4A40-81C8-E3171F60FFFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77F7FC58-E13F-427A-B292-6BCD734D9717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77F7FC58-E13F-427A-B292-6BCD734D9717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77F7FC58-E13F-427A-B292-6BCD734D9717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77F7FC58-E13F-427A-B292-6BCD734D9717}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

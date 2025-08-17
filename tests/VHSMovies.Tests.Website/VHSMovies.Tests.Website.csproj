@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\VHSMovies.Api.Integration\VHSMovies.Api.Integration.csproj" />
-    <ProjectReference Include="..\..\src\VHSMovies.Website\VHSMovies.Website.csproj" />
+    <ProjectReference Include="..\..\src\VHSMovies.Web\VHSMovies.Web.csproj" />
   </ItemGroup>
 
 </Project>
