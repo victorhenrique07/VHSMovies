@@ -1,0 +1,88 @@
+﻿@page "/"
+@page "/home"
+@rendermode InteractiveServer
+
+@using VHSMovies.Api.Integration.Main.Clients
+@using VHSMovies.Api.Integration.Main.Queries
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Web.Components.Pages.Titles
+@using VHSMovies.Web.Components.Shared
+
+@inject ITitlesClient titlesClient
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{    
+    <section class="recommendation-section hero-section">
+        <MudContainer class="container">
+            <h2>Get Personalized Movie Recommendations</h2>
+            <p>Tell us what you like, and we'll suggest your next favorite film</p>
+        </MudContainer>
+    </section>
+
+    <TitleGrid Titles="Titles" SelectedExcludeTitles="selectedExcludeTitles" SectionTitle="Recommended Movies">
+        <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+            Color="Color.Default"
+            ClickPropagation="true"
+            Edge="Edge.End" 
+            Style="right:10px"
+            OnClick="LoadTitles" />
+    </TitleGrid>
+}
+
+@code {
+    private bool loading;
+    private bool initialized;
+
+    private List<TitleResponse> Titles = new List<TitleResponse>();
+
+    private List<TitleResponse> selectedExcludeTitles = new List<TitleResponse>();
+
+    protected override void OnInitialized()
+    {
+        loading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadTitles();
+        }
+    }
+
+    private async Task LoadTitles()
+    {
+        try
+        {
+            GetRecommendedTitlesQuery query = new GetRecommendedTitlesQuery()
+            {
+                TitlesAmount = 15,
+                TitlesToExclude = selectedExcludeTitles.Select(t => t.Id).ToList(),
+                Types = [1]
+            };
+
+            Titles = await titlesClient.GetRecommendationsTitles(query);
+        }
+        catch (TaskCanceledException ex)
+        {
+            throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new HttpRequestException($"Request Error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Unexpected Error: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

@@ -1,0 +1,68 @@
+﻿@page "/about"
+@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Web.Components.Pages.Titles
+
+<div class="about-container">
+    <div class="about-content">
+        <h1>About Us</h1>
+        <p>Welcome to our platform! We're dedicated to helping you find the movie you want.</p>
+
+        <h2>How can you ask for recommendations?</h2>
+        <p>
+            Visit this <a href="/recommendations">page</a> and set the filters according to your preferences. <br />
+            You can filter by <strong>genre</strong>, <strong>release date</strong>, <strong>rating</strong>, and more. <br />
+            Once you've set your filters, <strong>click</strong> the "Get Recommendations" button to see a list of movies that match your criteria.
+        </p>
+
+        <h2>How to use each filter</h2>
+        <ul>
+            <li>
+                <strong>Minimum Rating:</strong> Use the slider to set the lowest acceptable rating (from 0 to 10) for your recommended movies. <br />
+                <em>Example:</em> If you set it to 7, only movies rated 7 or higher (e.g., “Inception”, “The Dark Knight”) will be included.
+            </li>
+            <li>
+                <strong>Titles Amount:</strong> Adjust how many movie recommendations you want to receive using the slider. <br />
+                <em>Example:</em> Set it to 10 to receive a list of 10 recommended movies.
+            </li>
+            <li>
+                <strong>Genres To Include:</strong> Select one or more genres you'd like the recommendations to include. <br />
+                <em>Example:</em> Selecting “Action” and “Sci-Fi” will prioritize <strong>Action</strong> movies <strong>OR Sci-Fi</strong> movies.
+            </li>
+            <li>
+                <strong>Genres To Exclude:</strong> Choose genres you'd like to avoid. Movies from these genres will be excluded. <br />
+                <em>Example:</em> If you exclude “Horror” and “Romance”, we won’t recommend any <strong>Horror</strong> and <strong>Romance</strong> movie.
+            </li>
+            <li>
+                <strong>Must Include Genres:</strong> Only movies containing all selected genres will be recommended. <br />
+                <em>Example:</em> If you select both “Comedy” and “Fantasy”, we'll recommend only movies with <strong>Comedy</strong> and <strong>Fantasy</strong>.
+            </li>
+            <li>
+                <strong>Year Range:</strong> Define the release period by entering a start and end year. <br />
+                <em>Example:</em> From 2010 to 2020 will only include movies released in that decade, like “Interstellar” or “Parasite”.
+            </li>
+            <li>
+                <strong>Titles to Exclude:</strong> Enter specific movie titles you don’t want to appear in the results. <br />
+                <em>Example:</em> Add “Avatar” if you don't want it to show up in your recommendations list.
+            </li>
+        </ul>
+        <p>
+            Once you're done, click <strong>“Get Recommendations”</strong> to see your customized list, or <strong>“Reset Filters”</strong> to start over.
+        </p>
+
+        <div style="background-color: #fff8b3; padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+            <h2>
+                <MudIcon Icon="@Icons.Material.Filled.TipsAndUpdates"/>
+                Tip: Exclude with One Click
+            </h2>
+            <p>
+                If you see a movie you don’t like in your recommendations, just click the red ❌ icon in the top-right corner of the card. <br />
+                This will automatically add the title to the <strong>Titles to Exclude</strong> filter and remove it from the list.
+            </p>
+            <p><strong>Example:</strong> Don’t want <em>Joker</em> in your list? Click the red ❌ on the top-right of the card — it will disappear and be excluded from future results.</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+}

@@ -1,0 +1,59 @@
+﻿@using VHSMovies.Api.Integration.Main.Responses
+@using VHSMovies.Web.Components.Shared
+
+<MudPaper Class="movie-hero d-flex align-center position-relative">
+    <div class="movie-hero-overlay"></div>
+
+    <MudContainer Class="z-10">
+        <MudGrid>
+            <MudItem xs="12" sm="10" md="8" lg="6">
+                <div class="movie-hero-content mt-15">
+                    <MudText Typo="Typo.h3" Class="mud-text-white">@Title.Name</MudText>
+
+                    <MudText Typo="Typo.subtitle2" Class="movie-meta mud-text-white mt-2">
+                        @foreach (GenreResponse genre in Title.Genres)
+                        {
+                            <MudChip Class="genre" T="string">@genre.Name</MudChip>
+                        }
+                        @*<MudChip Class="runtime" T="string">3h 10m</MudChip>*@
+                    </MudText>
+
+                    <div class="movie-rating-large d-flex align-items-center mt-4">
+                        <div class="rating-circle d-flex align-items-center justify-content-center me-3">
+                            <span class="rating-number">@Title.AverageRating</span>
+                        </div>
+                        <div class="rating-text">
+                            <MudText Typo="Typo.caption" Class="rating-count mud-text-white">
+                                @FormatReviewsCount(Title.TotalReviews) Reviews
+                            </MudText>
+                            <TitleRating RatingValue="9.2m" Size="Size.Medium" />
+                        </div>
+                    </div>
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudPaper>
+
+<style>
+    .movie-hero {
+        background-image: url('@Title.BackdropImageUrl');
+        background-size: cover;
+        background-position: center -5px;
+        min-height: 60vh;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public TitleResponse Title { get; set; }
+
+    public static string FormatReviewsCount(int count)
+    {
+        if (count >= 1_000_000)
+            return (count / 1_000_000D).ToString("0.#") + "M";
+        if (count >= 1_000)
+            return (count / 1_000D).ToString("0.#") + "K";
+        return count.ToString();
+    }
+}
