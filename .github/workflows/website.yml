@@ -37,13 +37,13 @@ jobs:
           dotnet-version: 9.0
 
       - name: Restore Test Dependencies
-        run: dotnet restore ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj
+        run: dotnet restore ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj
 
       - name: Build tests
-        run: dotnet build ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj --no-restore
+        run: dotnet build ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj --no-restore
 
       - name: Unit Tests, Integration Tests and E2E Tests
-        run: dotnet test ./tests/VHSMovies.Tests.Web/VHSMovies.Tests.Web.csproj --no-build --verbosity normal
+        run: dotnet test ./tests/VHSMovies.Tests.Website/VHSMovies.Tests.Website.csproj --no-build --verbosity normal
 
   release-website-container:
     runs-on: ubuntu-latest
