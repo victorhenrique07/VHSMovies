@@ -15,10 +15,6 @@
 {
     <Loading />
 }
-else if (_loadTitlesException != null)
-{
-    <ErrorLayout />
-}
 else
 {
     <section class="hero recommendation-hero">
@@ -246,7 +242,6 @@ else
 }
 
 @code {
-    private Exception? _loadTitlesException;
 
     private bool loading;
     private bool loadingMovies;
@@ -303,17 +298,14 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            OnErrorOccurred(ex);
             throw new TaskCanceledException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
-            OnErrorOccurred(ex);
             throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            OnErrorOccurred(ex);
             throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
@@ -394,10 +386,5 @@ else
         Titles = Titles.ToList();
 
         StateHasChanged();
-    }
-
-    private void OnErrorOccurred(Exception ex)
-    {
-        _loadTitlesException = ex;
     }
 }

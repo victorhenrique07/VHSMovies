@@ -14,10 +14,6 @@
 {
     <Loading />
 }
-else if (_loadTitlesException != null)
-{
-    <ErrorLayout />
-}
 else
 {    
     <section class="recommendation-section hero-section">
@@ -40,8 +36,6 @@ else
 @code {
     private bool loading;
     private bool initialized;
-
-    private Exception? _loadTitlesException;
 
     private List<TitleResponse> Titles = new List<TitleResponse>();
 
@@ -75,17 +69,14 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            OnErrorOccurred(ex);
             throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
-            OnErrorOccurred(ex);
             throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            OnErrorOccurred(ex);
             throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
@@ -93,10 +84,5 @@ else
             loading = false;
             await InvokeAsync(StateHasChanged);
         }
-    }
-
-    private void OnErrorOccurred(Exception ex)
-    {
-        _loadTitlesException = ex;
     }
 }

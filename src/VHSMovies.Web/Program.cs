@@ -16,14 +16,17 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-var redis = ConnectionMultiplexer.Connect(Environment.GetEnvironmentVariable("REDIS_CONNECTION"));
+/*var redis = ConnectionMultiplexer.Connect(Environment.GetEnvironmentVariable("REDIS_CONNECTION"));
 
 builder.Services.AddDataProtection()
     .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
     .SetApplicationName("VHSMovies");
-
+*/
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => options.DetailedErrors = true);
+
+builder.Services.AddRazorComponents(options =>
+    options.DetailedErrors = builder.Environment.IsDevelopment());
 
 var API_URL = builder.Environment.IsDevelopment() ? "http://localhost:5000" : "https://api.vhsmovies.com.br";
 
