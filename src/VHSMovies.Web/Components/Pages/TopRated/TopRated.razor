@@ -13,6 +13,10 @@
 {
     <Loading />
 }
+else if (_loadTitlesException != null)
+{
+    <ErrorLayout />
+}
 else
 {
     if (loadingAction)
@@ -67,6 +71,8 @@ else
 }
 
 @code {
+    private Exception? _loadTitlesException;
+
     private bool loading;
     private bool loadingAction;
     private bool loadingSciFi;
@@ -117,14 +123,17 @@ else
         }
         catch (TaskCanceledException ex)
         {
+            OnErrorOccurred(ex);
             throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
+            OnErrorOccurred(ex);
             throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
+            OnErrorOccurred(ex);
             throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
@@ -150,15 +159,17 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine("[Action Movies] - Timeout: The request took too long and was cancelled.");
+            OnErrorOccurred(ex);
+            throw new TaskCanceledException("[Action Movies] - Timeout: The request took too long and was cancelled.");
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"[Action Movies] - Request Error: {ex.Message}");
+            throw new HttpRequestException($"[Action Movies] - Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Action Movies] - Unexpected Error: {ex.Message}");
+            OnErrorOccurred(ex);
+            throw new Exception($"[Action Movies] - Unexpected Error: {ex.Message}");
         }
         finally
         {
@@ -183,15 +194,18 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine("[Sci-Fi Movies] - Timeout: The request took too long and was cancelled.");
+            OnErrorOccurred(ex);
+            throw new TaskCanceledException("[Sci-Fi Movies] - Timeout: The request took too long and was cancelled.");
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"[Sci-Fi Movies] - Request Error: {ex.Message}");
+            OnErrorOccurred(ex);
+            throw new HttpRequestException($"[Sci-Fi Movies] - Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Sci-Fi Movies] - Unexpected Error: {ex.Message}");
+            OnErrorOccurred(ex);
+            throw new Exception($"[Sci-Fi Movies] - Unexpected Error: {ex.Message}");
         }
         finally
         {
@@ -216,14 +230,17 @@ else
         }
         catch (TaskCanceledException ex)
         {
-            throw new TimeoutException("Timeout: The request took too long and was cancelled.", ex);
+            OnErrorOccurred(ex);
+            throw new TaskCanceledException("Timeout: The request took too long and was cancelled.", ex);
         }
         catch (HttpRequestException ex)
         {
+            OnErrorOccurred(ex);
             throw new HttpRequestException($"Request Error: {ex.Message}");
         }
         catch (Exception ex)
         {
+            OnErrorOccurred(ex);
             throw new Exception($"Unexpected Error: {ex.Message}");
         }
         finally
@@ -231,5 +248,10 @@ else
             loadingThriller = false;
             StateHasChanged();
         }
+    }
+
+    private void OnErrorOccurred(Exception ex)
+    {
+        _loadTitlesException = ex;
     }
 }

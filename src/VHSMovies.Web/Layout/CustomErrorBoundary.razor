@@ -1,10 +1,12 @@
 ﻿@inherits ErrorBoundaryBase
 
-@inject ILogger<CustomErrorBoundary> Logger
-
 @if (CurrentException is not null)
 {
-    <ErrorLayout />
+    <ErrorBoundary>
+        <ErrorContent>
+            <ErrorLayout />
+        </ErrorContent>
+    </ErrorBoundary>
 }
 else
 {
@@ -16,10 +18,6 @@ else
 
     protected override Task OnErrorAsync(Exception exception)
     {
-        // Log to container console
-        Logger.LogError(exception, "Unhandled exception in ErrorBoundary");
-
-        // Let the base class handle any additional logic
         return OnErrorAsync(exception);
     }
 }
