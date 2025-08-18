@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.DataProtection;
+
 using MudBlazor.Services;
 
 using Refit;
+
+using StackExchange.Redis;
 
 using VHSMovies.Api.Integration.Main.Clients;
 using VHSMovies.Web;
@@ -14,6 +18,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+
+var redis = ConnectionMultiplexer.Connect(builder.Configuration["REDIS_CONNECTION"]);
+
+builder.Services.AddDataProtection()
+    .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
+    .SetApplicationName("VHSMovies");
 
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => options.DetailedErrors = true);
