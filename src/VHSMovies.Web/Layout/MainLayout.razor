@@ -25,14 +25,11 @@
     </header>
 
     <MudMainContent Class="ma-0 pa-0 flex-column justify-content-center d-flex">
-        <ErrorBoundary @ref="@errorBoundary">
+        <CustomErrorBoundary>
             <ChildContent>
                 @Body
             </ChildContent>
-            <ErrorContent>
-                <ErrorLayout />
-            </ErrorContent>
-        </ErrorBoundary>
+        </CustomErrorBoundary>
     </MudMainContent>
 
     <Footer />

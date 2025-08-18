@@ -15,7 +15,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-var API_URL = builder.Environment.IsProduction() ? "http://localhost:5000" : "https://api.vhsmovies.com.br";
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => options.DetailedErrors = true);
+
+var API_URL = builder.Environment.IsDevelopment() ? "http://localhost:5000" : "https://api.vhsmovies.com.br";
 
 Action<HttpClient> httpClientConfigurator = c =>
 {
