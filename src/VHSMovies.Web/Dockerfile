@@ -1,7 +1,4 @@
-FROM nginx AS base
-EXPOSE 80
-EXPOSE 443
-
+# Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["src/VHSMovies.Web/VHSMovies.Web.csproj", "src/VHSMovies.Web/"]
@@ -10,12 +7,12 @@ RUN dotnet restore "src/VHSMovies.Web/VHSMovies.Web.csproj"
 
 COPY . .
 WORKDIR "/src/src/VHSMovies.Web"
-RUN dotnet build "VHSMovies.Web.csproj" -c Release -o /app/build
+RUN dotnet publish "VHSMovies.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM build AS publish
-RUN dotnet publish VHSMovies.Web.csproj -c Release -o /app/publish /p:UseAppHost=false
-
-FROM nginx:alpine AS final
-WORKDIR /usr/share/nginx/html
-COPY --from=publish /app/publish/wwwroot .
-COPY ["src/VHSMovies.Web/nginx.conf", "/etc/nginx/nginx.conf"]
+# Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+ENTRYPOINT ["dotnet", "VHSMovies.Web.dll"]
